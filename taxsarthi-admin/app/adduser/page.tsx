@@ -32,11 +32,11 @@ const page = (props: Props) => {
             <SelectContent>
               <SelectGroup>
                 <SelectLabel>User Type</SelectLabel>
-                <SelectItem value="apple">Apple</SelectItem>
-                <SelectItem value="banana">Banana</SelectItem>
-                <SelectItem value="blueberry">Blueberry</SelectItem>
-                <SelectItem value="grapes">Grapes</SelectItem>
-                <SelectItem value="pineapple">Pineapple</SelectItem>
+                <SelectItem value="police">Police</SelectItem>
+                <SelectItem value="defencepersonal">Defence Personal</SelectItem>
+                <SelectItem value="pvtemployee">Private Corporate Employee</SelectItem>
+                <SelectItem value="govtemployee">Government Employee</SelectItem>
+                <SelectItem value="other">Self Employeed / Freelancer / Student</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -47,11 +47,14 @@ const page = (props: Props) => {
             <SelectContent>
               <SelectGroup>
                 <SelectLabel>ITR Type</SelectLabel>
-                <SelectItem value="apple">Apple</SelectItem>
-                <SelectItem value="banana">Banana</SelectItem>
-                <SelectItem value="blueberry">Blueberry</SelectItem>
-                <SelectItem value="grapes">Grapes</SelectItem>
-                <SelectItem value="pineapple">Pineapple</SelectItem>
+                <SelectItem value="itr1">ITR-0 - NIL</SelectItem>
+                <SelectItem value="itr2">ITR-1 - Salary </SelectItem>
+                <SelectItem value="itr3">ITR-2 - Salary + Shares</SelectItem>
+                <SelectItem value="itr4">ITR-3 - Business + Shares</SelectItem>
+                <SelectItem value="itr5">ITR-4 - Business</SelectItem>
+                <SelectItem value="itr5">ITR-5 - Partnership Firm/LLP </SelectItem>
+                <SelectItem value="itr6">ITR-6 - Company </SelectItem>
+                <SelectItem value="itr7">ITR-7 - Trust</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>

@@ -7,11 +7,11 @@ type Props = {};
 const HeadsOfIncome = (props: Props) => {
   return (
     <div className="border rounded-lg p-4 m-2 h-full bg-gray-200">
-      <h1 className="border-b border-gray-400 flex justify-between w-full text-lg">
+      <h1 className="border-b font-semibold border-gray-400 flex justify-between w-full text-lg">
         <span>Heads of Income</span>
         <span>No. of Sources</span>
       </h1>
-      <div className="flex justify-between items-center border-b">
+      <div className="flex justify-between items-center border-b border-gray-400 p-2">
         <div className="flex gap-2 justify-center items-center">
           <Checkbox />
           <span className="text-sm">Income from Salary</span>
@@ -21,7 +21,7 @@ const HeadsOfIncome = (props: Props) => {
           <Input type="number" className="w-20 p-2 m-2" min={0}/>
         </div>
       </div>
-      <div className="flex justify-between items-center border-b">
+      <div className="flex justify-between items-center border-b border-gray-400 p-2">
         <div className="flex gap-2 justify-end items-center">
           <Checkbox />
           <span className="text-sm">Income from House Property</span>
@@ -37,7 +37,7 @@ const HeadsOfIncome = (props: Props) => {
           </div>
         </div>
       </div>
-      <div className="flex justify-between items-center border-b">
+      <div className="flex justify-between items-center border-b border-gray-400 p-2">
         <div className="flex gap-2 justify-end items-center">
           <Checkbox />
           <span className="text-sm">Profits and Gains from Business</span>
@@ -57,7 +57,7 @@ const HeadsOfIncome = (props: Props) => {
           </div>
         </div>
       </div>
-      <div className="flex justify-between items-center border-b">
+      <div className="flex justify-between items-center border-b border-gray-400 p-2">
         <div className="flex gap-2 justify-end items-center">
           <Checkbox />
           <span className="text-sm">Income from Capital Gain</span>
@@ -73,7 +73,7 @@ const HeadsOfIncome = (props: Props) => {
           </div>
         </div>
       </div>
-      <div className="flex justify-between items-center border-b">
+      <div className="flex justify-between items-center border-b p-2">
         <div className="flex gap-2 justify-end items-center">
           <Checkbox />
           <span className="text-sm">Income from Other Sources</span>

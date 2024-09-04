@@ -26,6 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
+import { Button } from "./ui/button";
 
 const accordionData = [
   {
@@ -124,7 +125,7 @@ type AccordionItemData = {
 const QueriesPopup = () => {
   const [statuses, setStatuses] = useState<Record<string, Status>>(
     accordionData.reduce((acc, item) => {
-      acc[item.id] = ""; 
+      acc[item.id] = "";
       return acc;
     }, {} as Record<string, Status>)
   );
@@ -184,7 +185,7 @@ const QueriesPopup = () => {
                       <AccordionContent className="flex flex-col gap-2">
                         <Input
                           type="text"
-                          placeholder="Query by client..."
+                          placeholder="Query ..."
                           disabled
                         />
                         <Input type="text" placeholder="Feedback by Team ..." />
@@ -234,6 +235,7 @@ const QueriesPopup = () => {
                     </AccordionItem>
                   ))}
                 </Accordion>
+                <Button variant="outline">Add Query</Button>
               </div>
             </DialogDescription>
           </DialogHeader>

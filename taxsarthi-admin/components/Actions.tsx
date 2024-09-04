@@ -11,7 +11,7 @@ const Actions: React.FC<Props> = () => {
   return (
     <div className="flex justify-start items-center h-full">
       <div className="flex space-x-2">
-        <ActionButton icon={<FaDownload />} label="Download" color="text-blue-950" />
+        <ActionButton icon={<FaDownload />} label="Download" color="text-slate-900" />
         <EditUser/>
         <Remarks/>
         <Link href="/user"><ActionButton icon={<FaEye />} label="View" color="text-purple-700" /></Link>
