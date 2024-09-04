@@ -1,38 +1,16 @@
 import React from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { UploadCloudIcon } from "lucide-react";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
+import { IoDocumentAttachOutline } from "react-icons/io5";
 
 type Props = {};
 
-const Upload = (props: Props) => {
+const Upload: React.FC<Props> = (props: Props) => {
   return (
-    <Dialog>
-      <DialogTrigger>
-        <UploadCloudIcon />
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Upload Document</DialogTitle>
-          <DialogDescription className="gap-3 pt-4 flex flex-col">
-            <Input id="picture" type="file"/>
-            <div className="flex gap-4">
-            <Button>Upload</Button>
-            <Button variant="outline">Cancel</Button>
-            </div>
-          </DialogDescription>
-        </DialogHeader>
-      </DialogContent>
-    </Dialog>
+    <button className="group relative flex flex-col justify-center items-center p-2 transition-transform transform hover:scale-105 cursor-pointer">
+      <div className="flex items-center justify-center w-12 h-12 mb-3">
+        <IoDocumentAttachOutline className="text-4xl text-red-500 hover:animate-bounce transition-transform duration-500" />
+      </div>
+      <h2 className="text-lg font-bold">Upload</h2>
+    </button>
   );
 };
 

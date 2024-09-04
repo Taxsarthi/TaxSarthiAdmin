@@ -20,7 +20,7 @@ const Page: React.FC<Props> = (props: Props) => {
       <div className="flex items-center justify-center mb-6 gap-6">
         <h1 className="text-xl font-semibold">Upload Data for</h1>
         <Select>
-          <SelectTrigger className="w-[180px] outline-none border rounded-md border-gray-300">
+          <SelectTrigger className="w-[180px] outline-none border rounded-full border-gray-300">
             <SelectValue placeholder="Select AY" />
           </SelectTrigger>
           <SelectContent>

@@ -1,7 +1,7 @@
 'use client'
 import { DataGrid, GridColDef, GridRowsProp } from "@mui/x-data-grid";
 import React from "react";
-import Upload from "./Upload";
+import UploadDocs from "./UploadDocs";
 
 type Props = {};
 
@@ -20,6 +20,13 @@ const rows: GridRowsProp = [
     PAN: "ABCDE1234F",
     Email: "jane@gmail.com",
     },
+    {
+        id: 3,
+        Name: "John Doe",
+        Mobile: "9876543210",
+        PAN: "ABCDE1234F",
+        Email: "john@gmail.com",
+    },
 ];
 
 const columns : GridColDef[] = [
@@ -31,28 +38,28 @@ const columns : GridColDef[] = [
     {
         field: "Name",
         headerName: "Name",
-        width: 150
+        width: 200
     },
     {
         field: "Mobile",
         headerName: "Mobile",
-        width: 100
+        width: 150
     },
     {
         field: "PAN",
         headerName: "PAN",
-        width: 150
+        width: 200
     },
     {
         field: "Email",
         headerName: "Email",
-        width: 150
+        width: 200
     },
     {
         field: "Upload",
         headerName: "Upload",
         width: 150,
-        renderCell: () =><Upload/>
+        renderCell: () =><UploadDocs/>
     }
 ]
 
