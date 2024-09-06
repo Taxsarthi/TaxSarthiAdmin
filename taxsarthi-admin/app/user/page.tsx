@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -7,8 +8,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Toggle from "@/components/ui/toggle";
+import ViewDocs from "@/components/ViewDocs";
+import ViewTDS from "@/components/ViewTDS";
 import ViewUser from "@/components/ViewUser";
 import ViewUserTabs from "@/components/ViewUserTabs";
+import { ArrowRight } from "lucide-react";
 import React from "react";
 
 type Props = {};
@@ -51,7 +55,9 @@ const page = (props: Props) => {
             Tax Payable: <span className="text-green-500 p-3">₹ 19000</span>
         </div>
       </div>
-      <ViewUser />
+      {/* <ViewUser /> */}
+      <ViewTDS />
+      {/* <ViewDocs/> */}
       <ViewUserTabs/>
     </>
   );

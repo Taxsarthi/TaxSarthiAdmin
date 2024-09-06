@@ -5,6 +5,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -235,10 +236,12 @@ const QueriesPopup = () => {
                     </AccordionItem>
                   ))}
                 </Accordion>
-                <Button variant="outline">Add Query</Button>
               </div>
             </DialogDescription>
           </DialogHeader>
+          <DialogFooter>
+          <Button variant="outline">Add Query</Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
