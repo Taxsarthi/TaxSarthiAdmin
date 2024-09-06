@@ -39,11 +39,6 @@ const ViewDocs = (props: Props) => {
           </div>
         </div>
       </div>
-      <div className="flex justify-end w-full">
-        <Button className="m-6 gap-2">
-          Save
-        </Button>
-      </div>
     </>
   );
 };

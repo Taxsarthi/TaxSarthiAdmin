@@ -29,8 +29,8 @@ const MonthAccordionItem: React.FC<{ month: string; value: string }> = ({ month,
 );
 
 const QuarterSection: React.FC<{ label: string; months: string[] }> = ({ label, months }) => (
-  <div className="col-span-1 rounded-lg border p-4 m-2">
-    <h1 className="border-b mb-2 w-full text-md">{label}</h1>
+  <div className="col-span-1 rounded-lg p-4 m-2">
+    <h1 className="mb-2 w-full text-md">{label}</h1>
     <div className="gap-2 flex flex-col">
       <Input type="number" placeholder="Receipt No. (Section 200)" />
       <Input type="number" min={0} placeholder="Salary Credited" />
@@ -49,8 +49,8 @@ const QuarterSection: React.FC<{ label: string; months: string[] }> = ({ label, 
 
 const ViewTDS: React.FC = () => {
   return (
-    <div className="rounded-lg border h-full flex flex-col p-4 m-2">
-      <h1 className="border-b mb-2 w-full text-lg">Tax Paid</h1>
+    <div className="rounded-lg border h-full flex bg-gray-200 flex-col p-4 m-4">
+      <h1 className="border-b border-gray-400 mb-2 w-full text-lg">Tax Paid</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
         {quarters.map((quarter, index) => (
           <QuarterSection
