@@ -1,8 +1,9 @@
-import Table from "@/components/Table";
+import Login from "@/components/Login";
 
 export default function Home() {
   return (
     <>
+    <Login/>
     </>
   );
 }

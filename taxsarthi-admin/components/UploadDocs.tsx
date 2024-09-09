@@ -39,7 +39,7 @@ const Upload: React.FC<Props> = () => {
             <Input
               id="picture"
               type="file"
-              multiple
+              // multiple
               onChange={handleFileChange}
               className="cursor-pointer"
             />

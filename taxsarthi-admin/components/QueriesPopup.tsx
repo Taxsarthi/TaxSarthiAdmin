@@ -240,7 +240,7 @@ const QueriesPopup = () => {
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-          <Button variant="outline">Add Query</Button>
+          <Button variant="default">Add Query</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

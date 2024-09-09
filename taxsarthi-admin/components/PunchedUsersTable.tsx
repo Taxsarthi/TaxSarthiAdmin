@@ -56,8 +56,8 @@ const columns : GridColDef[] = [
         width: 200
     },
     {
-        field: "Upload",
-        headerName: "Upload",
+        field: "Acknowledgement",
+        headerName: "Acknowledgement",
         width: 150,
         renderCell: () =><UploadDocs/>
     }

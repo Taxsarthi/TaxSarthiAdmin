@@ -13,27 +13,27 @@ const UsersCards: React.FC = () => {
           icon={<FaUsers />}
           count="20"
           title="Users"
-          bgColor="bg-green-500"
-          gradientFrom="green-400"
-          gradientTo="green-700"
+          // bgColor="bg-green-500"
+          // gradientFrom="green-400"
+          // gradientTo="green-700"
         />
         {/* Card 2 */}
         <Card
           icon={<FaUserCheck />}
           count="1999"
           title="Assigned"
-          bgColor="bg-slate-900"
-          gradientFrom="slate-700"
-          gradientTo="slate-900"
+          // bgColor="bg-slate-900"
+          // gradientFrom="slate-700"
+          // gradientTo="slate-900"
         />
         {/* Card 3 */}
         <Card
           icon={<RiFileUserLine />}
           count="150"
           title="Punched"
-          bgColor="bg-green-500"
-          gradientFrom="green-400"
-          gradientTo="green-700"
+          // bgColor="bg-green-500"
+          // gradientFrom="green-400"
+          // gradientTo="green-700"
         />
       </div>
     </div>
