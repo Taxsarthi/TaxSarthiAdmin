@@ -7,7 +7,10 @@ import ViewITR from "./ViewITR";
 import ViewTDS from "./ViewTDS";
 import ViewDocs from "./ViewDocs";
 
-type Props = {};
+type Props = {
+  open: boolean;
+  onClose: () => void;
+};
 
 const ViewUserTabs = (props: Props) => {
   const [activeTab, setActiveTab] = useState<"user" | "itr" | "tds" | "docs">(
@@ -56,7 +59,7 @@ const ViewUserTabs = (props: Props) => {
       </div>
       <div className="mt-4">
         {activeTab === "user" && <ViewUser />}
-        {activeTab === "itr" && <ViewITR />}
+        {activeTab === "itr" && <ViewITR open={undefined} onClose={undefined} />}
         {activeTab === "tds" && <ViewTDS />}
         {activeTab === "docs" && <ViewDocs />}
       </div>

@@ -11,7 +11,10 @@ import Toggle from "@/components/ui/toggle";
 import ViewUserTabs from "@/components/ViewUserTabs";
 import React from "react";
 
-type Props = {};
+type Props = {
+  open: boolean;
+  onClose: () => void;
+};
 
 const page = (props: Props) => {
   return (
