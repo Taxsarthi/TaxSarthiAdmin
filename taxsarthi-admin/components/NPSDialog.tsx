@@ -51,55 +51,55 @@ const NPSDialog = ({ open, onClose }: Props) => {
                   <TableRow>
                     <TableCell>Assessee's contribution</TableCell>
                     <TableCell>
-                      <Input type="number" />
+                      <Input type="number" min={0} placeholder="" />
                     </TableCell>
                     <TableCell>
-                      <Input type="number" />
+                      <Input type="number" min={0} placeholder="" />
                     </TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Deduction - u/s 80CCD(1)</TableCell>
                     <TableCell>
-                      <Input type="number" />
+                      <Input type="number" min={0} placeholder="" />
                     </TableCell>
                     <TableCell>
-                      <Input type="number" />
+                      <Input type="number" min={0} placeholder="" />
                     </TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Deduction - u/s 80CCD(1B)</TableCell>
                     <TableCell>
-                      <Input type="number" />
+                      <Input type="number" min={0} placeholder="" />
                     </TableCell>
                     <TableCell>
-                      <Input type="number" />
+                      <Input type="number" min={0} placeholder="" />
                     </TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Employer's contribution</TableCell>
                     <TableCell>
-                      <Input type="number" />
+                      <Input type="number" min={0} placeholder="" />
                     </TableCell>
                     <TableCell>
-                      <Input type="number" />
+                      <Input type="number" min={0} placeholder="" />
                     </TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Deduction - u/s 80CCD(2)</TableCell>
                     <TableCell>
-                      <Input type="number" />
+                      <Input type="number" min={0} placeholder="" />
                     </TableCell>
                     <TableCell>
-                      <Input type="number" />
+                      <Input type="number" min={0} placeholder="" />
                     </TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Total</TableCell>
                     <TableCell>
-                      <Input type="number" />
+                      <Input type="number" min={0} placeholder="" />
                     </TableCell>
                     <TableCell>
-                      <Input type="number" />
+                      <Input type="number" min={0} placeholder="" />
                     </TableCell>
                   </TableRow>
                 </TableBody>

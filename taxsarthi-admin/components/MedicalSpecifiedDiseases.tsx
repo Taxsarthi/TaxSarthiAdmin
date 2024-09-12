@@ -55,21 +55,21 @@ const MedicalSpecifiedDiseases = ({ open, onClose }: Props) => {
                 <TableBody>
                   <TableRow>
                     <TableCell>Senior Citizens (Resident):</TableCell>
-                    <TableCell><Input type="number"/></TableCell>
-                    <TableCell><Input type="number"/></TableCell>
-                    <TableCell><Input type="number"/></TableCell>
+                    <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                    <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                    <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Others:</TableCell>
-                    <TableCell><Input type="number"/></TableCell>
-                    <TableCell><Input type="number"/></TableCell>
-                    <TableCell><Input type="number"/></TableCell>
+                    <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                    <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                    <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Total</TableCell>
-                    <TableCell><Input type="number"/></TableCell>
-                    <TableCell><Input type="number"/></TableCell>
-                    <TableCell><Input type="number"/></TableCell>
+                    <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                    <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                    <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
                   </TableRow>
                 </TableBody>
               </Table>

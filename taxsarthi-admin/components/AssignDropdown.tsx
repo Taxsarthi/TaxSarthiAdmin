@@ -13,8 +13,8 @@ type AssignDropdownProps = {
   api: any;
   id: any;
   field: string;
-  options: string[]; // Added options prop
-  placeholder: string; // Added placeholder prop
+  options: string[]; 
+  placeholder: string;
 };
 
 const AssignDropdown: React.FC<AssignDropdownProps> = ({

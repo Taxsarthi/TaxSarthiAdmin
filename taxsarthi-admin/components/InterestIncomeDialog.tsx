@@ -52,28 +52,28 @@ const InterestIncomeDialog = ({ open, onClose }: Props) => {
               <TableBody>
                 <TableRow>
                   <TableCell>Interest on Time Deposits</TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>State Bank of India</TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Interest on Savings a/c (80TTA)</TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>State Bank of India</TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Other Interest</TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>
@@ -96,18 +96,18 @@ const InterestIncomeDialog = ({ open, onClose }: Props) => {
                       </SelectContent>
                     </Select>
                   </TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Other Expenses/deductions</TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Taxable Interest</TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
                 </TableRow>
               </TableBody>
             </Table>

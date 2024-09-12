@@ -65,48 +65,48 @@ const MedicalInsurancePremiumDialog = ({ open, onClose }: Props) => {
                 </TableRow>
                 <TableRow>
                   <TableCell>Senior Citizen (Resident): </TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Others: </TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>In respect of Self, Spouse, and Children</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Senior Citizen (Resident): </TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Others: </TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
                 </TableRow>
                 <TableRow>
                     <TableCell>Total</TableCell>
-                    <TableCell><Input type="number"/></TableCell>
-                    <TableCell><Input type="number"/></TableCell>
-                    <TableCell><Input type="number"/></TableCell>
-                    <TableCell><Input type="number"/></TableCell>
+                    <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                    <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                    <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                    <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
                 </TableRow>
                 <TableRow>
                     <TableCell>Break-up of deductible amount</TableCell>
-                    <TableCell><Input type="number"/></TableCell>
-                    <TableCell><Input type="number"/></TableCell>
-                    <TableCell><Input type="number"/></TableCell>
-                    <TableCell><Input type="number"/></TableCell>
+                    <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                    <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                    <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                    <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
                 </TableRow>
               </TableBody>
             </Table>

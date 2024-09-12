@@ -46,65 +46,65 @@ const IncomeFromSalaryDialog = ({ open, onClose }: Props) => {
               <TableBody>
                 <TableRow>
                   <TableCell>Basic Salary</TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Others</TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Allowances</TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>House Rent Allowance</TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
                   <TableCell><Input type="text"/></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Conveyance Allowance</TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
                   <TableCell><Input type="text"/></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>HRA Exemption Calculation</TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
                   <TableCell><Input type="text"/></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Rent Paid</TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
                   <TableCell><Input type="text"/></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>40% of the salary</TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
                   <TableCell><Input type="text"/></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Rent paid in excess of 10% of salary</TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
                   <TableCell><Input type="text"/></TableCell>
                 </TableRow>
                 <TableRow>
@@ -116,24 +116,24 @@ const IncomeFromSalaryDialog = ({ open, onClose }: Props) => {
                 </TableRow>
                 <TableRow>
                   <TableCell>Salary Income</TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Allowances</TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Total</TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
-                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
+                  <TableCell><Input type="number" min={0} placeholder="" /></TableCell>
                 </TableRow>
               </TableBody>
             </Table>

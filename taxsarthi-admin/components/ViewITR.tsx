@@ -16,7 +16,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
 import {
   Dialog,
   DialogContent,
@@ -78,7 +77,7 @@ const ViewITR = (props: Props) => {
           <Table className="my-4">
             <TableCaption>Income Tax Return</TableCaption>
             <TableBody>
-              <TableRow className="border border-gray-400">
+              <TableRow>
                 <TableCell className="font-bold text-lg">
                   Income from Salary
                 </TableCell>
@@ -90,7 +89,7 @@ const ViewITR = (props: Props) => {
                 return (
                   <React.Fragment key={employerId}>
                     {/* Dialog for Employer Details */}
-                    <TableRow className="border border-gray-400">
+                    <TableRow>
                       <TableCell className="text-red-800">
                         <Dialog>
                           <DialogTrigger>
@@ -146,18 +145,18 @@ const ViewITR = (props: Props) => {
                         </Dialog>
                       </TableCell>
                       <TableCell>
-                        <Input type="number" min={1} placeholder="" />
+                        <Input type="number" min={0} placeholder="" />
                       </TableCell>
                       <TableCell>
-                        <Input type="number" min={1} placeholder="" />
+                        <Input type="number" min={0} placeholder="" />
                       </TableCell>
                       <TableCell>
-                        <Input type="number" min={1} placeholder="" />
+                        <Input type="number" min={0} placeholder="" />
                       </TableCell>
                     </TableRow>
 
                     {/* Salary Details Row */}
-                    <TableRow className="border border-gray-400">
+                    <TableRow>
                       <TableCell>
                         <Select onValueChange={handleValueChange}>
                           <SelectTrigger className="w-full bg-transparent">
@@ -182,71 +181,71 @@ const ViewITR = (props: Props) => {
                         />
                       </TableCell>
                       <TableCell>
-                        <Input type="number" min={1} placeholder="" />
+                        <Input type="number" min={0} placeholder="" />
                       </TableCell>
                       <TableCell>
-                        <Input type="number" min={1} placeholder="" />
+                        <Input type="number" min={0} placeholder="" />
                       </TableCell>
                       <TableCell>
-                        <Input type="number" min={1} placeholder="" />
+                        <Input type="number" min={0} placeholder="" />
                       </TableCell>
                     </TableRow>
 
                     {/* Salary from Employer Row */}
-                    <TableRow className="border border-gray-400">
+                    <TableRow>
                       <TableCell className="text-red-800">
                         Salary from Employer {employerId + 1}
                       </TableCell>
                       <TableCell>
-                        <Input type="number" min={1} placeholder="" />
+                        <Input type="number" min={0} placeholder="" />
                       </TableCell>
                       <TableCell>
-                        <Input type="number" min={1} placeholder="" />
+                        <Input type="number" min={0} placeholder="" />
                       </TableCell>
                       <TableCell>
-                        <Input type="number" min={1} placeholder="" />
+                        <Input type="number" min={0} placeholder="" />
                       </TableCell>
                     </TableRow>
                   </React.Fragment>
                 );
               })}
-              <TableRow className="border border-gray-400">
+              <TableRow>
                 <TableCell>Total Salary</TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
               </TableRow>
-              <TableRow className="border border-gray-400">
+              <TableRow>
                 <TableCell>Standard Deduction u/a 16(ia)</TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
               </TableRow>
-              <TableRow className="border border-gray-400">
+              <TableRow>
                 <TableCell>Less: Tax on employment u/s 16(iii)</TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
               </TableRow>
-              <TableRow className="border border-gray-400">
+              <TableRow>
                 <TableCell className="font-bold text-lg">
                   Income from House Property
                 </TableCell>
@@ -254,145 +253,145 @@ const ViewITR = (props: Props) => {
                 <TableCell></TableCell>
                 <TableCell className="font-bold">Rs. 1234</TableCell>
               </TableRow>
-              <TableRow className="border border-gray-400">
+              <TableRow>
                 <TableCell className="text-red-800">
                   Self occupied properties
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
               </TableRow>
-              <TableRow className="border border-gray-400">
+              <TableRow>
                 <TableCell className="text-red-800">Property 1</TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
               </TableRow>
-              <TableRow className="border border-gray-400">
+              <TableRow>
                 <TableCell>Interest on borrowed capital</TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
               </TableRow>
-              <TableRow className="border border-gray-400">
+              <TableRow>
                 <TableCell>Intrest deduction limit u/s 24(b)</TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
               </TableRow>
-              <TableRow className="border border-gray-400">
+              <TableRow>
                 <TableCell className="text-red-800">
                   Letout properties
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
               </TableRow>
-              <TableRow className="border border-gray-400">
+              <TableRow>
                 <TableCell className="text-red-800">Property 1</TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
               </TableRow>
-              <TableRow className="border border-gray-400">
+              <TableRow>
                 <TableCell>Gross annual value</TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
               </TableRow>
-              <TableRow className="border border-gray-400">
+              <TableRow>
                 <TableCell>Less: Municipal taxes</TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
               </TableRow>
-              <TableRow className="border border-gray-400">
+              <TableRow>
                 <TableCell>Net annual amount</TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
               </TableRow>
-              <TableRow className="border border-gray-400">
+              <TableRow>
                 <TableCell>Less: Standard deduction(30%)</TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
               </TableRow>
-              <TableRow className="border border-gray-400">
+              <TableRow>
                 <TableCell>Income from borrowed capital u/s 24(b)</TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
               </TableRow>
-              <TableRow className="border border-gray-400">
+              <TableRow>
                 <TableCell className="font-bold text-lg">
-                  Capital Gains
+                  Profits and Gains of Business or Profession
                 </TableCell>
                 <TableCell>
                   <Input type="text" placeholder="Turnover/Receipts" disabled />
@@ -402,31 +401,96 @@ const ViewITR = (props: Props) => {
                 </TableCell>
                 <TableCell className="font-bold">Rs. 1234</TableCell>
               </TableRow>
-              <TableRow className="border border-gray-400">
+              <TableRow>
+                <TableCell>Business: Presumptive profits u/s 44AD</TableCell>
+                <TableCell>
+                  <Input type="number" min={0} placeholder="" />
+                </TableCell>
+                <TableCell>
+                  <Input type="number" min={0} placeholder="" />
+                </TableCell>
+                <TableCell>
+                  <Input type="number" min={0} placeholder="" />
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>
+                  Profession: u/s 44ADA - Presumptive profits
+                </TableCell>
+                <TableCell>
+                  <Input type="number" min={0} placeholder="" />
+                </TableCell>
+                <TableCell>
+                  <Input type="number" min={0} placeholder="" />
+                </TableCell>
+                <TableCell>
+                  <Input type="number" min={0} placeholder="" />
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>
+                  Special Business: Income from Firm, speculation, without
+                  books, 44AE...
+                </TableCell>
+                <TableCell>
+                  <Input type="number" min={0} placeholder="" />
+                </TableCell>
+                <TableCell>
+                  <Input type="number" min={0} placeholder="" />
+                </TableCell>
+                <TableCell>
+                  <Input type="number" min={0} placeholder="" />
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Less: Depreciation as per IT Act</TableCell>
+                <TableCell>
+                  <Input type="number" min={0} placeholder="" />
+                </TableCell>
+                <TableCell>
+                  <Input type="number" min={0} placeholder="" />
+                </TableCell>
+                <TableCell>
+                  <Input type="number" min={0} placeholder="" />
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell className="font-bold text-lg">
+                  Capital Gains
+                </TableCell>
+                <TableCell>
+                  <Input type="number" min={0} placeholder="" />
+                </TableCell>
+                <TableCell>
+                  <Input type="number" min={0} placeholder="" />
+                </TableCell>
+                <TableCell className="font-bold">Rs. 1234</TableCell>
+              </TableRow>
+              <TableRow>
                 <TableCell>Short Term Capital Gains</TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
               </TableRow>
-              <TableRow className="border border-gray-400">
+              <TableRow>
                 <TableCell>Long Term Capital Gains</TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
               </TableRow>
-              <TableRow className="border border-gray-400">
+              <TableRow>
                 <TableCell className="font-bold text-lg">
                   Income from Other Sources
                 </TableCell>
@@ -434,7 +498,7 @@ const ViewITR = (props: Props) => {
                 <TableCell></TableCell>
                 <TableCell className="font-bold">Rs. 1234</TableCell>
               </TableRow>
-              <TableRow className="border border-gray-400">
+              <TableRow>
                 <TableCell>
                   <Select onValueChange={handleValueChange}>
                     <SelectTrigger className="w-full bg-transparent">
@@ -491,16 +555,16 @@ const ViewITR = (props: Props) => {
                   />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
               </TableRow>
-              <TableRow className="border border-gray-400">
+              <TableRow>
                 <TableCell className="font-bold text-lg">
                   Gross Total Income
                 </TableCell>
@@ -508,21 +572,21 @@ const ViewITR = (props: Props) => {
                 <TableCell></TableCell>
                 <TableCell className="font-bold">Rs. 1234</TableCell>
               </TableRow>
-              <TableRow className="border border-gray-400">
+              <TableRow>
                 <TableCell className="font-bold text-lg text-red-800">
                   Deductions under Chapter VI-A
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
               </TableRow>
-              <TableRow className="border border-gray-400">
+              <TableRow>
                 <TableCell>
                   <Select onValueChange={handleValueChange}>
                     <SelectTrigger className="w-full bg-transparent">
@@ -562,30 +626,30 @@ const ViewITR = (props: Props) => {
                   />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
               </TableRow>
-              <TableRow className="border border-gray-400">
+              <TableRow>
                 <TableCell className="font-bold text-lg text-red-800">
                   Investment u/s 80C, 80CCC, 80CCD
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
               </TableRow>
-              <TableRow className="border border-gray-400">
+              <TableRow>
                 <TableCell>
                   <Select onValueChange={handleValueChange}>
                     <SelectTrigger className="w-full bg-transparent">
@@ -609,16 +673,16 @@ const ViewITR = (props: Props) => {
                   />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
               </TableRow>
-              <TableRow className="border border-gray-400">
+              <TableRow>
                 <TableCell className="font-bold text-lg">
                   Total Income
                 </TableCell>
@@ -626,91 +690,91 @@ const ViewITR = (props: Props) => {
                 <TableCell></TableCell>
                 <TableCell className="font-bold">Rs. 1234</TableCell>
               </TableRow>
-              <TableRow className="border border-gray-400">
+              <TableRow>
                 <TableCell className="font-bold text-red-800">
                   Tax on Total Income
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
               </TableRow>
-              <TableRow className="border border-gray-400">
+              <TableRow>
                 <TableCell className="font-bold">Education Cess 4%</TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
               </TableRow>
-              <TableRow className="border border-gray-400">
+              <TableRow>
                 <TableCell className="font-bold">Tax Payable</TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
               </TableRow>
-              <TableRow className="border border-gray-400">
+              <TableRow>
                 <TableCell className="text-red-800 font-bold">
                   Less: Relief u/s 89
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
               </TableRow>
-              <TableRow className="border border-gray-400">
+              <TableRow>
                 <TableCell className="font-bold">Tax Payable</TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
               </TableRow>
-              <TableRow className="border border-gray-400">
+              <TableRow>
                 <TableCell className="font-bold text-red-800">
                   Less: TDS/TCS
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" min={1} placeholder="" />
+                  <Input type="number" min={0} placeholder="" />
                 </TableCell>
               </TableRow>
-              <TableRow className="border border-gray-400">
+              <TableRow>
                 <TableCell className="font-bold text-lg">
                   Balance Tax Payable/Refund
                 </TableCell>
                 <TableCell></TableCell>
                 <TableCell></TableCell>
-                <TableCell className="font-bold">Rs. 1234</TableCell>
+                <TableCell className="font-bold">Rs. 0</TableCell>
               </TableRow>
             </TableBody>
           </Table>
