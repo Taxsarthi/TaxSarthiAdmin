@@ -1,28 +1,28 @@
 import React from "react";
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-  } from "./ui/dialog";
-  import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-  } from "./ui/table";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "./ui/table";
 import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 
-  type Props = {
-    open: boolean;
-    onClose: () => void;
-  };
-  
+type Props = {
+  open: boolean;
+  onClose: () => void;
+};
 
 const NPSDialog = ({ open, onClose }: Props) => {
   return (
@@ -31,9 +31,7 @@ const NPSDialog = ({ open, onClose }: Props) => {
         <DialogTrigger asChild></DialogTrigger>
         <DialogContent className="w-auto max-w-[99%] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>
-                80CCD- National Pension Scheme (NPS)
-            </DialogTitle>
+            <DialogTitle>80CCD- National Pension Scheme (NPS)</DialogTitle>
             <DialogDescription className="pt-2">
               <Table className="border rounded-md">
                 <TableHeader>
@@ -52,34 +50,58 @@ const NPSDialog = ({ open, onClose }: Props) => {
                 <TableBody>
                   <TableRow>
                     <TableCell>Assessee's contribution</TableCell>
-                    <TableCell>50000</TableCell>
-                    <TableCell></TableCell>
+                    <TableCell>
+                      <Input type="number" />
+                    </TableCell>
+                    <TableCell>
+                      <Input type="number" />
+                    </TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Deduction - u/s 80CCD(1)</TableCell>
-                    <TableCell></TableCell>
-                    <TableCell></TableCell>
+                    <TableCell>
+                      <Input type="number" />
+                    </TableCell>
+                    <TableCell>
+                      <Input type="number" />
+                    </TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Deduction - u/s 80CCD(1B)</TableCell>
-                    <TableCell></TableCell>
-                    <TableCell>50000</TableCell>
+                    <TableCell>
+                      <Input type="number" />
+                    </TableCell>
+                    <TableCell>
+                      <Input type="number" />
+                    </TableCell>
                   </TableRow>
-                    <TableRow>
-                        <TableCell>Employer's contribution</TableCell>
-                        <TableCell>100000</TableCell>
-                        <TableCell></TableCell>
-                    </TableRow>
-                    <TableRow>
-                        <TableCell>Deduction - u/s 80CCD(2)</TableCell>
-                        <TableCell></TableCell>
-                        <TableCell>65000</TableCell>
-                    </TableRow>
-                    <TableRow>
-                        <TableCell>Total</TableCell>
-                        <TableCell>150000</TableCell>
-                        <TableCell>115000</TableCell>
-                    </TableRow>
+                  <TableRow>
+                    <TableCell>Employer's contribution</TableCell>
+                    <TableCell>
+                      <Input type="number" />
+                    </TableCell>
+                    <TableCell>
+                      <Input type="number" />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Deduction - u/s 80CCD(2)</TableCell>
+                    <TableCell>
+                      <Input type="number" />
+                    </TableCell>
+                    <TableCell>
+                      <Input type="number" />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Total</TableCell>
+                    <TableCell>
+                      <Input type="number" />
+                    </TableCell>
+                    <TableCell>
+                      <Input type="number" />
+                    </TableCell>
+                  </TableRow>
                 </TableBody>
               </Table>
             </DialogDescription>

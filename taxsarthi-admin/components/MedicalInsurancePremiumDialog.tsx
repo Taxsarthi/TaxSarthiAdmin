@@ -24,6 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
+import { Input } from "./ui/input";
 
 type Props = {
   open: boolean;
@@ -64,48 +65,48 @@ const MedicalInsurancePremiumDialog = ({ open, onClose }: Props) => {
                 </TableRow>
                 <TableRow>
                   <TableCell>Senior Citizen (Resident): </TableCell>
-                  <TableCell></TableCell>
-                  <TableCell>50000</TableCell>
-                  <TableCell></TableCell>
-                  <TableCell>50000</TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Others: </TableCell>
-                  <TableCell></TableCell>
-                  <TableCell></TableCell>
-                  <TableCell></TableCell>
-                  <TableCell></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>In respect of Self, Spouse, and Children</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Senior Citizen (Resident): </TableCell>
-                  <TableCell></TableCell>
-                  <TableCell>50000</TableCell>
-                  <TableCell></TableCell>
-                  <TableCell>50000</TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Others: </TableCell>
-                  <TableCell>20000</TableCell>
-                  <TableCell></TableCell>
-                  <TableCell>5000</TableCell>
-                  <TableCell>25000</TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
                 </TableRow>
                 <TableRow>
                     <TableCell>Total</TableCell>
-                    <TableCell>20000</TableCell>
-                    <TableCell>50000</TableCell>
-                    <TableCell>5000</TableCell>
-                    <TableCell>75000</TableCell>
+                    <TableCell><Input type="number"/></TableCell>
+                    <TableCell><Input type="number"/></TableCell>
+                    <TableCell><Input type="number"/></TableCell>
+                    <TableCell><Input type="number"/></TableCell>
                 </TableRow>
                 <TableRow>
                     <TableCell>Break-up of deductible amount</TableCell>
-                    <TableCell>20000</TableCell>
-                    <TableCell>50000</TableCell>
-                    <TableCell>5000</TableCell>
-                    <TableCell></TableCell>
+                    <TableCell><Input type="number"/></TableCell>
+                    <TableCell><Input type="number"/></TableCell>
+                    <TableCell><Input type="number"/></TableCell>
+                    <TableCell><Input type="number"/></TableCell>
                 </TableRow>
               </TableBody>
             </Table>

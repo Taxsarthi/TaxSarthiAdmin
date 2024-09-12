@@ -18,6 +18,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 
 type Props = {
   open: boolean;
@@ -45,66 +46,66 @@ const IncomeFromSalaryDialog = ({ open, onClose }: Props) => {
               <TableBody>
                 <TableRow>
                   <TableCell>Basic Salary</TableCell>
-                  <TableCell>1234567</TableCell>
-                  <TableCell></TableCell>
-                  <TableCell>1250</TableCell>
-                  <TableCell></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Others</TableCell>
-                  <TableCell>1234567</TableCell>
-                  <TableCell></TableCell>
-                  <TableCell>1250</TableCell>
-                  <TableCell></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Allowances</TableCell>
-                  <TableCell></TableCell>
-                  <TableCell></TableCell>
-                  <TableCell></TableCell>
-                  <TableCell></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>House Rent Allowance</TableCell>
-                  <TableCell>1234567</TableCell>
-                  <TableCell>1234567</TableCell>
-                  <TableCell>1234567</TableCell>
-                  <TableCell>10(13A)</TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="text"/></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Conveyance Allowance</TableCell>
-                  <TableCell>1234567</TableCell>
-                  <TableCell>1234567</TableCell>
-                  <TableCell></TableCell>
-                  <TableCell>10(14)(i)</TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="text"/></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>HRA Exemption Calculation</TableCell>
-                  <TableCell>1234567</TableCell>
-                  <TableCell>1234567</TableCell>
-                  <TableCell></TableCell>
-                  <TableCell>10(14)(ii)</TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="text"/></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Rent Paid</TableCell>
-                  <TableCell>1234567</TableCell>
-                  <TableCell>1234567</TableCell>
-                  <TableCell></TableCell>
-                  <TableCell>10(14)(ii)</TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="text"/></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>40% of the salary</TableCell>
-                  <TableCell>1234567</TableCell>
-                  <TableCell>1234567</TableCell>
-                  <TableCell></TableCell>
-                  <TableCell>10(14)(ii)</TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="text"/></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Rent paid in excess of 10% of salary</TableCell>
-                  <TableCell>1234567</TableCell>
-                  <TableCell>1234567</TableCell>
-                  <TableCell></TableCell>
-                  <TableCell>10(14)(ii)</TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="text"/></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Summary of Salary</TableCell>
@@ -115,24 +116,24 @@ const IncomeFromSalaryDialog = ({ open, onClose }: Props) => {
                 </TableRow>
                 <TableRow>
                   <TableCell>Salary Income</TableCell>
-                  <TableCell>1234567</TableCell>
-                  <TableCell>1234567</TableCell>
-                  <TableCell>1234567</TableCell>
-                  <TableCell></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Allowances</TableCell>
-                  <TableCell></TableCell>
-                  <TableCell></TableCell>
-                  <TableCell></TableCell>
-                  <TableCell></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Total</TableCell>
-                  <TableCell></TableCell>
-                  <TableCell></TableCell>
-                  <TableCell></TableCell>
-                  <TableCell></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
                 </TableRow>
               </TableBody>
             </Table>

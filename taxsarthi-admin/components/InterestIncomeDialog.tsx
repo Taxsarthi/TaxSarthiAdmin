@@ -18,6 +18,7 @@ import {
 } from "./ui/table";
 import { Button } from "./ui/button";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "./ui/select";
+import { Input } from "./ui/input";
 
 type Props = {
   open: boolean;
@@ -51,28 +52,28 @@ const InterestIncomeDialog = ({ open, onClose }: Props) => {
               <TableBody>
                 <TableRow>
                   <TableCell>Interest on Time Deposits</TableCell>
-                  <TableCell></TableCell>
-                  <TableCell></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>State Bank of India</TableCell>
-                  <TableCell>1000</TableCell>
-                  <TableCell></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Interest on Savings a/c (80TTA)</TableCell>
-                  <TableCell></TableCell>
-                  <TableCell></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>State Bank of India</TableCell>
-                  <TableCell>10000</TableCell>
-                  <TableCell></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Other Interest</TableCell>
-                  <TableCell></TableCell>
-                  <TableCell></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>
@@ -95,18 +96,18 @@ const InterestIncomeDialog = ({ open, onClose }: Props) => {
                       </SelectContent>
                     </Select>
                   </TableCell>
-                  <TableCell></TableCell>
-                  <TableCell></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Other Expenses/deductions</TableCell>
-                  <TableCell></TableCell>
-                  <TableCell></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Taxable Interest</TableCell>
-                  <TableCell></TableCell>
-                  <TableCell></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
+                  <TableCell><Input type="number"/></TableCell>
                 </TableRow>
               </TableBody>
             </Table>

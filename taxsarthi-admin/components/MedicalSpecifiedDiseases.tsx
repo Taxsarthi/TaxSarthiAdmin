@@ -17,6 +17,7 @@ import {
   TableRow,
 } from "./ui/table";
 import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 
 type Props = {
   open: boolean;
@@ -54,21 +55,21 @@ const MedicalSpecifiedDiseases = ({ open, onClose }: Props) => {
                 <TableBody>
                   <TableRow>
                     <TableCell>Senior Citizens (Resident):</TableCell>
-                    <TableCell>65854</TableCell>
-                    <TableCell></TableCell>
-                    <TableCell>60000</TableCell>
+                    <TableCell><Input type="number"/></TableCell>
+                    <TableCell><Input type="number"/></TableCell>
+                    <TableCell><Input type="number"/></TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Others:</TableCell>
-                    <TableCell>55602</TableCell>
-                    <TableCell></TableCell>
-                    <TableCell>40000</TableCell>
+                    <TableCell><Input type="number"/></TableCell>
+                    <TableCell><Input type="number"/></TableCell>
+                    <TableCell><Input type="number"/></TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Total</TableCell>
-                    <TableCell></TableCell>
-                    <TableCell></TableCell>
-                    <TableCell>100000</TableCell>
+                    <TableCell><Input type="number"/></TableCell>
+                    <TableCell><Input type="number"/></TableCell>
+                    <TableCell><Input type="number"/></TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
