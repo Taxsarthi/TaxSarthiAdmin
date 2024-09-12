@@ -61,6 +61,20 @@ export function UpdateProfile() {
 
   return (
     <div className="container mx-auto py-10">
+      {error && (
+        <Alert variant="destructive" className="mb-6">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+      {success && (
+        <Alert className="mb-6 bg-green-100 text-green-800 border-green-300">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Success</AlertTitle>
+          <AlertDescription>Your profile has been updated successfully.</AlertDescription>
+        </Alert>
+      )}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="md:col-span-2 space-y-6">
           <Card>
@@ -89,6 +103,7 @@ export function UpdateProfile() {
                     value={user.email}
                     onChange={handleUserChange}
                     required
+                    disabled
                   />
                 </div>
               </CardContent>
@@ -165,20 +180,6 @@ export function UpdateProfile() {
         </div>
       </div>
 
-      {error && (
-        <Alert variant="destructive" className="mt-6">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Error</AlertTitle>
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
-      {success && (
-        <Alert className="mt-6 bg-green-100 text-green-800 border-green-300">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Success</AlertTitle>
-          <AlertDescription>Your profile has been updated successfully.</AlertDescription>
-        </Alert>
-      )}
     </div>
   )
 }

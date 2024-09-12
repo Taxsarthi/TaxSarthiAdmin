@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import {
   Table,
   TableBody,
@@ -28,6 +28,10 @@ import {
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import IncomeFromSalaryDialog from "./IncomeFromSalaryDialog";
+import InterestIncomeDialog from "./InterestIncomeDialog";
+import MedicalInsurancePremiumDialog from "./MedicalInsurancePremiumDialog";
+import MedicalSpecifiedDiseases from "./MedicalSpecifiedDiseases";
+import NPSDialog from "./NPSDialog";
 
 type Props = {
   open: any;
@@ -37,19 +41,35 @@ type Props = {
 const noOfEmployers = [0, 1];
 
 const ViewITR = (props: Props) => {
-  const [dialogOpen, setDialogOpen] = React.useState(false);
-  const [selectedValue, setSelectedValue] = React.useState("");
+  const [dialogOpen, setDialogOpen] = useState<{ [key: string]: boolean }>({
+    salary: false,
+    interest: false,
+  });
+  const [selectedValue, setSelectedValue] = useState<string>("");
 
-  const handleValueChange = (value: any) => {
+  const handleValueChange = (value: string) => {
     setSelectedValue(value);
-    if (value === "Salaries, allowances, and perquisites") {
-      setDialogOpen(true);
+    if (
+      value === "Salaries, allowances, and perquisites" ||
+      value === "Interest Income" ||
+      value === "Medical Insurance Premium (Section 80D)" ||
+      value === "Medical Treatment of Specified Diseases (Section 80DDB)" ||
+      value === "80CCD"
+    ) {
+      setDialogOpen((prev: { [key: string]: boolean }) => ({
+        ...prev,
+        [value]: true,
+      }));
     }
   };
 
-  const handleCloseDialog = () => {
-    setDialogOpen(false);
+  const handleCloseDialog = (dialogType: string) => {
+    setDialogOpen((prev: { [key: string]: boolean }) => ({
+      ...prev,
+      [dialogType]: false,
+    }));
   };
+
   return (
     <>
       <div className="rounded-lg border h-full flex bg-gray-200 flex-col p-4 m-4">
@@ -145,8 +165,14 @@ const ViewITR = (props: Props) => {
                           </SelectContent>
                         </Select>
                         <IncomeFromSalaryDialog
-                          open={dialogOpen}
-                          onClose={handleCloseDialog}
+                          open={
+                            dialogOpen["Salaries, allowances, and perquisites"]
+                          }
+                          onClose={() =>
+                            handleCloseDialog(
+                              "Salaries, allowances, and perquisites"
+                            )
+                          }
                         />
                       </TableCell>
                       <TableCell>
@@ -294,7 +320,7 @@ const ViewITR = (props: Props) => {
                 <TableCell></TableCell>
               </TableRow>
               <TableRow className="border border-gray-400">
-                <TableCell>Intrest on borrowed capital</TableCell>
+                <TableCell>Interest on borrowed capital</TableCell>
                 <TableCell>44460</TableCell>
                 <TableCell>
                   <Input
@@ -540,6 +566,10 @@ const ViewITR = (props: Props) => {
                       </SelectGroup>
                     </SelectContent>
                   </Select>
+                  <InterestIncomeDialog
+                    open={dialogOpen["Interest Income"]}
+                    onClose={() => handleCloseDialog("Interest Income")}
+                  />
                 </TableCell>
                 <TableCell></TableCell>
                 <TableCell></TableCell>
@@ -568,8 +598,8 @@ const ViewITR = (props: Props) => {
                       <SelectValue placeholder="" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Health Insurance Premium (Section 80D)">
-                        Health Insurance Premium (Section 80D)
+                      <SelectItem value="Medical Insurance Premium (Section 80D)">
+                        Medical Insurance Premium (Section 80D)
                       </SelectItem>
                       <SelectItem value="Medical Treatment of Specified Diseases (Section 80DDB)">
                         Medical Treatment of Specified Diseases (Section 80DDB)
@@ -579,6 +609,26 @@ const ViewITR = (props: Props) => {
                       </SelectItem>
                     </SelectContent>
                   </Select>
+                  <MedicalInsurancePremiumDialog
+                    open={dialogOpen["Medical Insurance Premium (Section 80D)"]}
+                    onClose={() =>
+                      handleCloseDialog(
+                        "Medical Insurance Premium (Section 80D)"
+                      )
+                    }
+                  />
+                  <MedicalSpecifiedDiseases
+                    open={
+                      dialogOpen[
+                        "Medical Treatment of Specified Diseases (Section 80DDB)"
+                      ]
+                    }
+                    onClose={() =>
+                      handleCloseDialog(
+                        "Medical Treatment of Specified Diseases (Section 80DDB)"
+                      )
+                    }
+                  />
                 </TableCell>
                 <TableCell>
                   <Input
@@ -631,6 +681,12 @@ const ViewITR = (props: Props) => {
                       </SelectItem>
                     </SelectContent>
                   </Select>
+                  <NPSDialog
+                    open={dialogOpen["80CCD"]}
+                    onClose={() =>
+                      handleCloseDialog("80CCD")
+                    }
+                  />
                 </TableCell>
                 <TableCell>
                   <Input
@@ -763,7 +819,9 @@ const ViewITR = (props: Props) => {
                 <TableCell>229014</TableCell>
               </TableRow>
               <TableRow className="border border-gray-400">
-                <TableCell className="font-bold text-red-800">Less: TDS/TCS</TableCell>
+                <TableCell className="font-bold text-red-800">
+                  Less: TDS/TCS
+                </TableCell>
                 <TableCell>
                   <Input
                     type="number"
@@ -783,7 +841,9 @@ const ViewITR = (props: Props) => {
                 </TableCell>
               </TableRow>
               <TableRow className="border border-gray-400">
-                <TableCell className="font-bold">Balance Tax Payable/Refund</TableCell>
+                <TableCell className="font-bold">
+                  Balance Tax Payable/Refund
+                </TableCell>
                 <TableCell>
                   <Input
                     type="number"
