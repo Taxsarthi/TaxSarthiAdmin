@@ -5,38 +5,54 @@ import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
-import { Checkbox } from '@/components/ui/checkbox'
 import { AlertCircle, Loader } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { signInWithEmailAndPassword } from 'firebase/auth'
+import { auth, db } from '@/lib/firebase'
+import { doc, getDoc } from 'firebase/firestore'
 
 type Props = {}
 
-const page = (props: Props) => {
+const Page = (props: Props) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [rememberMe, setRememberMe] = useState(false)
   const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false) 
-  const [redirecting, setRedirecting] = useState(false) 
+  const [loading, setLoading] = useState(false)
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
-    setLoading(true) 
-    setTimeout(async () => {
-      if (email === 'user@example.com' && password === 'password') {
-        toast.success('Login successful')
-        setLoading(false) 
-        setRedirecting(true) 
-        setTimeout(() => {
-          router.push('/dashboard')
-        }, 500) 
-      } else {
+    setLoading(true)
+
+    try {
+      const docRefs = ['admin', 'sales', 'ops'].map(collection => doc(db, collection, email))
+      const docs = await Promise.all(docRefs.map(docRef => getDoc(docRef)))
+      const userDoc = docs.find(doc => doc.exists())
+
+      if (!userDoc) {
         setError('Invalid email or password')
-        setLoading(false) 
+        setLoading(false)
+        return
       }
-    }, 1000) 
+
+      const { emailPAN } = userDoc.data() as { emailPAN: string }
+      if (!emailPAN) {
+        setError('Invalid email or password')
+        setLoading(false)
+        return
+      }
+
+      const res = await signInWithEmailAndPassword(auth, emailPAN, password)
+      console.log(res)
+      router.push('/dashboard')
+      toast.success('Signed in successfully')
+    } catch (error) {
+      console.error(error)
+      setError('Invalid email or password')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -57,7 +73,6 @@ const page = (props: Props) => {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                disabled={loading || redirecting} 
               />
             </div>
             <div className="space-y-2">
@@ -68,17 +83,7 @@ const page = (props: Props) => {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                disabled={loading || redirecting} 
               />
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox 
-                id="remember" 
-                checked={rememberMe}
-                onCheckedChange={(checked) => setRememberMe(checked as boolean)}
-                disabled={loading || redirecting} 
-              />
-              <Label htmlFor="remember">Remember me</Label>
             </div>
             {error && (
               <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
@@ -88,14 +93,9 @@ const page = (props: Props) => {
                 </span>
               </div>
             )}
-            {(loading || redirecting) ? (
-              <div className="flex items-center justify-center">
-                <Loader className="animate-spin" />
-                <span className="ml-2">Redirecting...</span>
-              </div>
-            ) : (
-              <Button type="submit" className="w-full">Sign in</Button>
-            )}
+            <Button type="submit" className="w-full mt-4">
+              {loading ? <Loader className="animate-spin" /> : 'Sign in'}
+            </Button>
           </form>
         </CardContent>
       </Card>
@@ -103,4 +103,4 @@ const page = (props: Props) => {
   )
 }
 
-export default page
+export default Page

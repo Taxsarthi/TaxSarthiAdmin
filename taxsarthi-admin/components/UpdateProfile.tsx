@@ -107,8 +107,9 @@ export function UpdateProfile() {
                   />
                 </div>
               </CardContent>
-              <CardFooter>
+              <CardFooter className='gap-4'>
                 <Button type="submit">Update Profile</Button>
+                <Button variant="destructive">Logout</Button>
               </CardFooter>
             </form>
           </Card>
