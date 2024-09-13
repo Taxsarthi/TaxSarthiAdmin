@@ -5,7 +5,6 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -13,7 +12,7 @@ import React from "react";
 
 type Props = {};
 
-const Page: React.FC<Props> = (props: Props) => {
+const page: React.FC<Props> = (props: Props) => {
   return (
     <div className="m-4 space-y-6">
       {/* Header Section */}
@@ -46,4 +45,4 @@ const Page: React.FC<Props> = (props: Props) => {
   );
 };
 
-export default Page;
+export default page;

@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -54,7 +53,7 @@ const page = (props: Props) => {
           Tax Payable: <span className="text-green-500 p-3">₹ 19000</span>
         </div>
       </div>
-      <ViewUserTabs />
+      <ViewUserTabs open={true} onClose={() => {}} />
     </>
   );
 };

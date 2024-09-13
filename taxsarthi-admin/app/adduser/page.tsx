@@ -1,4 +1,3 @@
-'use client'
 import AddUser from "@/components/AddUser"
 
 const page = () => {

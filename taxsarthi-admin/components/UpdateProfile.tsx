@@ -8,8 +8,13 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AlertCircle } from 'lucide-react'
+import { signOut } from 'firebase/auth'
+import { auth } from '@/lib/firebase'
+import { useRouter } from 'next/navigation'
+import toast from 'react-hot-toast'
 
 export function UpdateProfile() {
+  const router = useRouter()
   const [user, setUser] = useState({
     name: 'John Doe',
     email: 'john@example.com',
@@ -58,6 +63,16 @@ export function UpdateProfile() {
 
     setSuccess(true)
   }
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      toast.success('Logged out successfully');
+      router.push('/'); 
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
 
   return (
     <div className="container mx-auto py-10">
@@ -109,7 +124,7 @@ export function UpdateProfile() {
               </CardContent>
               <CardFooter className='gap-4'>
                 <Button type="submit">Update Profile</Button>
-                <Button variant="destructive">Logout</Button>
+                <Button variant="destructive" onClick={handleLogout}>Logout</Button>
               </CardFooter>
             </form>
           </Card>
