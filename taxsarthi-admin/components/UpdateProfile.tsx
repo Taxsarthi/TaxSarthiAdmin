@@ -12,13 +12,11 @@ import { signOut } from 'firebase/auth'
 import { auth } from '@/lib/firebase'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
+import { useUser } from '@/lib/auth'
 
 export function UpdateProfile() {
   const router = useRouter()
-  const [user, setUser] = useState({
-    name: 'John Doe',
-    email: 'john@example.com',
-  })
+  const user = useUser()
   const [notice, setNotice] = useState('')
   const [passwords, setPasswords] = useState({
     current: '',
@@ -27,10 +25,6 @@ export function UpdateProfile() {
   })
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
-
-  const handleUserChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUser({ ...user, [e.target.name]: e.target.value })
-  }
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPasswords({ ...passwords, [e.target.name]: e.target.value })
@@ -95,38 +89,21 @@ export function UpdateProfile() {
           <Card>
             <CardHeader>
               <CardTitle className='text-xl'>Personal Information</CardTitle>
-              <CardDescription>View and edit your profile information</CardDescription>
+              <CardDescription>View your profile information</CardDescription>
             </CardHeader>
-            <form onSubmit={handleSubmit}>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Name</Label>
-                  <Input
-                    id="name"
-                    name="name"
-                    value={user.name}
-                    onChange={handleUserChange}
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+              <CardContent className="space-y-2">
                   <Input
                     id="email"
                     name="email"
                     type="email"
-                    value={user.email}
-                    onChange={handleUserChange}
-                    required
+                    value={user && 'email' in user ? user.email ?? 'nouser@gmail.com' : 'nouser@gmail.com'}
                     disabled
                   />
-                </div>
               </CardContent>
               <CardFooter className='gap-4'>
-                <Button type="submit">Update Profile</Button>
+                {/* <Button type="submit">Update Profile</Button> */}
                 <Button variant="destructive" onClick={handleLogout}>Logout</Button>
               </CardFooter>
-            </form>
           </Card>
 
           <Card>

@@ -10,7 +10,7 @@ import { auth } from "./firebase";
 export function useUser() {
   const [user, setUser] = useState<FirebaseUser | null | false>(null);
   useEffect(() => {
-    return onAuthStateChanged(auth, (user) => setUser(user || false));
+    return onAuthStateChanged(auth, (user) => setUser(user));
   }, []);
   return user;
 }

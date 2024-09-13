@@ -1,12 +1,14 @@
+import { useUser } from "@/lib/auth";
 import Link from "next/link";
 import React from "react";
 
 type Props = {};
 
 const Header = (props: Props) => {
+  const user = useUser();
   return (
     <div className="p-2 md:pt-3 w-full sticky top-0 backdrop-blur-sm bg-opacity-10 z-50">
-      <div className="flex justify-between">
+      <div className={`flex ${user ? 'justify-between': 'mt-20 justify-center'}`}>
         <Link href="/dashboard">
           <img
             src="/assets/TaxSarthiLogo.png"
@@ -14,22 +16,26 @@ const Header = (props: Props) => {
             alt=""
           />
         </Link>
-        <Link href="/profile">
-          <div className="flex items-center space-x-2">
-            <div className="flex flex-col md:flex-row items-center text-center space-x-1">
-              <p className="text-xs md:text-sm font-semibold">Snehal Bargaje</p>
-              <p className="hidden md:inline text-xs md:text-sm font-semibold">
-                |
-              </p>
-              <p className="text-xs md:text-sm font-semibold">Admin</p>
+        {user && (
+          <Link href="/profile">
+            <div className="flex items-center space-x-2">
+              <div className="flex flex-col md:flex-row items-center text-center space-x-1">
+                <p className="text-xs md:text-sm font-semibold">
+                  Snehal Bargaje
+                </p>
+                <p className="hidden md:inline text-xs md:text-sm font-semibold">
+                  |
+                </p>
+                <p className="text-xs md:text-sm font-semibold">Admin</p>
+              </div>
+              <img
+                className="rounded-full h-10 w-10"
+                src="/assets/TaxSarthiLogo.png"
+                alt="profile"
+              />
             </div>
-            <img
-              className="rounded-full h-10 w-10"
-              src="/assets/TaxSarthiLogo.png"
-              alt="profile"
-            />
-          </div>
-        </Link>
+          </Link>
+        )}
       </div>
     </div>
   );
