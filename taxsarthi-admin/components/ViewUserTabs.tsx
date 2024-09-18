@@ -8,8 +8,8 @@ import ViewTDS from "./ViewTDS";
 import ViewDocs from "./ViewDocs";
 
 type Props = {
-  open: boolean;
-  onClose: () => void;
+  // open: boolean;
+  // onClose: () => void;
 };
 
 const ViewUserTabs = (props: Props) => {

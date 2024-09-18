@@ -47,7 +47,7 @@ const AssignDropdown: React.FC<AssignDropdownProps> = ({
         {options.map(option => (
           <SelectItem key={option} value={option}>
             {option}
-          </SelectItem>
+            </SelectItem>
         ))}
       </SelectContent>
     </Select>

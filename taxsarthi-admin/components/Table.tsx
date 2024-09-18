@@ -3,15 +3,30 @@ import React from "react";
 import {
   DataGrid,
   GridColDef,
-  GridRowsProp,
   GridRenderCellParams,
 } from "@mui/x-data-grid";
 import AssignDropdown from "./AssignDropdown";
 import Actions from "./Actions";
 
-type Props = {};
+type UserTask = {
+  id: string;
+  name: string;
+  mobile: number;
+  pan: string;
+  itrType: string;
+  area: string;
+  city: string;
+  fees: number;
+  paidFees: number;
+  pendingFees: number;
+  assign?: string;
+  status?: string;
+};
 
-// Define different options and placeholders
+type Props = {
+  rows: UserTask[];
+};
+
 const assignOptions = ["John Doe", "Jane Doe", "Alice Smith", "Bob Johnson"];
 const statusOptions = [
   "Manager Assigned",
@@ -26,35 +41,6 @@ const statusOptions = [
 const assignPlaceholder = "Select assignee";
 const statusPlaceholder = "Select status";
 
-const rows: GridRowsProp = [
-  {
-    id: 1,
-    col1: "John Doe",
-    col2: "9876543210",
-    col3: "ABCDE1234F",
-    col4: "ITR-1",
-    col5: "Area 1",
-    col6: "City 1",
-    col7: "500",
-    col8: "200",
-    col9: "300",
-    col12: "Actions",
-  },
-  {
-    id: 2,
-    col1: "Jane Doe",
-    col2: "9876543210",
-    col3: "ABCDE1234F",
-    col4: "ITR-1",
-    col5: "Area 1",
-    col6: "City 1",
-    col7: "500",
-    col8: "200",
-    col9: "300",
-    col12: "Actions",
-  },
-];
-
 const columns: GridColDef[] = [
   {
     field: "id",
@@ -63,27 +49,27 @@ const columns: GridColDef[] = [
     type: "number",
     editable: false,
   },
-  { field: "col1", headerName: "Name", width: 150 },
-  { field: "col2", headerName: "Mobile", type: "number", width: 100 },
+  { field: "name", headerName: "Name", width: 150 },
+  { field: "mobile", headerName: "Mobile", type: "number", width: 150 },
   {
-    field: "col3",
+    field: "pan",
     headerName: "PAN",
-    width: 120,
+    width: 150,
     cellClassName: "font-semibold",
   },
-  { field: "col4", headerName: "ITR Type", width: 80 },
-  { field: "col5", headerName: "Area", width: 100 },
-  { field: "col6", headerName: "City", width: 80 },
-  { field: "col7", headerName: "Fees", type: "number", width: 80 },
-  { field: "col8", headerName: "Paid", type: "number", width: 80 },
-  { field: "col9", headerName: "Pending", type: "number", width: 80 },
+  { field: "itrType", headerName: "ITR Type", width: 100 },
+  { field: "area", headerName: "Area", width: 150 },
+  { field: "city", headerName: "City", width: 100 },
+  { field: "fees", headerName: "Fees", type: "number", width: 100 },
+  { field: "paidFees", headerName: "Paid", type: "number", width: 100 },
+  { field: "pendingFees", headerName: "Pending", type: "number", width: 100 },
   {
-    field: "col10",
+    field: "assign",
     headerName: "Assign",
     width: 150,
     sortable: false,
     editable: true,
-    renderCell: (params: GridRenderCellParams<any, any, any>) => (
+    renderCell: (params: GridRenderCellParams) => (
       <div
         style={{
           display: "flex",
@@ -97,91 +83,53 @@ const columns: GridColDef[] = [
           api={params.api}
           id={params.id}
           field={params.field}
-          options={assignOptions} // Pass options
-          placeholder={assignPlaceholder} // Pass placeholder
-        />
-      </div>
-    ),
-    renderEditCell: (params) => (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100%",
-        }}
-      >
-        <AssignDropdown
-          value={params.value || ""}
-          api={params.api}
-          id={params.id}
-          field={params.field}
-          options={assignOptions} 
+          options={assignOptions}
           placeholder={assignPlaceholder}
         />
       </div>
     ),
   },
   {
-    field: "col11",
+    field: "status",
     headerName: "Status",
     width: 150,
     editable: true,
     sortable: false,
-    renderCell: (params: GridRenderCellParams<any, any, any>) => (
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          height: "100%",
-        }}
-      >
+    renderCell: (params: GridRenderCellParams) => (
+      <div style={{ display: "flex", alignItems: "center", height: "100%" }}>
         <AssignDropdown
           value={params.value || ""}
           api={params.api}
           id={params.id}
           field={params.field}
-          options={statusOptions} // Pass options
-          placeholder={statusPlaceholder} // Pass placeholder
-        />
-      </div>
-    ),
-    renderEditCell: (params) => (
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          height: "100%",
-        }}
-      >
-        <AssignDropdown
-          value={params.value || ""}
-          api={params.api}
-          id={params.id}
-          field={params.field}
-          options={statusOptions} // Pass options
-          placeholder={statusPlaceholder} // Pass placeholder
+          options={statusOptions}
+          placeholder={statusPlaceholder}
         />
       </div>
     ),
   },
   {
     sortable: false,
-    field: "col12",
+    field: "actions",
     headerName: "Actions",
     width: 200,
-    renderCell: () => <Actions />,
+    renderCell: (params) => <Actions />,
   },
 ];
 
-const Table: React.FC<Props> = () => {
+const Table: React.FC<Props> = ({ rows }) => {
   return (
-    <div style={{ width: "100%", height: 400 }}>
+    <div className="dataGridContainer">
       <DataGrid
         rows={rows}
         columns={columns}
         processRowUpdate={(newRow) => newRow}
         experimentalFeatures={{}}
+        initialState={{
+          pagination: {
+            paginationModel: { pageSize: 25, page: 0 },
+          },
+        }}
         disableColumnMenu
       />
     </div>

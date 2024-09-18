@@ -24,18 +24,21 @@ const SignIn = (props: Props) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
+    e.preventDefault(); 
+    setError(""); 
+    setLoading(true); 
 
     try {
       const docRefs = ["admin", "sales", "ops"].map((collection) =>
         doc(db, collection, email)
       );
+      
       const docs = await Promise.all(docRefs.map((docRef) => getDoc(docRef)));
+      
       const userDoc = docs.find((doc) => doc.exists());
 
       if (!userDoc) {
@@ -50,17 +53,19 @@ const SignIn = (props: Props) => {
         setLoading(false);
         return;
       }
+      
       const res = await signInWithEmailAndPassword(auth, emailPAN, password);
-      console.log(res);
-      router.push("/dashboard");
-      toast.success("Signed in successfully");
+      console.log(res); 
+      router.push("/dashboard"); 
+      toast.success("Signed in successfully"); 
     } catch (error) {
-      console.error(error);
-      setError("Invalid email or password");
+      console.error(error); 
+      setError("Invalid email or password"); 
     } finally {
-      setLoading(false);
+      setLoading(false); 
     }
   };
+
   return (
     <div className="flex items-center justify-center mt-6 bg-gray-100">
       <Card className="w-full max-w-md">
@@ -72,6 +77,7 @@ const SignIn = (props: Props) => {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Email input field */}
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -83,6 +89,7 @@ const SignIn = (props: Props) => {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
+            {/* Password input field */}
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
               <Input
@@ -93,6 +100,7 @@ const SignIn = (props: Props) => {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
+            {/* Display error message if there is one */}
             {error && (
               <div
                 className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
@@ -104,6 +112,7 @@ const SignIn = (props: Props) => {
                 </span>
               </div>
             )}
+            {/* Submit button with conditional loading spinner */}
             <Button type="submit" className="w-full mt-4">
               {loading ? <Loader className="animate-spin" /> : "Sign in"}
             </Button>
