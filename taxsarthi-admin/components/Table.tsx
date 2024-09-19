@@ -42,13 +42,7 @@ const assignPlaceholder = "Select assignee";
 const statusPlaceholder = "Select status";
 
 const columns: GridColDef[] = [
-  {
-    field: "id",
-    headerName: "Sr",
-    width: 50,
-    type: "number",
-    editable: false,
-  },
+  { field: "srNo", headerName: "Sr. No", width: 50 },
   { field: "name", headerName: "Name", width: 150 },
   { field: "mobile", headerName: "Mobile", type: "number", width: 150 },
   {
@@ -59,10 +53,10 @@ const columns: GridColDef[] = [
   },
   { field: "itrType", headerName: "ITR Type", width: 100 },
   { field: "area", headerName: "Area", width: 150 },
-  { field: "city", headerName: "City", width: 100 },
-  { field: "fees", headerName: "Fees", type: "number", width: 100 },
-  { field: "paidFees", headerName: "Paid", type: "number", width: 100 },
-  { field: "pendingFees", headerName: "Pending", type: "number", width: 100 },
+  { field: "city", headerName: "City", width: 80 },
+  { field: "Fees", headerName: "Fees", type: "number", width: 80 },
+  { field: "PaidFees", headerName: "Paid", type: "number", width: 80 },
+  { field: "PendingFees", headerName: "Pending", type: "number", width: 80 },
   {
     field: "assign",
     headerName: "Assign",
@@ -90,7 +84,7 @@ const columns: GridColDef[] = [
     ),
   },
   {
-    field: "status",
+    field: "lastStatus",
     headerName: "Status",
     width: 150,
     editable: true,

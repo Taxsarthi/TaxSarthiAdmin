@@ -1,14 +1,10 @@
 import {
     collection,
     query,
-    onSnapshot,
     where,
-    startAfter,
     limit,
     getDocs,
-    orderBy,
-    doc,
-    getDoc,
+    orderBy
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { NextResponse } from "next/server";
@@ -18,25 +14,34 @@ import { NextResponse } from "next/server";
 import { NextRequest } from 'next/server';
 
 export async function GET(req: NextRequest, res: NextResponse) {
-    const { searchParams } = new URL(req.url);
-    const punched = searchParams.get('punched') === 'true'; // Get punched state from query parameters
+    const punched = false;
 
-    const q = query(
-        collection(db, "users"),
-        where(punched ? "punch" : "paymentRequired", "==", false),
-        orderBy("pan"),
-        // limit(Limit)
-    );
-
-    try {
+    if (!punched) {
+        const q = query(
+            collection(db, "users"),
+            // where("paymentRequired", "==", false),
+            // orderBy("pan"),
+            // limit(Limit)
+        );
         const querySnapshot = await getDocs(q);
-        const tasks = querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+        const tasks: { [key: string]: any }[] = [];
+        querySnapshot.forEach((doc) => {
+            tasks.push({ ...doc.data(), id: doc.id });
+        });
 
         return NextResponse.json({ tasks });
-    } catch (error) {
-        console.error("Error fetching users:", error);
-        return NextResponse.json({ error: "Failed to fetch users" }, { status: 500 });
+    } else {
+        const q = query(
+            collection(db, "users"),
+            where("punch", "==", true),
+            orderBy("pan"),
+            // limit(Limit)
+        );
+        const querySnapshot = await getDocs(q);
+        const tasks: { [key: string]: any }[] = [];
+        querySnapshot.forEach((doc) => {
+            tasks.push({ ...doc.data(), id: doc.id });
+        });
+        return NextResponse.json({ tasks });
     }
 }
-
-

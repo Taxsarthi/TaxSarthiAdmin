@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -59,9 +58,10 @@ export function UpdateProfile() {
 
     // Here you would typically send the updated profile data to your backend
     console.log("Updated user:", user);
-    console.log("Updated notice:", notice);
+    toast.success(`Updated notice: ${notice}`);
     if (passwords.new) {
       console.log("New password:", passwords.new);
+      toast.success("Password updated successfully");
     }
 
     setSuccess(true);
@@ -196,7 +196,7 @@ export function UpdateProfile() {
           </Card>
         </div>
 
-        <div className="md:col-span-1">
+        <div className="md:col-span-1 space-y-6">
           <Card>
             <CardHeader>
               <CardTitle className="text-xl">Add Notice</CardTitle>
@@ -219,7 +219,16 @@ export function UpdateProfile() {
               />
               <Button onClick={handleAddNotice}>Add Notice</Button>
             </CardFooter>
-          </Card> 
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-xl">Active Notices</CardTitle>
+              <CardDescription>View active notices here</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <p className="text-gray-600">No active notices</p>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>

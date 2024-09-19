@@ -8,16 +8,38 @@ import UsersCards from "@/components/UsersCards";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
+type UserTask = {
+  id: string;
+  name: string;
+  mobile: number;
+  pan: string;
+  itrType: string;
+  area: string;
+  city: string;
+  fees: number;
+  paidFees: number;
+  pendingFees: number;
+  assign?: string;
+  status?: string;
+};
+
 type Props = {};
 
-const Page = (props: Props) => {
-  const [tableData, setTableData] = useState([]);
-  
-  // Fetching data (placeholder function)
+const page = (props: Props) => {
+  const [tableData, setTableData] = useState<UserTask[]>([]);
+
   const fetchTableData = async () => {
     const res = await fetch("/api/user-data");
     const data = await res.json();
-    setTableData(data?.tasks || []);
+    const tasks = data?.tasks || [];
+  
+    // Add serial numbers
+    const updatedTasks = tasks.map((task: UserTask, index: number) => ({
+      ...task,
+      srNo: index + 1, 
+    }));
+  
+    setTableData(updatedTasks);
   };
 
   useEffect(() => {
@@ -25,7 +47,6 @@ const Page = (props: Props) => {
   }, []);
 
   const handleDownload = () => {
-    // Implement your download logic here
     console.log("Download button clicked");
   };
 
@@ -53,11 +74,11 @@ const Page = (props: Props) => {
           </div>
         </div>
         <div>
-          <DataTable rows={tableData} /> {/* Pass data to DataTable */}
+          <DataTable rows={tableData} />
         </div>
       </div>
     </div>
   );
 };
 
-export default Page;
+export default page;
