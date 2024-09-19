@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { useUser } from "@/lib/auth";
 import { collection, doc, setDoc } from "firebase/firestore";
+import { RiDeleteBin2Fill } from "react-icons/ri";
 
 export function UpdateProfile() {
   const router = useRouter();
@@ -33,6 +34,13 @@ export function UpdateProfile() {
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  interface Notice {
+    id: string;
+    notice: string;
+    expiryDate: string;
+  }
+
+  const [allNotices, setAllNotices] = useState<Notice[]>([]);
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPasswords({ ...passwords, [e.target.name]: e.target.value });
@@ -43,7 +51,6 @@ export function UpdateProfile() {
     setError("");
     setSuccess(false);
 
-    // Validate password change
     if (passwords.new || passwords.confirm || passwords.current) {
       if (passwords.new !== passwords.confirm) {
         setError("New passwords do not match");
@@ -53,10 +60,8 @@ export function UpdateProfile() {
         setError("New password must be at least 8 characters long");
         return;
       }
-      // Here you would typically verify the current password with the backend
     }
 
-    // Here you would typically send the updated profile data to your backend
     console.log("Updated user:", user);
     toast.success(`Updated notice: ${notice}`);
     if (passwords.new) {
@@ -77,16 +82,15 @@ export function UpdateProfile() {
     }
   };
 
-  // Function to extract the base email
   const getBaseEmail = (email: string) => {
     const atIndex = email.indexOf("@");
     const plusIndex = email.indexOf("+");
 
     if (plusIndex !== -1 && atIndex > plusIndex) {
-      return email.slice(0, plusIndex) + email.slice(atIndex); // Combine before '+' with the domain
+      return email.slice(0, plusIndex) + email.slice(atIndex);
     }
 
-    return email; // Return original email if no '+' is present
+    return email;
   };
 
   const handleAddNotice = async () => {
@@ -96,15 +100,33 @@ export function UpdateProfile() {
     }
 
     try {
-      const noticeRef = doc(collection(db, "notices")); // Auto-generate document ID
-      await setDoc(noticeRef, { notice, expiryDate }); // Add notice and expiry date
+      const noticeRef = doc(collection(db, "notices"));
+      await setDoc(noticeRef, { notice, expiryDate: expiryDate.toISOString() });
       toast.success("Notice added successfully");
-      setNotice(""); // Clear the textarea after successful submission
-      setExpiryDate(null); // Clear the expiry date
+
+      setAllNotices((prev) => [
+        ...prev,
+        { id: noticeRef.id, notice, expiryDate: expiryDate.toISOString() },
+      ]);
+
+      setNotice("");
+      setExpiryDate(null);
     } catch (error) {
       console.error("Error adding notice:", error);
+      toast.error("Failed to add notice");
     }
   };
+
+  const displayNotices = async () => {
+    const response = await fetch("/api/notice");
+    const data = await response.json();
+    setAllNotices(data.notices);
+  };
+
+
+  useEffect(() => {
+    displayNotices();
+  }, []);
 
   return (
     <div className="container mx-auto py-10">
@@ -214,6 +236,7 @@ export function UpdateProfile() {
             <CardFooter className="gap-4">
               <Input
                 type="date"
+                min={new Date().toISOString().split("T")[0]}
                 value={expiryDate ? expiryDate.toISOString().split("T")[0] : ""}
                 onChange={(e) => setExpiryDate(new Date(e.target.value))}
               />
@@ -226,7 +249,24 @@ export function UpdateProfile() {
               <CardDescription>View active notices here</CardDescription>
             </CardHeader>
             <CardContent className="space-y-2">
-              <p className="text-gray-600">No active notices</p>
+              {allNotices.map((notice: any) => (
+                <div key={notice.id} className="flex justify-between p-1">
+                  <p className="text-sm font-semibold">
+                    {notice.notice}
+                  </p>
+                  <div className="flex gap-2">
+                  <p className="text-gray-500 text-sm">
+                    {new Date(notice.expiryDate).toLocaleDateString()}
+                  </p>
+                  <button>
+                    <RiDeleteBin2Fill className="text-red-500 cursor-pointer" />
+                  </button>
+                  </div>
+                </div>
+              ))}
+              {allNotices.length === 0 && (
+                <p className="text-gray-600">No active notices</p>
+              )}
             </CardContent>
           </Card>
         </div>
