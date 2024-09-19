@@ -114,6 +114,7 @@ const AddUser = (props: Props) => {
         </div>
         <div className="space-y-2">
           <Label htmlFor="password">Password</Label>
+          <div className="flex gap-4">
           <Input
             id="password"
             name="password"
@@ -122,9 +123,12 @@ const AddUser = (props: Props) => {
             onChange={handleInputChange}
             required
           />
+          <Button variant="default" >
+                Generate
+            </Button>
+          </div>
         </div>
       </div>
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label>User Type</Label>

@@ -1,7 +1,7 @@
-"use client"
+"use client";
 import QueriesPopup from "@/components/QueriesPopup";
 import Search from "@/components/Search";
-import DataTable from "@/components/Table"; // Ensure DataTable accepts props
+import DataTable from "@/components/Table";
 import { Button } from "@/components/ui/button";
 import Upload from "@/components/Upload";
 import UsersCards from "@/components/UsersCards";
@@ -21,12 +21,22 @@ type UserTask = {
   pendingFees: number;
   assign?: string;
   status?: string;
+  srNo?: number; // Add srNo type here
 };
 
-type Props = {};
-
-const page = (props: Props) => {
+const page: React.FC = () => {
   const [tableData, setTableData] = useState<UserTask[]>([]);
+  const [searchText, setSearchText] = useState('');
+
+  const handleSearchChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+    setSearchText(event.target.value);
+  };
+
+  const filteredRows = tableData.filter((row) =>
+    Object.values(row).some((value) =>
+      String(value).toLowerCase().includes(searchText.toLowerCase())
+    )
+  );
 
   const fetchTableData = async () => {
     const res = await fetch("/api/user-data");
@@ -63,7 +73,7 @@ const page = (props: Props) => {
       </div>
       <div>
         <div className="flex flex-col-reverse my-4 md:flex-row md:justify-between items-center">
-          <Search />
+          <Search handleSearchChange={handleSearchChange} />
           <div className="flex gap-4">
             <Button variant="default">
               <Link href="/adduser">Add User</Link>
@@ -74,7 +84,7 @@ const page = (props: Props) => {
           </div>
         </div>
         <div>
-          <DataTable rows={tableData} />
+          <DataTable rows={filteredRows} /> {/* Pass filtered rows */}
         </div>
       </div>
     </div>

@@ -3,13 +3,14 @@ import { FaSearch } from "react-icons/fa";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 
-type Props = {};
+type Props = {
+  handleSearchChange: React.ChangeEventHandler<HTMLInputElement>;
+};
 
-const Search = (props: Props) => {
+const Search: React.FC<Props> = ({ handleSearchChange }) => {
   return (
-    <div className="relative flex justify-center gap-2 items-center max-w-96">
-      <Input placeholder="Search..." name="search" type="search" />
-      <Button variant="outline"><FaSearch size={20} color="gray" /></Button>
+    <div className="relative flex justify-center gap-2 items-center ">
+      <Input placeholder="Search..." onChange={handleSearchChange} name="search" type="search" />
     </div>
   );
 };
