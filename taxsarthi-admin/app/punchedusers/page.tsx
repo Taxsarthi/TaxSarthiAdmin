@@ -68,7 +68,7 @@ const page: React.FC<Props> = (props: Props) => {
         </Select>
       </div>
 
-      <div className="mb-6 w-[30%]">
+      <div className="w-[30%]">
         <Search handleSearchChange={handleSearch}/>
       </div>
 

@@ -1,7 +1,5 @@
 import React from "react";
-import { FaSearch } from "react-icons/fa";
 import { Input } from "./ui/input";
-import { Button } from "./ui/button";
 
 type Props = {
   handleSearchChange: React.ChangeEventHandler<HTMLInputElement>;

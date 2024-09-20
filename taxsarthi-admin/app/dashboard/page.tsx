@@ -75,7 +75,7 @@ const page: React.FC = () => {
       </div>
       <div>
         <div className="flex flex-col-reverse my-4 md:flex-row md:justify-between items-center">
-          <div className="w-[50%]">
+          <div className="w-[30%]">
             <Search handleSearchChange={handleSearchChange} />
           </div>
           <div className="flex gap-4">
