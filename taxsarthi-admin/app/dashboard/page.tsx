@@ -21,14 +21,16 @@ type UserTask = {
   pendingFees: number;
   assign?: string;
   status?: string;
-  srNo?: number; // Add srNo type here
+  srNo?: number;
 };
 
 const page: React.FC = () => {
   const [tableData, setTableData] = useState<UserTask[]>([]);
-  const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useState("");
 
-  const handleSearchChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+  const handleSearchChange: React.ChangeEventHandler<HTMLInputElement> = (
+    event
+  ) => {
     setSearchText(event.target.value);
   };
 
@@ -42,13 +44,13 @@ const page: React.FC = () => {
     const res = await fetch("/api/user-data");
     const data = await res.json();
     const tasks = data?.tasks || [];
-  
+
     // Add serial numbers
     const updatedTasks = tasks.map((task: UserTask, index: number) => ({
       ...task,
-      srNo: index + 1, 
+      srNo: index + 1,
     }));
-  
+
     setTableData(updatedTasks);
   };
 
@@ -63,7 +65,7 @@ const page: React.FC = () => {
   return (
     <div className="mx-4">
       <div className="flex flex-col md:flex-row justify-between">
-        <UsersCards />
+        <UsersCards setDisplayedType={(type: string) => console.log(type)} />
         <div className="grid grid-cols-2 gap-4 m-4">
           <QueriesPopup />
           <Link href="/punchedusers">
@@ -73,7 +75,9 @@ const page: React.FC = () => {
       </div>
       <div>
         <div className="flex flex-col-reverse my-4 md:flex-row md:justify-between items-center">
-          <Search handleSearchChange={handleSearchChange} />
+          <div className="w-[50%]">
+            <Search handleSearchChange={handleSearchChange} />
+          </div>
           <div className="flex gap-4">
             <Button variant="default">
               <Link href="/adduser">Add User</Link>
@@ -84,7 +88,7 @@ const page: React.FC = () => {
           </div>
         </div>
         <div>
-          <DataTable rows={filteredRows} /> {/* Pass filtered rows */}
+          <DataTable rows={filteredRows} />
         </div>
       </div>
     </div>

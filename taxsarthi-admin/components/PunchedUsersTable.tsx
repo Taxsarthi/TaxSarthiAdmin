@@ -5,68 +5,58 @@ import UploadDocs from "./UploadDocs";
 
 type Props = {};
 
-const rows: GridRowsProp = [
-  {
-    id: 1,
-    Name: "John Doe",
-    Mobile: "9876543210",
-    PAN: "ABCDE1234F",
-    Email: "snehal@gmail.com",
-  },
-  {
-    id: 2,
-    Name: "Jane Doe",
-    Mobile: "9876543210",
-    PAN: "ABCDE1234F",
-    Email: "jane@gmail.com",
-  },
-  {
-    id: 3,
-    Name: "John Doe",
-    Mobile: "9876543210",
-    PAN: "ABCDE1234F",
-    Email: "john@gmail.com",
-  },
-];
-
 const columns: GridColDef[] = [
   {
-    field: "id",
-    headerName: "Sr",
+    field: "srNo",
+    headerName: "Sr No",
     width: 50,
   },
   {
-    field: "Name",
+    field: "name",
     headerName: "Name",
-    width: 200,
+    width: 250,
   },
   {
-    field: "Mobile",
+    field: "mobile",
     headerName: "Mobile",
     width: 150,
   },
   {
-    field: "PAN",
+    field: "pan",
     headerName: "PAN",
     width: 200,
   },
   {
-    field: "Email",
+    field: "email",
     headerName: "Email",
-    width: 200,
+    width: 300,
   },
   {
     field: "Acknowledgement",
     headerName: "Acknowledgement",
     width: 150,
-    renderCell: () => <UploadDocs />,
+    renderCell: () => <div className="flex justify-center pt-4">
+    <UploadDocs />
+    </div>,
   },
 ];
 
-const PunchedUsersTable = (props: Props) => {
+type PunchedUsersTableProps = {
+  rows: GridRowsProp;
+};
+
+const PunchedUsersTable: React.FC<PunchedUsersTableProps> = ({ rows }) => {
   return (
     <div>
-      <DataGrid rows={rows} columns={columns} />
+      <DataGrid
+        rows={rows}
+        columns={columns}
+        initialState={{
+          pagination: {
+            paginationModel: { pageSize: 25, page: 0 },
+          },
+        }}
+      />
     </div>
   );
 };

@@ -1,3 +1,4 @@
+'use client'
 import PunchedUsersTable from "@/components/PunchedUsersTable";
 import Search from "@/components/Search";
 import {
@@ -8,11 +9,46 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import React from "react";
+import React, { useState, useEffect } from "react";
+
+type UserTask = {
+  srNo?: number;
+  [key: string]: any;
+};
 
 type Props = {};
 
 const page: React.FC<Props> = (props: Props) => {
+  const [searchText, setSearchText] = useState("");
+  const [tableData, setTableData] = useState<UserTask[]>([]);
+
+  useEffect(() => {
+    fetchPunchedData();
+  }, []);
+
+  const handleSearch: React.ChangeEventHandler<HTMLInputElement> = (
+    event
+  ) => {
+    setSearchText(event.target.value);
+  };
+  const filteredRows = tableData.filter((row) =>
+    Object.values(row).some((value) =>
+      String(value).toLowerCase().includes(searchText.toLowerCase())
+    )
+  );
+  const fetchPunchedData = async () => {
+    const res = await fetch("/api/user-data?status=punched");
+    const data = await res.json();
+    const tasks = data?.tasks || [];
+
+    // Add serial numbers
+    const updatedTasks = tasks.map((task: UserTask, index: number) => ({
+      ...task,
+      srNo: index + 1,
+    }));
+
+    setTableData(updatedTasks);
+  };
   return (
     <div className="m-4 space-y-6">
       {/* Header Section */}
@@ -32,14 +68,13 @@ const page: React.FC<Props> = (props: Props) => {
         </Select>
       </div>
 
-      {/* Search Component */}
-      <div className="mb-6">
-        <Search />
+      <div className="mb-6 w-[30%]">
+        <Search handleSearchChange={handleSearch}/>
       </div>
 
       {/* Table Section */}
       <div className="border rounded-lg p-4">
-        <PunchedUsersTable />
+        <PunchedUsersTable rows={filteredRows}/>
       </div>
     </div>
   );
