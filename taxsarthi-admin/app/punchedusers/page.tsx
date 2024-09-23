@@ -87,7 +87,7 @@ const page: React.FC<Props> = (props: Props) => {
       </div>
 
       {/* Table Section */}
-      <div className="border rounded-lg p-4">
+      <div>
         <PunchedUsersTable rows={filteredRows} />
       </div>
     </div>
