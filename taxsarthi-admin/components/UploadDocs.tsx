@@ -45,13 +45,13 @@ const Upload: React.FC<Props> = () => {
             />
             <div className="flex flex-col gap-2 mt-4">
               {fileNames.length > 0 ? (
-                <ul className="list-disc pl-5">
+                <div className="list-disc pl-5">
                   {fileNames.map((fileName, index) => (
-                    <li key={index} className="text-sm text-gray-700">
+                    <p key={index} className="text-sm text-gray-700">
                       {fileName}
-                    </li>
+                    </p>
                   ))}
-                </ul>
+                </div>
               ) : (
                 <p className="text-gray-500">No files selected</p>
               )}

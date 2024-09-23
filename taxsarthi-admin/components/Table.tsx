@@ -113,7 +113,7 @@ const columns: GridColDef[] = [
 
 const Table: React.FC<Props> = ({ rows }) => {
   return (
-    <div className="dataGridContainer">
+    <div>
       <DataGrid
         rows={rows}
         columns={columns}

@@ -27,34 +27,82 @@ type UserTask = {
 const page: React.FC = () => {
   const [tableData, setTableData] = useState<UserTask[]>([]);
   const [searchText, setSearchText] = useState("");
+  const [filteredData, setFilteredData] = useState<UserTask[]>([]);
 
-  const handleSearchChange: React.ChangeEventHandler<HTMLInputElement> = (
-    event
-  ) => {
+  const handleSearchChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
     setSearchText(event.target.value);
   };
 
-  const filteredRows = tableData.filter((row) =>
-    Object.values(row).some((value) =>
-      String(value).toLowerCase().includes(searchText.toLowerCase())
-    )
-  );
+  // Fetch punched users and merge with users
+  const fetchPunchedData = async () => {
+    const punchedRes = await fetch("/api/user-data?status=punched");
+    const punchedData = await punchedRes.json();
+    const punchedTasks = punchedData?.tasks || [];
+  
+    const usersRes = await fetch("/api/user-data");
+    const usersData = await usersRes.json();
+    const usersTasks = usersData?.tasks || [];
+  
+    const usersMap = new Map(usersTasks.map((user: UserTask) => [user.id, user]));
+  
+    // Merge punched tasks with user details and assign serial numbers
+    const updatedTasks = punchedTasks.map((punchedTask: UserTask, index: number) => {
+      const userDetails = usersMap.get(punchedTask.id) || {};
+      return {
+        ...userDetails,
+        ...punchedTask,
+        srNo: index + 1, // Assign serial number based on the index
+      };
+    });
+  
+    setFilteredData(updatedTasks);
+  };
+  
 
-  const fetchTableData = async () => {
+  // Fetch all table data
+  const fetchTableData = async (type: string) => {
+    if (type === "punched") {
+      await fetchPunchedData();
+      return; 
+    }
+  
     const res = await fetch("/api/user-data");
     const data = await res.json();
     const tasks = data?.tasks || [];
+  
+    // Assign serial numbers for all users
     const updatedTasks = tasks.map((task: UserTask, index: number) => ({
       ...task,
       srNo: index + 1,
     }));
+  
+    const filteredTasks = updatedTasks.filter((task: UserTask) => {
+      if (type === "assigned") return task.assign; 
+      return true; // Show all for "all"
+    });
+  
+    // Reassign srNo based on the filteredTasks after filtering
+    const finalTasks = filteredTasks.map((task: UserTask, index: number) => ({
+      ...task,
+      srNo: index + 1, // Reassign serial numbers for displayed tasks
+    }));
+  
+    setFilteredData(finalTasks);
+  };  
 
-    setTableData(updatedTasks);
+  const handleCardClick = (type: string) => {
+    fetchTableData(type);
   };
 
   useEffect(() => {
-    fetchTableData();
+    fetchTableData("all");
   }, []);
+
+  const filteredRows = filteredData.filter((row) =>
+    Object.values(row).some((value) =>
+      String(value).toLowerCase().includes(searchText.toLowerCase())
+    )
+  );
 
   const handleDownload = () => {
     console.log("Download button clicked");
@@ -63,7 +111,7 @@ const page: React.FC = () => {
   return (
     <div className="mx-4">
       <div className="flex flex-col md:flex-row justify-between">
-        <UsersCards setDisplayedType={(type: string) => console.log(type)} />
+        <UsersCards onCardClick={handleCardClick} />
         <div className="grid grid-cols-2 gap-4 m-4">
           <QueriesPopup />
           <Link href="/punchedusers">

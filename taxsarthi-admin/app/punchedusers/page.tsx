@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import PunchedUsersTable from "@/components/PunchedUsersTable";
 import Search from "@/components/Search";
 import {
@@ -26,29 +26,43 @@ const page: React.FC<Props> = (props: Props) => {
     fetchPunchedData();
   }, []);
 
-  const handleSearch: React.ChangeEventHandler<HTMLInputElement> = (
-    event
-  ) => {
+  const handleSearch: React.ChangeEventHandler<HTMLInputElement> = (event) => {
     setSearchText(event.target.value);
   };
+
   const filteredRows = tableData.filter((row) =>
     Object.values(row).some((value) =>
       String(value).toLowerCase().includes(searchText.toLowerCase())
     )
   );
-  const fetchPunchedData = async () => {
-    const res = await fetch("/api/user-data?status=punched");
-    const data = await res.json();
-    const tasks = data?.tasks || [];
 
-    // Add serial numbers
-    const updatedTasks = tasks.map((task: UserTask, index: number) => ({
-      ...task,
-      srNo: index + 1,
-    }));
+  const fetchPunchedData = async () => {
+    // Fetch punched users
+    const punchedRes = await fetch("/api/user-data?status=punched");
+    const punchedData = await punchedRes.json();
+    const punchedTasks = punchedData?.tasks || [];
+
+    // Fetch all users
+    const usersRes = await fetch("/api/user-data");
+    const usersData = await usersRes.json();
+    const usersTasks = usersData?.tasks || [];
+
+    // Create a map of users for easy access
+    const usersMap = new Map(usersTasks.map((user: UserTask) => [user.id, user]));
+
+    // Merge punched tasks with corresponding user data
+    const updatedTasks = punchedTasks.map((punchedTask: UserTask, index: number) => {
+      const userDetails = usersMap.get(punchedTask.id) || {};
+      return {
+        ...userDetails,
+        ...punchedTask,
+        srNo: index + 1, // Add serial number
+      };
+    });
 
     setTableData(updatedTasks);
   };
+
   return (
     <div className="m-4 space-y-6">
       {/* Header Section */}
@@ -69,12 +83,12 @@ const page: React.FC<Props> = (props: Props) => {
       </div>
 
       <div className="w-[30%]">
-        <Search handleSearchChange={handleSearch}/>
+        <Search handleSearchChange={handleSearch} />
       </div>
 
       {/* Table Section */}
       <div className="border rounded-lg p-4">
-        <PunchedUsersTable rows={filteredRows}/>
+        <PunchedUsersTable rows={filteredRows} />
       </div>
     </div>
   );
