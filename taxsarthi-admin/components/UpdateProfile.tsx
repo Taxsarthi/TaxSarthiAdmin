@@ -123,6 +123,25 @@ export function UpdateProfile() {
     setAllNotices(data.notices);
   };
 
+  const deleteNotice = async (id: string) => {
+    const response = await fetch('/api/notice', {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id }),
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+        // Remove the deleted notice from the state
+        setAllNotices((prevNotices: Notice[]) => prevNotices.filter((notice) => notice.id !== id));
+        toast.success(data.message);
+    } else {
+        console.error(data.error); // Handle error
+    }
+  };
+
 
   useEffect(() => {
     displayNotices();
@@ -258,7 +277,7 @@ export function UpdateProfile() {
                   <p className="text-gray-500 text-sm">
                     {new Date(notice.expiryDate).toLocaleDateString()}
                   </p>
-                  <button>
+                  <button onClick={() => deleteNotice(notice.id)}>
                     <RiDeleteBin2Fill className="text-red-500 cursor-pointer" />
                   </button>
                   </div>

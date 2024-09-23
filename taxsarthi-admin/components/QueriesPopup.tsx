@@ -157,7 +157,7 @@ const QueriesPopup = () => {
         <DialogTrigger>
           <Queries />
         </DialogTrigger>
-        <DialogContent className="max-h-[80vh] overflow-y-auto p-4">
+        <DialogContent className="max-h-[80vh] min-w-[70%] overflow-y-auto p-4">
           <DialogHeader>
             <DialogTitle>Queries</DialogTitle>
             <DialogDescription>
