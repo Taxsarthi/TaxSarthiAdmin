@@ -15,6 +15,7 @@ import {
 import { useRouter } from "next/navigation";
 import { Label } from "./ui/label";
 import toast from "react-hot-toast";
+import { Copy } from "lucide-react";
 
 type Props = {};
 
@@ -56,14 +57,51 @@ const AddUser = (props: Props) => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("User added successfully");
-    router.push("/dashboard");
-    console.log(formData);
-    // Handle form submission here
+  
+    try {
+      const response = await fetch('/api/add-user');
+  
+      if (response.status === 409) {
+        const errorData = await response.json();
+        toast.error(errorData.error);
+        return;
+      }
+  
+      if (!response.ok) {
+        throw new Error("Failed to add user");
+      }
+  
+      const result = await response.json();
+      toast.success("User added successfully");
+      console.log(result); // Log the user ID and data if needed
+  
+      router.push("/dashboard");
+    } catch (error) {
+      console.error("Error adding user:", error);
+      toast.error("Failed to add user");
+    }
+  };
+  
+  const generatePassword = () => {
+    const fullNameParts = formData.fullName.trim().split(" "); // Split the full name by spaces
+    const firstName = fullNameParts[0]; // Get the first part (first name)
+    const generatedPassword = `${firstName}@123`; // Use the first name to generate the password
+    setFormData((prev) => ({ ...prev, password: generatedPassword }));
+    toast.success("Password generated successfully!");
   };
 
+  const copyToClipboard = () => {
+    navigator.clipboard
+      .writeText(formData.password)
+      .then(() => {
+        toast.success("Password copied to clipboard!");
+      })
+      .catch(() => {
+        toast.error("Failed to copy password.");
+      });
+  };
   const handleRedirect = () => {
     router.push("/dashboard");
   };
@@ -112,9 +150,10 @@ const AddUser = (props: Props) => {
             required
           />
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="password">Password</Label>
-          <div className="flex gap-4">
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="password">Password</Label>
+        <div className="flex gap-4">
           <Input
             id="password"
             name="password"
@@ -123,10 +162,12 @@ const AddUser = (props: Props) => {
             onChange={handleInputChange}
             required
           />
-          <Button variant="default" >
-                Generate
-            </Button>
-          </div>
+          <Button type="button" onClick={copyToClipboard} variant="secondary">
+            <Copy size={24} />
+          </Button>
+          <Button type="button" onClick={generatePassword}>
+            Generate
+          </Button>
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -238,6 +279,7 @@ const AddUser = (props: Props) => {
             id="fees"
             name="fees"
             type="number"
+            min={0}
             value={formData.fees}
             onChange={handleInputChange}
           />
@@ -248,6 +290,7 @@ const AddUser = (props: Props) => {
             id="discount"
             name="discount"
             type="number"
+            min={0}
             value={formData.discount}
             onChange={handleInputChange}
           />
@@ -258,6 +301,7 @@ const AddUser = (props: Props) => {
             id="finalFees"
             name="finalFees"
             type="number"
+            min={0}
             value={formData.finalFees}
             onChange={handleInputChange}
           />
@@ -268,6 +312,7 @@ const AddUser = (props: Props) => {
             id="feesPaid"
             name="feesPaid"
             type="number"
+            min={0}
             value={formData.feesPaid}
             onChange={handleInputChange}
           />
@@ -278,6 +323,7 @@ const AddUser = (props: Props) => {
             id="feesPending"
             name="feesPending"
             type="number"
+            min={0}
             value={formData.feesPending}
             onChange={handleInputChange}
           />

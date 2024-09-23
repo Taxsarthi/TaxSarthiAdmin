@@ -124,24 +124,25 @@ export function UpdateProfile() {
   };
 
   const deleteNotice = async (id: string) => {
-    const response = await fetch('/api/notice', {
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ id }),
+    const response = await fetch("/api/notice", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id }),
     });
 
     const data = await response.json();
     if (response.ok) {
-        // Remove the deleted notice from the state
-        setAllNotices((prevNotices: Notice[]) => prevNotices.filter((notice) => notice.id !== id));
-        toast.success(data.message);
+      // Remove the deleted notice from the state
+      setAllNotices((prevNotices: Notice[]) =>
+        prevNotices.filter((notice) => notice.id !== id)
+      );
+      toast.success(data.message);
     } else {
-        console.error(data.error); // Handle error
+      console.error(data.error); // Handle error
     }
   };
-
 
   useEffect(() => {
     displayNotices();
@@ -270,16 +271,14 @@ export function UpdateProfile() {
             <CardContent className="space-y-2">
               {allNotices.map((notice: any) => (
                 <div key={notice.id} className="flex justify-between p-1">
-                  <p className="text-sm font-semibold">
-                    {notice.notice}
-                  </p>
+                  <p className="text-sm font-semibold">{notice.notice}</p>
                   <div className="flex gap-2">
-                  <p className="text-gray-500 text-sm">
-                    {new Date(notice.expiryDate).toLocaleDateString()}
-                  </p>
-                  <button onClick={() => deleteNotice(notice.id)}>
-                    <RiDeleteBin2Fill className="text-red-500 cursor-pointer" />
-                  </button>
+                    <p className="text-gray-500 text-sm">
+                      {new Date(notice.expiryDate).toLocaleDateString("en-GB")}
+                    </p>
+                    <button onClick={() => deleteNotice(notice.id)}>
+                      <RiDeleteBin2Fill color="red" />
+                    </button>
                   </div>
                 </div>
               ))}

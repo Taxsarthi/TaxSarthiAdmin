@@ -44,8 +44,6 @@ const page: React.FC = () => {
     const res = await fetch("/api/user-data");
     const data = await res.json();
     const tasks = data?.tasks || [];
-
-    // Add serial numbers
     const updatedTasks = tasks.map((task: UserTask, index: number) => ({
       ...task,
       srNo: index + 1,

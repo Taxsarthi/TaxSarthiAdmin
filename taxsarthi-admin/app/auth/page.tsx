@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 
 type Props = {};
 
-const Page: React.FC<Props> = () => {
+const page: React.FC<Props> = () => {
   const user = useUser();
   const router = useRouter();
 
@@ -32,4 +32,4 @@ const Page: React.FC<Props> = () => {
   );
 };
 
-export default Page;
+export default page;

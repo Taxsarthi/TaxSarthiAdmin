@@ -42,7 +42,7 @@ const assignPlaceholder = "Select assignee";
 const statusPlaceholder = "Select status";
 
 const columns: GridColDef[] = [
-  { field: "srNo", headerName: "Sr. No", width: 50 },
+  { field: "srNo", headerName: "Sr. No", width: 80 },
   { field: "name", headerName: "Name", width: 150 },
   { field: "mobile", headerName: "Mobile", type: "number", width: 150 },
   {
