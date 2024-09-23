@@ -39,6 +39,8 @@ const AddUser = (props: Props) => {
     feesPending: "",
   });
 
+  const [loading, setLoading] = useState(false); // Loading state
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -59,35 +61,44 @@ const AddUser = (props: Props) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
+    setLoading(true); // Set loading to true
+
     try {
-      const response = await fetch('/api/add-user');
-  
+      const response = await fetch("/api/add-user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
       if (response.status === 409) {
         const errorData = await response.json();
         toast.error(errorData.error);
         return;
       }
-  
+
       if (!response.ok) {
         throw new Error("Failed to add user");
       }
-  
+
       const result = await response.json();
       toast.success("User added successfully");
       console.log(result); // Log the user ID and data if needed
-  
+
       router.push("/dashboard");
     } catch (error) {
       console.error("Error adding user:", error);
       toast.error("Failed to add user");
+    } finally {
+      setLoading(false); // Reset loading state
     }
   };
-  
+
   const generatePassword = () => {
-    const fullNameParts = formData.fullName.trim().split(" "); // Split the full name by spaces
-    const firstName = fullNameParts[0]; // Get the first part (first name)
-    const generatedPassword = `${firstName}@123`; // Use the first name to generate the password
+    const fullNameParts = formData.fullName.trim().split(" ");
+    const firstName = fullNameParts[0];
+    const generatedPassword = `${firstName}@123`;
     setFormData((prev) => ({ ...prev, password: generatedPassword }));
     toast.success("Password generated successfully!");
   };
@@ -102,9 +113,11 @@ const AddUser = (props: Props) => {
         toast.error("Failed to copy password.");
       });
   };
+
   const handleRedirect = () => {
     router.push("/dashboard");
   };
+
   return (
     <form onSubmit={handleSubmit} className="max-w-2xl mx-auto space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -334,7 +347,20 @@ const AddUser = (props: Props) => {
         <Button variant="outline" type="button" onClick={handleRedirect}>
           Cancel
         </Button>
-        <Button type="submit">Submit</Button>
+        <Button
+          type="submit"
+          disabled={loading}
+          className="flex items-center justify-center"
+        >
+          {loading ? (
+            <>
+              <div className="animate-spin h-5 w-5 border-4 border-t-4 border-white rounded-full mr-2"></div>
+              Submitting...
+            </>
+          ) : (
+            "Submit"
+          )}
+        </Button>
       </div>
     </form>
   );
