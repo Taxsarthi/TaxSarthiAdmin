@@ -59,8 +59,15 @@ const AddUser = (props: Props) => {
     }));
   };
 
+  const isValidEmail = (email: string) => /\S+@\S+\.\S+/.test(email);
+  const isValidMobile = (mobile: string) => /^\d{10}$/.test(mobile);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isValidEmail(formData.email) || !isValidMobile(formData.mobile)) {
+      toast.error("Invalid email or mobile number.");
+      return;
+    }
     setLoading(true);
 
     try {
@@ -84,6 +91,23 @@ const AddUser = (props: Props) => {
 
       const result = await response.json();
       toast.success("User added successfully");
+      setFormData({
+        fullName: "",
+        pan: "",
+        mobile: "",
+        email: "",
+        password: "",
+        userType: "",
+        itrType: "",
+        services: [],
+        city: "",
+        area: "",
+        fees: "",
+        discount: "",
+        finalFees: "",
+        feesPaid: "",
+        feesPending: "",
+      });
       console.log(result);
 
       router.push("/dashboard");
@@ -117,6 +141,16 @@ const AddUser = (props: Props) => {
   const handleRedirect = () => {
     router.push("/dashboard");
   };
+
+  const servicesList = [
+    "TaxSarthiPortal",
+    "Nil",
+    "ITR Salary",
+    "ITR Business",
+    "Shares Below 5L",
+    "Shares Below 10L",
+    "Shares Below 20L",
+  ];
 
   return (
     <form onSubmit={handleSubmit} className="max-w-2xl mx-auto space-y-6">
@@ -244,15 +278,7 @@ const AddUser = (props: Props) => {
       <div className="space-y-4">
         <h2 className="text-lg font-semibold">Services</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {[
-            "TaxSarthiPortal",
-            "Nil",
-            "ITR Salary",
-            "ITR Business",
-            "Shares Below 5L",
-            "Shares Below 10L",
-            "Shares Below 20L",
-          ].map((service) => (
+          {servicesList.map((service) => (
             <div key={service} className="flex items-center space-x-2">
               <Checkbox
                 id={service.toLowerCase().replace(/\s+/g, "-")}
@@ -349,7 +375,7 @@ const AddUser = (props: Props) => {
         </Button>
         <Button
           type="submit"
-          disabled={loading}
+          disabled={loading || !formData.email || !formData.password}
           className="flex items-center justify-center"
         >
           {loading ? (
