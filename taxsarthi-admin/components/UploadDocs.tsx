@@ -61,7 +61,6 @@ const Upload: React.FC<Props> = () => {
                 onClick={() => {
                   if (files) {
                     console.log("Uploading files:", files);
-                    // Implement file upload logic here
                   }
                 }}
               >

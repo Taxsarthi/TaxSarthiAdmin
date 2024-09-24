@@ -55,7 +55,7 @@ const SignIn = (props: Props) => {
       }
       
       const res = await signInWithEmailAndPassword(auth, emailPAN, password);
-      console.log(res); 
+      // console.log(res); 
       router.push("/dashboard"); 
       toast.success("Signed in successfully"); 
     } catch (error) {

@@ -42,14 +42,14 @@ const page: React.FC = () => {
       const punchedRes = await fetch("/api/user-data?status=punched");
       if (!punchedRes.ok) throw new Error("Failed to fetch punched data");
       const punchedData = await punchedRes.json();
-      console.log("Punched Data:", punchedData);
+      // console.log("Punched Data:", punchedData);
 
       const punchedTasks = punchedData?.tasks || [];
 
       const usersRes = await fetch("/api/user-data");
       if (!usersRes.ok) throw new Error("Failed to fetch user data");
       const usersData = await usersRes.json();
-      console.log("User Data:", usersData);
+      // console.log("User Data:", usersData);
 
       const usersTasks = usersData?.tasks || [];
       const usersMap = new Map(

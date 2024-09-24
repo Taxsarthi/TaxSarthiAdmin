@@ -28,7 +28,7 @@ type Props = {
   loading: boolean;
 };
 
-const assignOptions = ["John Doe", "Jane Doe", "Alice Smith", "Bob Johnson"];
+const assignOptions = ["Abhishek", "Ravina", "Kunal", "DataCenter"];
 const statusOptions = [
   "Manager Assigned",
   "ITR Password Generated",
@@ -43,7 +43,7 @@ const assignPlaceholder = "Select assignee";
 const statusPlaceholder = "Select status";
 
 const columns: GridColDef[] = [
-  { field: "srNo", headerName: "Sr. No", width: 80 },
+  { field: "srNo", headerName: "Sr.", width: 50 },
   { field: "name", headerName: "Name", width: 150 },
   { field: "mobile", headerName: "Mobile", type: "number", width: 150 },
   {

@@ -62,10 +62,10 @@ export function UpdateProfile() {
       }
     }
 
-    console.log("Updated user:", user);
+    // console.log("Updated user:", user);
     toast.success(`Updated notice: ${notice}`);
     if (passwords.new) {
-      console.log("New password:", passwords.new);
+      // console.log("New password:", passwords.new);
       toast.success("Password updated successfully");
     }
 

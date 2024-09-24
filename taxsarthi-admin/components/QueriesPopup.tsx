@@ -76,7 +76,7 @@ const QueriesPopup = () => {
             deleteOn: deleteOnDate,
           });
         });
-        console.log("Fetched tasks:", tasks); // Debugging log
+        // console.log("Fetched tasks:", tasks); // Debugging log
         setAccordionData(tasks);
         setStatuses(tasks.reduce((acc, item) => {
           acc[item.id] = item.status; // Initialize with status from Firestore
@@ -105,7 +105,7 @@ const QueriesPopup = () => {
       }
 
       const result = await response.json();
-      console.log(result.message); // Optional: handle success message
+      // console.log(result.message); // Optional: handle success message
     } catch (error) {
       console.error("Error updating query:", error);
     }

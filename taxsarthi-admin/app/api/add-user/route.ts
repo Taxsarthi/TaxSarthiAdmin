@@ -6,7 +6,7 @@ export default async function POST(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "POST") {
     const userData = req.body;
 
-    console.log("Received userData:", userData); // Log incoming data
+    // console.log("Received userData:", userData); 
 
     // Validate required fields
     if (!userData.pan) {
@@ -18,7 +18,7 @@ export default async function POST(req: NextApiRequest, res: NextApiResponse) {
     const querySnapshot = await getDocs(panQuery);
 
     if (!querySnapshot.empty) {
-      console.log("PAN already exists"); // Log if PAN exists
+      // console.log("PAN already exists"); // Log if PAN exists
       return res.status(409).json({ error: "PAN number already exists" });
     }
 
@@ -26,7 +26,7 @@ export default async function POST(req: NextApiRequest, res: NextApiResponse) {
       // Save user data with PAN number as the document ID
       const userRef = doc(collection(db, "users"), userData.pan);
       await setDoc(userRef, userData); // Set the document with user data
-      console.log("User added with PAN number:", userData.pan); // Log the new user PAN number
+      // console.log("User added with PAN number:", userData.pan); // Log the new user PAN number
       res.status(201).json({ id: userData.pan, ...userData });
     } catch (error) {
       console.error("Error adding user:", error);
