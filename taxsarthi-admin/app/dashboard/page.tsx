@@ -7,6 +7,7 @@ import Upload from "@/components/Upload";
 import UsersCards from "@/components/UsersCards";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import * as XLSX from "xlsx";
 
 type UserTask = {
   id: string;
@@ -25,7 +26,7 @@ type UserTask = {
 };
 
 const page: React.FC = () => {
-  const [tableData, setTableData] = useState<UserTask[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [filteredData, setFilteredData] = useState<UserTask[]>([]);
 
@@ -33,62 +34,75 @@ const page: React.FC = () => {
     setSearchText(event.target.value);
   };
 
-  // Fetch punched users and merge with users
   const fetchPunchedData = async () => {
-    const punchedRes = await fetch("/api/user-data?status=punched");
-    const punchedData = await punchedRes.json();
-    const punchedTasks = punchedData?.tasks || [];
+    setIsLoading(true); // Start loading
+    try {
+      const punchedRes = await fetch("/api/user-data?status=punched");
+      if (!punchedRes.ok) throw new Error("Failed to fetch punched data");
+      const punchedData = await punchedRes.json();
+      console.log("Punched Data:", punchedData);
   
-    const usersRes = await fetch("/user-data");
-    const usersData = await usersRes.json();
-    const usersTasks = usersData?.tasks || [];
+      const punchedTasks = punchedData?.tasks || [];
   
-    const usersMap = new Map(usersTasks.map((user: UserTask) => [user.id, user]));
+      const usersRes = await fetch("/api/user-data");
+      if (!usersRes.ok) throw new Error("Failed to fetch user data");
+      const usersData = await usersRes.json();
+      console.log("User Data:", usersData);
   
-    // Merge punched tasks with user details and assign serial numbers
-    const updatedTasks = punchedTasks.map((punchedTask: UserTask, index: number) => {
-      const userDetails = usersMap.get(punchedTask.id) || {};
-      return {
-        ...userDetails,
-        ...punchedTask,
-        srNo: index + 1, // Assign serial number based on the index
-      };
-    });
+      const usersTasks = usersData?.tasks || [];
+      const usersMap = new Map(usersTasks.map((user: UserTask) => [user.id, user]));
   
-    setFilteredData(updatedTasks);
-  };
+      const updatedTasks = punchedTasks.map((punchedTask: UserTask, index: number) => {
+        const userDetails = usersMap.get(punchedTask.id) || {};
+        return {
+          ...userDetails,
+          ...punchedTask,
+          srNo: index + 1,
+        };
+      });
   
-
-  // Fetch all table data
-  const fetchTableData = async (type: string) => {
-    if (type === "punched") {
-      await fetchPunchedData();
-      return; 
+      setFilteredData(updatedTasks);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setIsLoading(false); // End loading
     }
-  
-    const res = await fetch("/api/user-data");
-    const data = await res.json();
-    const tasks = data?.tasks || [];
-  
-    // Assign serial numbers for all users
-    const updatedTasks = tasks.map((task: UserTask, index: number) => ({
-      ...task,
-      srNo: index + 1,
-    }));
-  
-    const filteredTasks = updatedTasks.filter((task: UserTask) => {
-      if (type === "assigned") return task.assign; 
-      return true; // Show all for "all"
-    });
-  
-    // Reassign srNo based on the filteredTasks after filtering
-    const finalTasks = filteredTasks.map((task: UserTask, index: number) => ({
-      ...task,
-      srNo: index + 1, // Reassign serial numbers for displayed tasks
-    }));
-  
-    setFilteredData(finalTasks);
   };  
+
+  const fetchTableData = async (type: string) => {
+    setIsLoading(true); // Start loading
+    try {
+      if (type === "punched") {
+        await fetchPunchedData();
+        return;
+      }
+
+      const res = await fetch("/api/user-data");
+      const data = await res.json();
+      const tasks = data?.tasks || [];
+
+      const updatedTasks = tasks.map((task: UserTask, index: number) => ({
+        ...task,
+        srNo: index + 1,
+      }));
+
+      const filteredTasks = updatedTasks.filter((task: UserTask) => {
+        if (type === "assigned") return task.assign;
+        return true; // Show all for "all"
+      });
+
+      const finalTasks = filteredTasks.map((task: UserTask, index: number) => ({
+        ...task,
+        srNo: index + 1,
+      }));
+
+      setFilteredData(finalTasks);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setIsLoading(false); // End loading
+    }
+  };
 
   const handleCardClick = (type: string) => {
     fetchTableData(type);
@@ -104,8 +118,11 @@ const page: React.FC = () => {
     )
   );
 
-  const handleDownload = () => {
-    console.log("Download button clicked");
+  const handleExport = () => {
+    const worksheet = XLSX.utils.json_to_sheet(filteredRows);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
+    XLSX.writeFile(workbook, "data.xlsx");
   };
 
   return (
@@ -128,13 +145,19 @@ const page: React.FC = () => {
             <Button variant="default">
               <Link href="/adduser">Add User</Link>
             </Button>
-            <Button variant="default" onClick={handleDownload}>
+            <Button variant="default" onClick={handleExport}>
               Download
             </Button>
           </div>
         </div>
         <div>
-          <DataTable rows={filteredRows} />
+          {/* {isLoading ? (
+            <div className="flex justify-center items-center h-32">
+              <span>Loading...</span> 
+            </div>
+          ) : ( */}
+            <DataTable loading={isLoading} rows={filteredRows} />
+          {/* )} */}
         </div>
       </div>
     </div>

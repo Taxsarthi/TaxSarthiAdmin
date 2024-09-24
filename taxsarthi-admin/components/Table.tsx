@@ -25,6 +25,7 @@ type UserTask = {
 
 type Props = {
   rows: UserTask[];
+  loading: boolean;
 };
 
 const assignOptions = ["John Doe", "Jane Doe", "Alice Smith", "Bob Johnson"];
@@ -111,11 +112,18 @@ const columns: GridColDef[] = [
   },
 ];
 
-const Table: React.FC<Props> = ({ rows }) => {
+const Table: React.FC<Props> = ({ rows, loading }) => {
   return (
     <div>
       <DataGrid
       autoHeight
+      loading={loading}
+      slotProps={{
+        loadingOverlay: {
+          variant: 'skeleton',
+          noRowsVariant: 'skeleton',
+        },
+      }}
         rows={rows}
         columns={columns}
         processRowUpdate={(newRow) => newRow}

@@ -174,6 +174,7 @@ const AddUser = (props: Props) => {
           <Input
             id="fullName"
             name="fullName"
+            placeholder="Full Name"
             value={formData.fullName}
             onChange={handleInputChange}
             required
@@ -184,6 +185,7 @@ const AddUser = (props: Props) => {
           <Input
             id="pan"
             name="pan"
+            placeholder="PAN"
             value={formData.pan}
             onChange={handleInputChange}
             required
@@ -195,6 +197,7 @@ const AddUser = (props: Props) => {
             id="mobile"
             name="mobile"
             type="tel"
+            placeholder="Mobile"
             value={formData.mobile}
             onChange={handleInputChange}
             required
@@ -206,6 +209,7 @@ const AddUser = (props: Props) => {
             id="email"
             name="email"
             type="email"
+            placeholder="Email"
             value={formData.email}
             onChange={handleInputChange}
             required
@@ -219,6 +223,7 @@ const AddUser = (props: Props) => {
             id="password"
             name="password"
             type="password"
+            placeholder="Password"
             value={formData.password}
             onChange={handleInputChange}
             required
@@ -313,6 +318,7 @@ const AddUser = (props: Props) => {
           <Input
             id="city"
             name="city"
+            placeholder="City"
             value={formData.city}
             onChange={handleInputChange}
           />
@@ -322,6 +328,7 @@ const AddUser = (props: Props) => {
           <Input
             id="area"
             name="area"
+            placeholder="Area"
             value={formData.area}
             onChange={handleInputChange}
           />
@@ -333,6 +340,7 @@ const AddUser = (props: Props) => {
             id="fees"
             name="fees"
             type="number"
+            placeholder="0"
             min={0}
             value={formData.fees}
             onChange={handleInputChange}
@@ -344,6 +352,7 @@ const AddUser = (props: Props) => {
             id="discount"
             name="discount"
             type="number"
+            placeholder="0"
             min={0}
             value={formData.discount}
             onChange={handleInputChange}
@@ -355,6 +364,7 @@ const AddUser = (props: Props) => {
             id="finalFees"
             name="finalFees"
             type="number"
+            placeholder="0"
             min={0}
             value={formData.finalFees}
             readOnly
@@ -366,6 +376,7 @@ const AddUser = (props: Props) => {
             id="feesPaid"
             name="feesPaid"
             type="number"
+            placeholder="0"
             min={0}
             value={formData.feesPaid}
             onChange={handleInputChange}
@@ -377,6 +388,7 @@ const AddUser = (props: Props) => {
             id="feesPending"
             name="feesPending"
             type="number"
+            placeholder="0"
             min={0}
             value={formData.feesPending}
             readOnly
@@ -390,7 +402,7 @@ const AddUser = (props: Props) => {
         </Button>
         <Button
           type="submit"
-          disabled={loading || !formData.email || !formData.password}
+          disabled={loading || !formData.email || !formData.password || !formData.userType || !formData.itrType || !formData.services.length || !formData.city || !formData.area || !formData.fees || !formData.discount || !formData.feesPaid}
           className="flex items-center justify-center"
         >
           {loading ? (
