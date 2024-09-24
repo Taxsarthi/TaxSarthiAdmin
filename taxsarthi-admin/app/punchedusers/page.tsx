@@ -21,6 +21,7 @@ type Props = {};
 const page: React.FC<Props> = (props: Props) => {
   const [searchText, setSearchText] = useState("");
   const [tableData, setTableData] = useState<UserTask[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchPunchedData();
@@ -37,6 +38,7 @@ const page: React.FC<Props> = (props: Props) => {
   );
 
   const fetchPunchedData = async () => {
+    setLoading(true);
     // Fetch punched users
     const punchedRes = await fetch("/api/user-data?status=punched");
     const punchedData = await punchedRes.json();
@@ -59,8 +61,8 @@ const page: React.FC<Props> = (props: Props) => {
         srNo: index + 1, // Add serial number
       };
     });
-
     setTableData(updatedTasks);
+    setLoading(false);
   };
 
   return (
@@ -88,7 +90,7 @@ const page: React.FC<Props> = (props: Props) => {
 
       {/* Table Section */}
       <div>
-        <PunchedUsersTable rows={filteredRows} />
+        <PunchedUsersTable rows={filteredRows} loading = {loading} />
       </div>
     </div>
   );

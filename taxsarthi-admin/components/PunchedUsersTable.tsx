@@ -3,7 +3,10 @@ import { DataGrid, GridColDef, GridRowsProp } from "@mui/x-data-grid";
 import React from "react";
 import UploadDocs from "./UploadDocs";
 
-type Props = {};
+type Props = {
+  rows: GridRowsProp;
+  loading: boolean;
+};
 
 const columns: GridColDef[] = [
   {
@@ -45,13 +48,21 @@ const columns: GridColDef[] = [
 
 type PunchedUsersTableProps = {
   rows: GridRowsProp;
+  loading: boolean;
 };
 
-const PunchedUsersTable: React.FC<PunchedUsersTableProps> = ({ rows }) => {
+const PunchedUsersTable: React.FC<PunchedUsersTableProps> = ({ rows, loading }) => {
   return (
     <div>
       <DataGrid
         autoHeight
+        loading={loading}
+        slotProps={{
+          loadingOverlay: {
+            variant: 'skeleton',
+            noRowsVariant: 'skeleton',
+          },
+        }}
         rows={rows}
         columns={columns}
         initialState={{
