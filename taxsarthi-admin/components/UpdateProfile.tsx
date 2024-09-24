@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
-import { signOut } from "firebase/auth";
+import { signOut, updatePassword } from "firebase/auth"; // Import updatePassword
 import { auth, db } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
@@ -34,6 +34,8 @@ export function UpdateProfile() {
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  
+  // Notice interface
   interface Notice {
     id: string;
     notice: string;
@@ -46,7 +48,7 @@ export function UpdateProfile() {
     setPasswords({ ...passwords, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setSuccess(false);
@@ -61,12 +63,19 @@ export function UpdateProfile() {
         return;
       }
     }
-
-    // console.log("Updated user:", user);
-    toast.success(`Updated notice: ${notice}`);
+    
     if (passwords.new) {
-      // console.log("New password:", passwords.new);
-      toast.success("Password updated successfully");
+      try {
+        if (user) {
+          await updatePassword(user, passwords.new); 
+        } else {
+          setError("User is not authenticated");
+        }
+        toast.success("Password updated successfully");
+      } catch (error) {
+        setError("Failed to update password");
+        console.error("Error updating password:", error);
+      }
     }
 
     setSuccess(true);
@@ -134,7 +143,6 @@ export function UpdateProfile() {
 
     const data = await response.json();
     if (response.ok) {
-      // Remove the deleted notice from the state
       setAllNotices((prevNotices: Notice[]) =>
         prevNotices.filter((notice) => notice.id !== id)
       );
@@ -178,11 +186,7 @@ export function UpdateProfile() {
                 id="email"
                 name="email"
                 type="email"
-                value={
-                  user && user.email
-                    ? getBaseEmail(user.email)
-                    : "nouser@gmail.com"
-                }
+                value={user && user.email ? getBaseEmail(user.email) : "nouser@gmail.com"}
                 disabled
               />
             </CardContent>
@@ -269,7 +273,7 @@ export function UpdateProfile() {
               <CardDescription>View active notices here</CardDescription>
             </CardHeader>
             <CardContent className="space-y-2">
-              {allNotices.map((notice: any) => (
+              {allNotices.map((notice) => (
                 <div key={notice.id} className="flex justify-between p-1">
                   <p className="text-sm font-semibold">{notice.notice}</p>
                   <div className="flex gap-2">
