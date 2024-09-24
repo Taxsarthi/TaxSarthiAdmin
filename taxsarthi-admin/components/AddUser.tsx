@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Checkbox } from "./ui/checkbox";
@@ -39,8 +39,22 @@ const AddUser = (props: Props) => {
     feesPending: "",
   });
 
-  const [loading, setLoading] = useState(false); // Loading state
+  const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    const fees = parseInt(formData.fees) || 0;
+    const discount = parseInt(formData.discount) || 0;
+    const feesPaid = parseInt(formData.feesPaid) || 0;
+
+    const calculatedFinalFees = Math.max(fees - discount, 0);
+    const calculatedFeesPending = Math.max(calculatedFinalFees - feesPaid, 0);
+
+    setFormData((prev) => ({
+      ...prev,
+      finalFees: calculatedFinalFees.toString(),
+      feesPending: calculatedFeesPending.toString(),
+    }));
+  }, [formData.fees, formData.discount, formData.feesPaid]);
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -312,6 +326,7 @@ const AddUser = (props: Props) => {
             onChange={handleInputChange}
           />
         </div>
+        {/* Fees and Discount Inputs */}
         <div className="space-y-2">
           <Label htmlFor="fees">Fees</Label>
           <Input
@@ -342,7 +357,7 @@ const AddUser = (props: Props) => {
             type="number"
             min={0}
             value={formData.finalFees}
-            onChange={handleInputChange}
+            readOnly
           />
         </div>
         <div className="space-y-2">
@@ -364,7 +379,7 @@ const AddUser = (props: Props) => {
             type="number"
             min={0}
             value={formData.feesPending}
-            onChange={handleInputChange}
+            readOnly
           />
         </div>
       </div>
