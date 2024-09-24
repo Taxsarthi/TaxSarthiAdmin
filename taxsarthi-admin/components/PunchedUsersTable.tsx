@@ -35,9 +35,11 @@ const columns: GridColDef[] = [
     field: "Acknowledgement",
     headerName: "Acknowledgement",
     width: 150,
-    renderCell: () => <div className="flex justify-center pt-4">
-    <UploadDocs />
-    </div>,
+    renderCell: () => (
+      <div className="flex justify-center pt-4">
+        <UploadDocs />
+      </div>
+    ),
   },
 ];
 
@@ -49,6 +51,7 @@ const PunchedUsersTable: React.FC<PunchedUsersTableProps> = ({ rows }) => {
   return (
     <div>
       <DataGrid
+        autoHeight
         rows={rows}
         columns={columns}
         initialState={{

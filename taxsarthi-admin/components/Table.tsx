@@ -115,6 +115,7 @@ const Table: React.FC<Props> = ({ rows }) => {
   return (
     <div>
       <DataGrid
+      autoHeight
         rows={rows}
         columns={columns}
         processRowUpdate={(newRow) => newRow}

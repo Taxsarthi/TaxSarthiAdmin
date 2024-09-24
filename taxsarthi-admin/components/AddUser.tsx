@@ -61,7 +61,7 @@ const AddUser = (props: Props) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true); // Set loading to true
+    setLoading(true);
 
     try {
       const response = await fetch("/api/add-user", {
@@ -84,14 +84,14 @@ const AddUser = (props: Props) => {
 
       const result = await response.json();
       toast.success("User added successfully");
-      console.log(result); // Log the user ID and data if needed
+      console.log(result);
 
       router.push("/dashboard");
     } catch (error) {
-      console.error("Error adding user:", error);
+      console.error(error);
       toast.error("Failed to add user");
     } finally {
-      setLoading(false); // Reset loading state
+      setLoading(false);
     }
   };
 

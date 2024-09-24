@@ -1,21 +1,20 @@
-import {
-    collection,
-    query,
-    getDocs,
-} from "firebase/firestore";
+import { NextApiRequest, NextApiResponse } from "next";
+import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { NextResponse } from "next/server";
-import { NextRequest } from "next/server";
 
-export async function GET(req: NextRequest) {
-    const q = query(collection(db, "queries"));
-    const querySnapshot = await getDocs(q);
-    const tasks: { [key: string]: any }[] = [];
-    querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        if (data && typeof data === 'object') {
-            tasks.push({ ...data, id: doc.id });
-        }
-    });
-    return NextResponse.json({ tasks });
+export async function PUT(req: NextApiRequest, res: NextApiResponse) {
+    const { id, updates } = req.body;
+
+    if (!id || !updates) {
+      return res.status(400).json({ message: "Missing id or updates" });
+    }
+
+    try {
+      const queryRef = doc(db, "queries", id);
+      await updateDoc(queryRef, updates);
+      return res.json({ message: "Update successful" });
+    } catch (error) {
+      console.error("Error updating document:", error);
+      return res.status(500).json({ message: "Error updating document" });
+    }
 }

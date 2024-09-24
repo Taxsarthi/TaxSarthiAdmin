@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import {
   Dialog,
@@ -28,89 +28,8 @@ import {
   SelectValue,
 } from "./ui/select";
 import { Button } from "./ui/button";
-
-const accordionData = [
-  {
-    id: "item-1",
-    clientName: "ClientName",
-    pan: "BPANS8131R",
-    phoneNumber: "9876543210",
-    companyType: "Private Co.",
-    raisedOn: "04/09/2024",
-  },
-  {
-    id: "item-2",
-    clientName: "ClientName",
-    pan: "BPANS8131R",
-    phoneNumber: "9876543210",
-    companyType: "Private Co.",
-    raisedOn: "04/09/2024",
-  },
-  {
-    id: "item-3",
-    clientName: "ClientName",
-    pan: "BPANS8131R",
-    phoneNumber: "9876543210",
-    companyType: "Private Co.",
-    raisedOn: "04/09/2024",
-  },
-  {
-    id: "item-4",
-    clientName: "ClientName",
-    pan: "BPANS8131R",
-    phoneNumber: "9876543210",
-    companyType: "Private Co.",
-    raisedOn: "04/09/2024",
-  },
-  {
-    id: "item-5",
-    clientName: "ClientName",
-    pan: "BPANS8131R",
-    phoneNumber: "9876543210",
-    companyType: "Private Co.",
-    raisedOn: "04/09/2024",
-  },
-  {
-    id: "item-6",
-    clientName: "ClientName",
-    pan: "BPANS8131R",
-    phoneNumber: "9876543210",
-    companyType: "Private Co.",
-    raisedOn: "04/09/2024",
-  },
-  {
-    id: "item-7",
-    clientName: "ClientName",
-    pan: "BPANS8131R",
-    phoneNumber: "9876543210",
-    companyType: "Private Co.",
-    raisedOn: "04/09/2024",
-  },
-  {
-    id: "item-8",
-    clientName: "ClientName",
-    pan: "BPANS8131R",
-    phoneNumber: "9876543210",
-    companyType: "Private Co.",
-    raisedOn: "04/09/2024",
-  },
-  {
-    id: "item-9",
-    clientName: "ClientName",
-    pan: "BPANS8131R",
-    phoneNumber: "9876543210",
-    companyType: "Private Co.",
-    raisedOn: "04/09/2024",
-  },
-  {
-    id: "item-10",
-    clientName: "ClientName",
-    pan: "BPANS8131R",
-    phoneNumber: "9876543210",
-    companyType: "Private Co.",
-    raisedOn: "04/09/2024",
-  },
-];
+import { collection, query, getDocs } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 type Status = "pending" | "underprocess" | "resolved" | "";
 
@@ -118,36 +37,107 @@ type AccordionItemData = {
   id: string;
   clientName: string;
   pan: string;
-  phoneNumber: string;
-  companyType: string;
-  raisedOn: string;
+  phone: string;
+  query: string;
+  raisedOn: string; // Converted to string
+  deleteOn: string; // Converted to string
+  resolution: string;
+  resolvedBy: string; // Added resolvedBy field
+  status: Status;
+  userType: string;
 };
 
 const QueriesPopup = () => {
-  const [statuses, setStatuses] = useState<Record<string, Status>>(
-    accordionData.reduce((acc, item) => {
-      acc[item.id] = "";
-      return acc;
-    }, {} as Record<string, Status>)
-  );
+  const [accordionData, setAccordionData] = useState<AccordionItemData[]>([]);
+  const [statuses, setStatuses] = useState<Record<string, Status>>({});
 
-  const handleStatusChange = (id: string, newStatus: Status) => {
+  useEffect(() => {
+    const fetchQueries = async () => {
+      try {
+        const q = query(collection(db, "queries"));
+        const querySnapshot = await getDocs(q);
+        const tasks: AccordionItemData[] = [];
+        querySnapshot.forEach((doc) => {
+          const data = doc.data() as AccordionItemData;
+
+          // Convert Firestore timestamps to readable strings
+          const raisedOnDate = (data.raisedOn as any).seconds
+            ? new Date((data.raisedOn as any).seconds * 1000).toLocaleString()
+            : '';
+
+          const deleteOnDate = (data.deleteOn as any).seconds
+            ? new Date((data.deleteOn as any).seconds * 1000).toLocaleString()
+            : '';
+
+          tasks.push({
+            ...data,
+            id: doc.id,
+            raisedOn: raisedOnDate,
+            deleteOn: deleteOnDate,
+          });
+        });
+        console.log("Fetched tasks:", tasks); // Debugging log
+        setAccordionData(tasks);
+        setStatuses(tasks.reduce((acc, item) => {
+          acc[item.id] = item.status; // Initialize with status from Firestore
+          return acc;
+        }, {} as Record<string, Status>));
+      } catch (error) {
+        console.error("Error fetching queries:", error);
+      }
+    };
+
+    fetchQueries();
+  }, []);
+
+  const updateQuery = async (id: string, updates: Partial<AccordionItemData>) => {
+    try {
+      const response = await fetch('/api/queries', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id, updates }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update query');
+      }
+
+      const result = await response.json();
+      console.log(result.message); // Optional: handle success message
+    } catch (error) {
+      console.error("Error updating query:", error);
+    }
+  };
+
+  const handleStatusChange = async (id: string, newStatus: Status) => {
     setStatuses((prevStatuses) => ({
       ...prevStatuses,
       [id]: newStatus,
     }));
+    await updateQuery(id, { status: newStatus }); // Update Firestore via API
+  };
+
+  const handleResolvedByChange = async (id: string, newResolvedBy: string) => {
+    setAccordionData((prevData) =>
+      prevData.map((item) =>
+        item.id === id ? { ...item, resolvedBy: newResolvedBy } : item
+      )
+    );
+    await updateQuery(id, { resolvedBy: newResolvedBy }); // Update Firestore via API
   };
 
   const getStatusColor = (status: Status) => {
     switch (status) {
       case "pending":
-        return "bg-red-300";
+        return "border border-red-500 bg-red-100";
       case "underprocess":
-        return "bg-yellow-200";
+        return "border border-yellow-500 bg-yellow-100";
       case "resolved":
-        return "bg-green-400";
+        return "border border-green-500 bg-green-100";
       default:
-        return "bg-gray-200";
+        return "border border-gray-500 bg-gray-100";
     }
   };
 
@@ -176,39 +166,38 @@ const QueriesPopup = () => {
                       value={item.id}
                     >
                       <AccordionTrigger className="hover:no-underline flex justify-between">
-                        <span>{item.clientName}</span>
+                        <span>{item.clientName || 'Client'}</span>
                         <div className="flex justify-center gap-2">
-                          <span>{item.pan}</span>
-                          <span>{item.phoneNumber}</span>
-                          <span>{item.companyType}</span>
+                          <span>{item.pan}</span>|
+                          <span>{item.phone}</span>
                         </div>
                       </AccordionTrigger>
                       <AccordionContent className="flex flex-col gap-2">
-                        <Input
-                          type="text"
-                          placeholder="Query ..."
-                          disabled
-                        />
+                        <Input type="text" className="font-bold text-black" value={item.query} placeholder="Query ..." disabled />
                         <Input type="text" placeholder="Feedback by Team ..." />
                         <div className="flex gap-2 justify-center items-center">
-                          <Select>
+                          <Select
+                            value={item.resolvedBy} // Set value from item
+                            onValueChange={async (value) =>
+                              await handleResolvedByChange(item.id, value)
+                            }
+                          >
                             <SelectTrigger className="w-[180px]">
                               <SelectValue placeholder="Contacted via" />
                             </SelectTrigger>
                             <SelectContent>
                               <SelectGroup>
-                                <SelectLabel>Contacted via</SelectLabel>
+                                <SelectLabel>Resolved By</SelectLabel>
                                 <SelectItem value="call">Call</SelectItem>
-                                <SelectItem value="whatsapp">
-                                  Whatsapp
-                                </SelectItem>
+                                <SelectItem value="whatsapp">Whatsapp</SelectItem>
                                 <SelectItem value="visit">Visit</SelectItem>
                               </SelectGroup>
                             </SelectContent>
                           </Select>
                           <Select
-                            onValueChange={(value) =>
-                              handleStatusChange(item.id, value as Status)
+                            value={statuses[item.id]} // Set value from state
+                            onValueChange={async (value) =>
+                              await handleStatusChange(item.id, value as Status)
                             }
                           >
                             <SelectTrigger className="w-[180px]">
@@ -218,19 +207,17 @@ const QueriesPopup = () => {
                               <SelectGroup>
                                 <SelectLabel>Status</SelectLabel>
                                 <SelectItem value="pending">Pending</SelectItem>
-                                <SelectItem value="underprocess">
-                                  Under Process
-                                </SelectItem>
-                                <SelectItem value="resolved">
-                                  Resolved
-                                </SelectItem>
+                                <SelectItem value="underprocess">Under Process</SelectItem>
+                                <SelectItem value="resolved">Resolved</SelectItem>
                               </SelectGroup>
                             </SelectContent>
                           </Select>
                         </div>
                         <p className="text-xs">
-                          Raised On:{" "}
-                          <span className="font-semibold">{item.raisedOn}</span>
+                          Raised On: <span className="font-semibold">{item.raisedOn}</span>
+                        </p>
+                        <p className="text-xs">
+                          Delete On: <span className="font-semibold">{item.deleteOn}</span>
                         </p>
                       </AccordionContent>
                     </AccordionItem>
@@ -240,7 +227,7 @@ const QueriesPopup = () => {
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-          <Button variant="default">Add Query</Button>
+            <Button variant="default">Add Query</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

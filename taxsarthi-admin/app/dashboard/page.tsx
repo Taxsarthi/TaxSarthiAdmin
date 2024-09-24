@@ -39,7 +39,7 @@ const page: React.FC = () => {
     const punchedData = await punchedRes.json();
     const punchedTasks = punchedData?.tasks || [];
   
-    const usersRes = await fetch("/api/user-data");
+    const usersRes = await fetch("/user-data");
     const usersData = await usersRes.json();
     const usersTasks = usersData?.tasks || [];
   

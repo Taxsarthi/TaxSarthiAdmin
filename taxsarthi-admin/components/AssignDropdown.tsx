@@ -25,11 +25,9 @@ const AssignDropdown: React.FC<AssignDropdownProps> = ({
   options,
   placeholder,
 }) => {
-  // Initialize state with either the provided value or the placeholder
   const [selectedItem, setSelectedItem] = useState<string>(value || placeholder);
 
   useEffect(() => {
-    // Update the state if the prop value changes
     setSelectedItem(value || placeholder);
   }, [value]);
 
