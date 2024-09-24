@@ -16,11 +16,11 @@ type UserTask = {
   itrType: string;
   area: string;
   city: string;
-  fees: number;
-  paidFees: number;
-  pendingFees: number;
+  Fees: number;
+  PaidFees: number;
+  PendingFees: number;
   assign?: string;
-  status?: string;
+  lastStatus?: string;
 };
 
 type Props = {

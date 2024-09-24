@@ -17,11 +17,11 @@ type UserTask = {
   itrType: string;
   area: string;
   city: string;
-  fees: number;
-  paidFees: number;
-  pendingFees: number;
+  Fees: number;
+  PaidFees: number;
+  PendingFees: number;
   assign?: string;
-  status?: string;
+  lastStatus?: string;
   srNo?: number;
 };
 
@@ -30,7 +30,9 @@ const page: React.FC = () => {
   const [searchText, setSearchText] = useState("");
   const [filteredData, setFilteredData] = useState<UserTask[]>([]);
 
-  const handleSearchChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+  const handleSearchChange: React.ChangeEventHandler<HTMLInputElement> = (
+    event
+  ) => {
     setSearchText(event.target.value);
   };
 
@@ -41,33 +43,37 @@ const page: React.FC = () => {
       if (!punchedRes.ok) throw new Error("Failed to fetch punched data");
       const punchedData = await punchedRes.json();
       console.log("Punched Data:", punchedData);
-  
+
       const punchedTasks = punchedData?.tasks || [];
-  
+
       const usersRes = await fetch("/api/user-data");
       if (!usersRes.ok) throw new Error("Failed to fetch user data");
       const usersData = await usersRes.json();
       console.log("User Data:", usersData);
-  
+
       const usersTasks = usersData?.tasks || [];
-      const usersMap = new Map(usersTasks.map((user: UserTask) => [user.id, user]));
-  
-      const updatedTasks = punchedTasks.map((punchedTask: UserTask, index: number) => {
-        const userDetails = usersMap.get(punchedTask.id) || {};
-        return {
-          ...userDetails,
-          ...punchedTask,
-          srNo: index + 1,
-        };
-      });
-  
+      const usersMap = new Map(
+        usersTasks.map((user: UserTask) => [user.id, user])
+      );
+
+      const updatedTasks = punchedTasks.map(
+        (punchedTask: UserTask, index: number) => {
+          const userDetails = usersMap.get(punchedTask.id) || {};
+          return {
+            ...userDetails,
+            ...punchedTask,
+            srNo: index + 1,
+          };
+        }
+      );
+
       setFilteredData(updatedTasks);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
       setIsLoading(false); // End loading
     }
-  };  
+  };
 
   const fetchTableData = async (type: string) => {
     setIsLoading(true); // Start loading
@@ -119,10 +125,38 @@ const page: React.FC = () => {
   );
 
   const handleExport = () => {
-    const worksheet = XLSX.utils.json_to_sheet(filteredRows);
+    const exportData = filteredRows.map(
+      ({
+        name,
+        mobile,
+        pan,
+        itrType,
+        area,
+        city,
+        Fees,
+        PaidFees,
+        PendingFees,
+        assign,
+        lastStatus,
+      }) => ({
+        name,
+        mobile,
+        pan,
+        itrType,
+        area,
+        city,
+        Fees,
+        PaidFees,
+        PendingFees,
+        assign,
+        lastStatus,
+      })
+    );
+
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
-    XLSX.writeFile(workbook, "data.xlsx");
+    XLSX.writeFile(workbook, "user_data.xlsx");
   };
 
   return (
@@ -156,7 +190,7 @@ const page: React.FC = () => {
               <span>Loading...</span> 
             </div>
           ) : ( */}
-            <DataTable loading={isLoading} rows={filteredRows} />
+          <DataTable loading={isLoading} rows={filteredRows} />
           {/* )} */}
         </div>
       </div>
