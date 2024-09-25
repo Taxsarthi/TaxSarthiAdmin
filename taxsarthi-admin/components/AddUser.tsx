@@ -22,7 +22,7 @@ type Props = {};
 const AddUser = (props: Props) => {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    fullName: "",
+    name: "",
     pan: "",
     mobile: "",
     email: "",
@@ -32,33 +32,66 @@ const AddUser = (props: Props) => {
     services: [] as string[],
     city: "",
     area: "",
-    fees: "",
+    Fees: "",
     discount: "",
-    finalFees: "",
-    feesPaid: "",
-    feesPending: "",
+    FinalFees: "",
+    PaidFees: "",
+    PendingFees: "",
   });
 
   const [loading, setLoading] = useState(false);
+  const [isPanValid, setIsPanValid] = useState(true); // State to track PAN validity
 
   useEffect(() => {
-    const fees = parseInt(formData.fees) || 0;
+    const Fees = parseInt(formData.Fees) || 0;
     const discount = parseInt(formData.discount) || 0;
-    const feesPaid = parseInt(formData.feesPaid) || 0;
+    const PaidFees = parseInt(formData.PaidFees) || 0;
 
-    const calculatedFinalFees = Math.max(fees - discount, 0);
-    const calculatedFeesPending = Math.max(calculatedFinalFees - feesPaid, 0);
+    const calculatedFinalFees = Math.max(Fees - discount, 0);
+    const calculatedFeesPending = Math.max(calculatedFinalFees - PaidFees, 0);
 
     setFormData((prev) => ({
       ...prev,
-      finalFees: calculatedFinalFees.toString(),
-      feesPending: calculatedFeesPending.toString(),
+      FinalFees: calculatedFinalFees.toString(),
+      PendingFees: calculatedFeesPending.toString(),
     }));
-  }, [formData.fees, formData.discount, formData.feesPaid]);
+  }, [formData.Fees, formData.discount, formData.PaidFees]);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+
+    // Check if PAN is entered and validate it
+    if (name === "pan") {
+      validatePan(value);
+    }
   };
+
+  const validatePan = async (pan: string) => {
+    if (pan) {
+      try {
+        const response = await fetch(`/api/add-user?pan=${pan}`);
+        console.log('Response:', response); // Log the response
+        if (response.ok) {
+          const data = await response.json();
+          setIsPanValid(!data.exists);
+          if (!data.exists) {
+            toast.success("PAN is valid.");
+          } else {
+            toast.error("PAN number already exists.");
+          }
+        } else {
+          toast.error("Failed to validate PAN. Status: " + response.status);
+        }
+      } catch (error) {
+        console.error("Error validating PAN:", error);
+        toast.error("Failed to validate PAN.");
+      }
+    } else {
+      setIsPanValid(true); // Reset if PAN is cleared
+    }
+  };
+  
 
   const handleSelectChange = (name: string) => (value: string) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -78,8 +111,8 @@ const AddUser = (props: Props) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isValidEmail(formData.email) || !isValidMobile(formData.mobile)) {
-      toast.error("Invalid email or mobile number.");
+    if (!isPanValid || !isValidEmail(formData.email) || !isValidMobile(formData.mobile)) {
+      toast.error("Invalid PAN, email, or mobile number.");
       return;
     }
     setLoading(true);
@@ -106,7 +139,7 @@ const AddUser = (props: Props) => {
       const result = await response.json();
       toast.success("User added successfully");
       setFormData({
-        fullName: "",
+        name: "",
         pan: "",
         mobile: "",
         email: "",
@@ -116,11 +149,11 @@ const AddUser = (props: Props) => {
         services: [],
         city: "",
         area: "",
-        fees: "",
+        Fees: "",
         discount: "",
-        finalFees: "",
-        feesPaid: "",
-        feesPending: "",
+        FinalFees: "",
+        PaidFees: "",
+        PendingFees: "",
       });
       console.log(result);
 
@@ -134,7 +167,7 @@ const AddUser = (props: Props) => {
   };
 
   const generatePassword = () => {
-    const fullNameParts = formData.fullName.trim().split(" ");
+    const fullNameParts = formData.name.trim().split(" ");
     const firstName = fullNameParts[0];
     const generatedPassword = `${firstName}@123`;
     setFormData((prev) => ({ ...prev, password: generatedPassword }));
@@ -173,9 +206,9 @@ const AddUser = (props: Props) => {
           <Label htmlFor="fullName">Full Name</Label>
           <Input
             id="fullName"
-            name="fullName"
+            name="name"
             placeholder="Full Name"
-            value={formData.fullName}
+            value={formData.name}
             onChange={handleInputChange}
             required
           />
@@ -278,16 +311,16 @@ const AddUser = (props: Props) => {
             <SelectContent>
               <SelectGroup>
                 <SelectLabel>ITR Type</SelectLabel>
-                <SelectItem value="itr0">ITR-0 - NIL</SelectItem>
-                <SelectItem value="itr1">ITR-1 - Salary</SelectItem>
-                <SelectItem value="itr2">ITR-2 - Salary + Shares</SelectItem>
-                <SelectItem value="itr3">ITR-3 - Business + Shares</SelectItem>
-                <SelectItem value="itr4">ITR-4 - Business</SelectItem>
-                <SelectItem value="itr5">
+                <SelectItem value="ITR-0">ITR-0 - NIL</SelectItem>
+                <SelectItem value="ITR-1">ITR-1 - Salary</SelectItem>
+                <SelectItem value="ITR-2">ITR-2 - Salary + Shares</SelectItem>
+                <SelectItem value="ITR-3">ITR-3 - Business + Shares</SelectItem>
+                <SelectItem value="ITR-4">ITR-4 - Business</SelectItem>
+                <SelectItem value="ITR-5">
                   ITR-5 - Partnership Firm/LLP
                 </SelectItem>
-                <SelectItem value="itr6">ITR-6 - Company</SelectItem>
-                <SelectItem value="itr7">ITR-7 - Trust</SelectItem>
+                <SelectItem value="ITR-6">ITR-6 - Company</SelectItem>
+                <SelectItem value="ITR-7">ITR-7 - Trust</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -338,11 +371,11 @@ const AddUser = (props: Props) => {
           <Label htmlFor="fees">Fees</Label>
           <Input
             id="fees"
-            name="fees"
+            name="Fees"
             type="number"
             placeholder="0"
             min={0}
-            value={formData.fees}
+            value={formData.Fees}
             onChange={handleInputChange}
           />
         </div>
@@ -362,11 +395,11 @@ const AddUser = (props: Props) => {
           <Label htmlFor="finalFees">Final Fees</Label>
           <Input
             id="finalFees"
-            name="finalFees"
+            name="FinalFees"
             type="number"
             placeholder="0"
             min={0}
-            value={formData.finalFees}
+            value={formData.FinalFees}
             readOnly
           />
         </div>
@@ -374,11 +407,11 @@ const AddUser = (props: Props) => {
           <Label htmlFor="feesPaid">Fees Paid</Label>
           <Input
             id="feesPaid"
-            name="feesPaid"
+            name="PaidFees"
             type="number"
             placeholder="0"
             min={0}
-            value={formData.feesPaid}
+            value={formData.PaidFees}
             onChange={handleInputChange}
           />
         </div>
@@ -386,11 +419,11 @@ const AddUser = (props: Props) => {
           <Label htmlFor="feesPending">Fees Pending</Label>
           <Input
             id="feesPending"
-            name="feesPending"
+            name="PendingFees"
             type="number"
             placeholder="0"
             min={0}
-            value={formData.feesPending}
+            value={formData.PendingFees}
             readOnly
           />
         </div>
@@ -402,7 +435,7 @@ const AddUser = (props: Props) => {
         </Button>
         <Button
           type="submit"
-          disabled={loading || !formData.email || !formData.password || !formData.userType || !formData.itrType || !formData.services.length || !formData.city || !formData.area || !formData.fees || !formData.discount || !formData.feesPaid}
+          disabled={loading || !formData.email || !formData.password || !isPanValid}
           className="flex items-center justify-center"
         >
           {loading ? (
