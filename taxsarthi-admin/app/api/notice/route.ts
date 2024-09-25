@@ -7,9 +7,7 @@ import {
     doc
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { NextResponse } from "next/server";
-
-import { NextRequest } from 'next/server';
+import { NextResponse, NextRequest } from "next/server";
 
 export async function GET(req: NextRequest, res: NextResponse) {
     try {
