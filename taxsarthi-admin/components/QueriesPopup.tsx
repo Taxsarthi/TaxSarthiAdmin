@@ -27,6 +27,7 @@ import {
   SelectValue,
 } from "./ui/select";
 import { Button } from "./ui/button";
+import Loader from "./ui/loader";
 
 type Status = "pending" | "underprocess" | "resolved" | "";
 
@@ -205,15 +206,8 @@ const QueriesPopup = () => {
             <DialogTitle>Queries</DialogTitle>
             <DialogDescription>
               <div className="p-2">
-                {loading ? ( // Conditional rendering for loader
-                  <div className="flex items-center justify-center">
-                    <div className="flex flex-col items-center">
-                      <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-green-500"></div>
-                      <p className="mt-4 text-lg text-slate-900 font-semibold">
-                        Loading...
-                      </p>
-                    </div>
-                  </div>
+                {loading ? ( 
+                  <Loader/>
                 ) : (
                   <Accordion
                     type="single"

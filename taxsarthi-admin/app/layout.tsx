@@ -9,6 +9,7 @@ import { useUser } from "@/lib/auth";
 import { useEffect, useState } from "react";
 import { auth } from "@/lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
+import Loader from "@/components/ui/loader";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -36,14 +37,7 @@ export default function RootLayout({
     return (
       <html lang="en" suppressHydrationWarning>
         <body className={`${inter.className} bg-gray-100 dark:bg-gray-900 p-2`}>
-          <div className="flex items-center justify-center h-screen">
-            <div className="flex flex-col items-center">
-              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-green-500"></div>
-              <p className="mt-4 text-lg text-slate-900 font-semibold">
-                Loading...
-              </p>
-            </div>
-          </div>
+          <Loader/>
         </body>
       </html>
     );
