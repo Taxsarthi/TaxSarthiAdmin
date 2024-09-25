@@ -1,25 +1,41 @@
 import { db } from "@/lib/firebase";
-import { collection, query, where, getDocs } from "firebase/firestore";
-import { NextRequest, NextResponse } from 'next/server';
+import { collection, doc, setDoc, query, where, getDocs } from "firebase/firestore";
+import { NextRequest } from 'next/server';
 
-export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const pan = searchParams.get("pan");
+export async function POST(req: NextRequest) {
+  const userData = await req.json();
+  console.log("Received userData:", userData); 
 
-  if (!pan) {
-    return NextResponse.json({ error: "PAN number is required" }, { status: 400 });
+  // Check if PAN already exists
+  const panQuery = query(collection(db, "users"), where("pan", "==", userData.pan));
+  const querySnapshot = await getDocs(panQuery);
+
+  if (!querySnapshot.empty) {
+    return new Response(JSON.stringify({ exists: true }), {
+      status: 409, 
+      headers: {
+        "content-type": "application/json",
+      },
+    });
   }
 
   try {
-    const panQuery = query(collection(db, "users"), where("pan", "==", pan));
-    const querySnapshot = await getDocs(panQuery);
-
-    // Check if the PAN exists
-    const exists = !querySnapshot.empty;
-
-    return NextResponse.json({ exists });
+    const userRef = doc(collection(db, "users"), userData.pan);
+    await setDoc(userRef, userData); // Set the document with user data
+    return new Response(JSON.stringify({ message: "User added successfully", userId: userData.pan }), {
+      status: 201, // Created status code
+      headers: {
+        "content-type": "application/json",
+      },
+    });
   } catch (error) {
-    console.error("Error checking PAN:", error);
-    return NextResponse.json({ error: "Failed to check PAN" }, { status: 500 });
+    console.error("Error adding user:", error);
+    return new Response(JSON.stringify({ error: "Failed to add user" }), {
+      status: 500, // Internal Server Error status code
+      headers: {
+        "content-type": "application/json",
+      },
+    });
   }
 }
+
