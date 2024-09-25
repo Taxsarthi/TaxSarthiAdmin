@@ -28,6 +28,7 @@ import {
 } from "./ui/select";
 import { Button } from "./ui/button";
 import Loader from "./ui/loader";
+import toast from "react-hot-toast";
 
 type Status = "pending" | "underprocess" | "resolved" | "";
 
@@ -67,11 +68,11 @@ const QueriesPopup = () => {
   });
   const [isNewQueryOpen, setIsNewQueryOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false); // Loading state
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchQueries = async () => {
-      setLoading(true); // Start loading
+      setLoading(true);
       try {
         const response = await fetch("/api/queries");
         if (!response.ok) throw new Error("Failed to fetch queries");
@@ -98,17 +99,14 @@ const QueriesPopup = () => {
       } catch (error) {
         console.error("Error fetching queries:", error);
       } finally {
-        setLoading(false); // End loading
+        setLoading(false);
       }
     };
 
     fetchQueries();
   }, []);
 
-  const updateQuery = async (
-    id: string,
-    updates: Partial<AccordionItemData>
-  ) => {
+  const updateQuery = async (id: string, updates: Partial<AccordionItemData>) => {
     try {
       const response = await fetch("/api/queries", {
         method: "PUT",
@@ -163,19 +161,27 @@ const QueriesPopup = () => {
         },
         body: JSON.stringify(newQuery),
       });
-
+  
       if (!response.ok) {
         const errorData = await response.json();
+        console.error("Error details:", errorData);
         setError(errorData.message);
+        toast.error(errorData.message);
         return;
       }
-
+  
+      const result = await response.json();
       setAccordionData((prev) => [...prev, { ...newQuery, id: newQuery.pan }]);
       resetNewQuery();
       setIsNewQueryOpen(false);
     } catch (error) {
-      setError("Error adding new query.");
       console.error("Error adding new query:", error);
+      setError("Error adding new query.");
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Error adding new query");
+      }
     }
   };
 
@@ -206,21 +212,15 @@ const QueriesPopup = () => {
             <DialogTitle>Queries</DialogTitle>
             <DialogDescription>
               <div className="p-2">
-                {loading ? ( 
-                  <Loader/>
+                {loading ? (
+                  <Loader />
                 ) : (
-                  <Accordion
-                    type="single"
-                    className="flex flex-col gap-2"
-                    collapsible
-                  >
+                  <Accordion type="single" className="flex flex-col gap-2" collapsible>
                     {accordionData.map((item) => (
                       <AccordionItem
                         key={item.id}
-                        className={`border px-2 rounded-lg ${
-                          statusColors[item.status]
-                        }`}
-                        value={item.id}
+                        className={`border px-2 rounded-lg ${statusColors[item.status]}`}
+                        value={item.pan}
                       >
                         <AccordionTrigger className="hover:no-underline flex justify-between">
                           <span>{item.clientName || "Client"}</span>
@@ -257,9 +257,7 @@ const QueriesPopup = () => {
                                 <SelectGroup>
                                   <SelectLabel>Resolved By</SelectLabel>
                                   <SelectItem value="call">Call</SelectItem>
-                                  <SelectItem value="whatsapp">
-                                    Whatsapp
-                                  </SelectItem>
+                                  <SelectItem value="whatsapp">Whatsapp</SelectItem>
                                   <SelectItem value="visit">Visit</SelectItem>
                                 </SelectGroup>
                               </SelectContent>
@@ -276,15 +274,9 @@ const QueriesPopup = () => {
                               <SelectContent>
                                 <SelectGroup>
                                   <SelectLabel>Status</SelectLabel>
-                                  <SelectItem value="pending">
-                                    Pending
-                                  </SelectItem>
-                                  <SelectItem value="underprocess">
-                                    Under Process
-                                  </SelectItem>
-                                  <SelectItem value="resolved">
-                                    Resolved
-                                  </SelectItem>
+                                  <SelectItem value="pending">Pending</SelectItem>
+                                  <SelectItem value="underprocess">Under Process</SelectItem>
+                                  <SelectItem value="resolved">Resolved</SelectItem>
                                 </SelectGroup>
                               </SelectContent>
                             </Select>
@@ -292,22 +284,20 @@ const QueriesPopup = () => {
                           <p className="text-xs">
                             Raised On:{" "}
                             <span className="font-semibold">
-                              {typeof item.raisedOn === "string"
-                                ? item.raisedOn
-                                : ""}
+                              {typeof item.raisedOn === "string" ? item.raisedOn : ""}
                             </span>
                           </p>
                         </AccordionContent>
                       </AccordionItem>
                     ))}
-                    {isNewQueryOpen && (
-                      <AccordionItem
-                        className="border px-2 rounded-lg"
-                        value="new-query"
+                    <AccordionItem className="border px-2 rounded-lg" value="newQuery">
+                      <AccordionTrigger
+                        className="flex justify-between cursor-pointer"
+                        onClick={() => setIsNewQueryOpen(!isNewQueryOpen)}
                       >
-                        <AccordionTrigger className="flex justify-between">
-                          <span>Add New Query</span>
-                        </AccordionTrigger>
+                        <span>Add New Query</span>
+                      </AccordionTrigger>
+                      {isNewQueryOpen && (
                         <AccordionContent className="flex flex-col gap-2">
                           <div className="grid grid-cols-3 gap-2">
                             <Input
@@ -355,22 +345,10 @@ const QueriesPopup = () => {
                               })
                             }
                           />
-                          <Input
-                            type="text"
-                            placeholder="User Type"
-                            value={newQuery.userType}
-                            onChange={(e) =>
-                              setNewQuery({
-                                ...newQuery,
-                                userType: e.target.value,
-                              })
-                            }
-                          />
-                          {error && <p className="text-red-500">{error}</p>}
                           <Button onClick={handleAddQuery}>Add Query</Button>
                         </AccordionContent>
-                      </AccordionItem>
-                    )}
+                      )}
+                    </AccordionItem>
                   </Accordion>
                 )}
               </div>

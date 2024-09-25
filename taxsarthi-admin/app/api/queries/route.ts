@@ -1,4 +1,4 @@
-import { collection, getDocs, doc, updateDoc, addDoc } from "firebase/firestore";
+import { collection, getDocs, doc, updateDoc, addDoc, setDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -32,9 +32,14 @@ export async function PUT(req: NextRequest) {
 
 // POST: Add a new query
 export async function POST(req: NextRequest) {
-  const newQuery = req.body;
   try {
-    await addDoc(collection(db, "queries"), newQuery);
+    const newQuery = await req.json(); // Parse the request body as JSON
+
+    // Use the PAN number as the document ID
+    const docRef = doc(collection(db, "queries"), newQuery.pan);
+
+    await setDoc(docRef, newQuery); // Save the new query with the PAN as ID
+
     return NextResponse.json({ message: "Query added successfully" });
   } catch (error) {
     console.error("Error adding query:", error);
