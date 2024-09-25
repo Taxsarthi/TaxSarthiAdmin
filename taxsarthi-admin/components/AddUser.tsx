@@ -40,7 +40,7 @@ const AddUser = (props: Props) => {
   });
 
   const [loading, setLoading] = useState(false);
-  const [isPanValid, setIsPanValid] = useState(true); // State to track PAN validity
+  const [isPanValid, setIsPanValid] = useState(true); 
 
   useEffect(() => {
     const Fees = parseInt(formData.Fees) || 0;
@@ -62,36 +62,44 @@ const AddUser = (props: Props) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
 
     // Check if PAN is entered and validate it
-    if (name === "pan") {
-      validatePan(value);
-    }
+    // if (name === "pan") {
+    //   validatePan(value);
+    // }
   };
 
-  const validatePan = async (pan: string) => {
-    if (pan) {
-      try {
-        const response = await fetch(`/api/add-user?pan=${pan}`);
-        console.log('Response:', response); // Log the response
-        if (response.ok) {
-          const data = await response.json();
-          setIsPanValid(!data.exists);
-          if (!data.exists) {
-            toast.success("PAN is valid.");
-          } else {
-            toast.error("PAN number already exists.");
-          }
-        } else {
-          toast.error("Failed to validate PAN. Status: " + response.status);
-        }
-      } catch (error) {
-        console.error("Error validating PAN:", error);
-        toast.error("Failed to validate PAN.");
-      }
-    } else {
-      setIsPanValid(true); // Reset if PAN is cleared
-    }
-  };
+  // const validatePan = async (pan: string) => {
+  //   if (pan) {
+  //     try {
+  //       const response = await fetch(`/api/add-user`, { // New endpoint
+  //         method: 'POST',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //         },
+  //         body: JSON.stringify({ pan }), // Send the PAN in the request body
+  //       });
   
+  //       console.log('Response:', response); // Log the response
+  
+  //       if (response.ok) {
+  //         const data = await response.json();
+  //         setIsPanValid(!data.exists);
+  //         if (!data.exists) {
+  //           toast.success("PAN is valid.");
+  //         } else {
+  //           toast.error("PAN number already exists.");
+  //         }
+  //       } else {
+  //         toast.error("Error checking PAN.");
+  //       }
+  //     } catch (error) {
+  //       console.error("Error validating PAN:", error);
+  //       toast.error("Failed to validate PAN.");
+  //     }
+  //   } else {
+  //     setIsPanValid(true); // Reset if PAN is cleared
+  //   }
+  // };
+   
 
   const handleSelectChange = (name: string) => (value: string) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -128,7 +136,7 @@ const AddUser = (props: Props) => {
 
       if (response.status === 409) {
         const errorData = await response.json();
-        toast.error(errorData.error);
+        toast.error("PAN already exists");
         return;
       }
 

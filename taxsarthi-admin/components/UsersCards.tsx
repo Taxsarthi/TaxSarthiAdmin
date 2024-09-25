@@ -47,8 +47,8 @@ const UsersCards: React.FC<UsersCardsProps> = ({ onCardClick }) => {
           <Card 
             icon={<FaUsers />} 
             count={userCount.toString()} 
-            title="Users" 
-            isActive={activeCard === "all"} // Pass isActive prop
+            title="Total Users" 
+            isActive={activeCard === "all"} 
           />
         </button>
         <button onClick={() => handleCardClick("assigned")}>
@@ -56,7 +56,7 @@ const UsersCards: React.FC<UsersCardsProps> = ({ onCardClick }) => {
             icon={<FaUserCheck />}
             count={assignedCount.toString()}
             title="Assigned"
-            isActive={activeCard === "assigned"} // Pass isActive prop
+            isActive={activeCard === "assigned"} 
           />
         </button>
         <button onClick={() => handleCardClick("punched")}>

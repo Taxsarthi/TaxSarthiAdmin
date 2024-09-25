@@ -5,18 +5,27 @@ import EditUser from './EditUser';
 import Remarks from './Remarks';
 import Link from 'next/link';
 
-type Props = {};
+type UserData = {
+  remark: string; // Specify remark as a string
+};
 
-const Actions: React.FC<Props> = () => {
+type Props = {
+  userData: UserData; // Adjust type to reflect the data structure
+};
+
+const Actions: React.FC<Props> = ({ userData }) => {
   return (
     <div className="flex justify-start items-center h-full">
       <div className="flex space-x-2">
         <ActionButton icon={<FaDownload />} label="Download" color="text-slate-900" />
-        <EditUser/>
-        <Remarks/>
-        <Link href="/user"><ActionButton icon={<FaEye />} label="View" color="text-purple-700" /></Link>
+        <EditUser />
+        <Remarks userData={userData} /> {/* Pass userId to Remarks */}
+        <Link href="/user">
+          <ActionButton icon={<FaEye />} label="View" color="text-purple-700" />
+        </Link>
       </div>
     </div>
   );
 };
+
 export default Actions;
