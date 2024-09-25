@@ -3,7 +3,6 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -11,10 +10,15 @@ import {
 import { UploadCloudIcon } from "lucide-react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
+import { storage } from "../lib/firebase"; // Ensure this is the correct import
+import { ref, uploadBytes } from "firebase/storage";
+import toast from "react-hot-toast";
 
-type Props = {};
+type Props = {
+  userData: { name: string; email: string; mobile: string; pan: string; srNo: number };
+};
 
-const Upload: React.FC<Props> = () => {
+const UploadDocs: React.FC<Props> = ({ userData }) => {
   const [files, setFiles] = useState<FileList | null>(null);
   const [fileNames, setFileNames] = useState<string[]>([]);
 
@@ -27,6 +31,36 @@ const Upload: React.FC<Props> = () => {
     }
   };
 
+  const handleUpload = async () => {
+    if (files) {
+      const baseFolder = "ITRAAcknowledgement"; // Base folder
+      const currentAY = "AY-2024-25"; // Current academic year
+      const folderPath = `${baseFolder}/${currentAY}/`; // Complete path
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+
+        // Check if the file type is PDF
+        if (file.type !== "application/pdf") {
+          toast.error(`Only PDF files are allowed: ${file.name}`);
+          continue; // Skip this file
+        }
+
+        const fileName = `${userData.pan}_ITRAcknowledgement${file.name.substring(file.name.lastIndexOf('.'))}`; // Create the file name
+        const storageRef = ref(storage, `${folderPath}${fileName}`); // Create the storage reference
+        
+        try {
+          await uploadBytes(storageRef, file);
+          console.log("Uploaded file:", fileName);
+          toast.success(`File uploaded: ${fileName}`);
+        } catch (error) {
+          console.error("Upload failed:", error);
+          toast.error(`Failed to upload file: ${fileName}`);
+        }
+      }
+    }
+  };
+
   return (
     <Dialog>
       <DialogTrigger>
@@ -34,14 +68,14 @@ const Upload: React.FC<Props> = () => {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Upload Document</DialogTitle>
+          <DialogTitle>Upload Document for {userData.name}</DialogTitle>
           <DialogDescription className="gap-3 pt-4 flex flex-col">
             <Input
               id="picture"
               type="file"
-              // multiple
               onChange={handleFileChange}
               className="cursor-pointer"
+              accept=".pdf" // Accept only PDF files
             />
             <div className="flex flex-col gap-2 mt-4">
               {fileNames.length > 0 ? (
@@ -57,15 +91,7 @@ const Upload: React.FC<Props> = () => {
               )}
             </div>
             <div className="flex gap-4 mt-4">
-              <Button
-                onClick={() => {
-                  if (files) {
-                    console.log("Uploading files:", files);
-                  }
-                }}
-              >
-                Upload
-              </Button>
+              <Button onClick={handleUpload}>Upload</Button>
               <Button variant="outline">Cancel</Button>
             </div>
           </DialogDescription>
@@ -75,4 +101,4 @@ const Upload: React.FC<Props> = () => {
   );
 };
 
-export default Upload;
+export default UploadDocs;

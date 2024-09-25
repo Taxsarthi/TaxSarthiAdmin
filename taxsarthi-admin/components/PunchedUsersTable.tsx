@@ -38,9 +38,9 @@ const columns: GridColDef[] = [
     field: "Acknowledgement",
     headerName: "Acknowledgement",
     width: 150,
-    renderCell: () => (
+    renderCell: (params) => (
       <div className="flex justify-center pt-4">
-        <UploadDocs />
+        <UploadDocs userData={params.row} />
       </div>
     ),
   },
