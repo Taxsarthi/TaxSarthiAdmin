@@ -21,8 +21,8 @@ type Props = {
 const UploadDocs: React.FC<Props> = ({ userData }) => {
   const [files, setFiles] = useState<FileList | null>(null);
   const [fileNames, setFileNames] = useState<string[]>([]);
+  const [isOpen, setIsOpen] = useState(false); // State for dialog visibility
 
-  // Function to handle file selection
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = event.target.files;
     if (selectedFiles) {
@@ -33,9 +33,11 @@ const UploadDocs: React.FC<Props> = ({ userData }) => {
 
   const handleUpload = async () => {
     if (files) {
-      const baseFolder = "ITRAAcknowledgement"; // Base folder
+      const baseFolder = "ITRAcknowledgement"; // Base folder
       const currentAY = "AY-2024-25"; // Current academic year
       const folderPath = `${baseFolder}/${currentAY}/`; // Complete path
+
+      let uploadSuccessful = true; // Track if uploads were successful
 
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
@@ -43,6 +45,7 @@ const UploadDocs: React.FC<Props> = ({ userData }) => {
         // Check if the file type is PDF
         if (file.type !== "application/pdf") {
           toast.error(`Only PDF files are allowed: ${file.name}`);
+          uploadSuccessful = false; // Mark as unsuccessful
           continue; // Skip this file
         }
 
@@ -56,15 +59,22 @@ const UploadDocs: React.FC<Props> = ({ userData }) => {
         } catch (error) {
           console.error("Upload failed:", error);
           toast.error(`Failed to upload file: ${fileName}`);
+          uploadSuccessful = false; // Mark as unsuccessful
         }
+      }
+
+      if (uploadSuccessful) {
+        setIsOpen(false); // Close the dialog if all uploads were successful
       }
     }
   };
 
   return (
-    <Dialog>
-      <DialogTrigger>
-        <UploadCloudIcon />
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild>
+        <Button>
+          <UploadCloudIcon />
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -92,7 +102,7 @@ const UploadDocs: React.FC<Props> = ({ userData }) => {
             </div>
             <div className="flex gap-4 mt-4">
               <Button onClick={handleUpload}>Upload</Button>
-              <Button variant="outline">Cancel</Button>
+              <Button variant="outline" onClick={() => setIsOpen(false)}>Cancel</Button>
             </div>
           </DialogDescription>
         </DialogHeader>
