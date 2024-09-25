@@ -12,9 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
-import { signOut, updatePassword } from "firebase/auth"; // Import updatePassword
+import { signOut, updatePassword, signInWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
@@ -32,10 +30,7 @@ export function UpdateProfile() {
     new: "",
     confirm: "",
   });
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
-  
-  // Notice interface
+
   interface Notice {
     id: string;
     notice: string;
@@ -50,35 +45,49 @@ export function UpdateProfile() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
-    setSuccess(false);
 
     if (passwords.new || passwords.confirm || passwords.current) {
       if (passwords.new !== passwords.confirm) {
-        setError("New passwords do not match");
+        toast.error("New passwords do not match");
         return;
       }
       if (passwords.new.length < 8) {
-        setError("New password must be at least 8 characters long");
+        toast.error("New password must be at least 8 characters long");
+        return;
+      }
+      if (passwords.new === passwords.current) {
+        toast.error("New password cannot be the same as the current password");
         return;
       }
     }
-    
+
     if (passwords.new) {
       try {
         if (user) {
-          await updatePassword(user, passwords.new); 
+          // Authenticate with current password
+          if (user.email) {
+            await signInWithEmailAndPassword(auth, user.email, passwords.current);
+          } else {
+            toast.error("User email is not available");
+            return;
+          }
+          
+          // If authentication is successful, update the password
+          await updatePassword(user, passwords.new);
+          toast.success("Password updated successfully");
+          handleLogout();
         } else {
-          setError("User is not authenticated");
+          toast.error("User is not authenticated");
         }
-        toast.success("Password updated successfully");
       } catch (error) {
-        setError("Failed to update password");
         console.error("Error updating password:", error);
+        if ((error as { code: string }).code === "auth/wrong-password") {
+          toast.error("Current password is incorrect");
+        } else {
+          toast.error("Failed to update password");
+        }
       }
     }
-
-    setSuccess(true);
   };
 
   const handleLogout = async () => {
@@ -88,23 +97,13 @@ export function UpdateProfile() {
       router.push("/");
     } catch (error) {
       console.error("Logout error:", error);
+      toast.error("Failed to log out");
     }
-  };
-
-  const getBaseEmail = (email: string) => {
-    const atIndex = email.indexOf("@");
-    const plusIndex = email.indexOf("+");
-
-    if (plusIndex !== -1 && atIndex > plusIndex) {
-      return email.slice(0, plusIndex) + email.slice(atIndex);
-    }
-
-    return email;
   };
 
   const handleAddNotice = async () => {
     if (!notice.trim() || !expiryDate) {
-      console.log("Notice and expiry date are required");
+      toast.error("Notice and expiry date are required");
       return;
     }
 
@@ -126,10 +125,15 @@ export function UpdateProfile() {
     }
   };
 
-  const displayNotices = async () => {
-    const response = await fetch("/api/notice");
-    const data = await response.json();
-    setAllNotices(data.notices);
+  const getBaseEmail = (email: string) => {
+    const atIndex = email.indexOf("@");
+    const plusIndex = email.indexOf("+");
+  
+    if (plusIndex !== -1 && atIndex > plusIndex) {
+      return email.slice(0, plusIndex) + email.slice(atIndex);
+    }
+  
+    return email;
   };
 
   const deleteNotice = async (id: string) => {
@@ -143,13 +147,20 @@ export function UpdateProfile() {
 
     const data = await response.json();
     if (response.ok) {
-      setAllNotices((prevNotices: Notice[]) =>
+      setAllNotices((prevNotices) =>
         prevNotices.filter((notice) => notice.id !== id)
       );
       toast.success(data.message);
     } else {
-      console.error(data.error); // Handle error
+      console.error(data.error);
+      toast.error("Failed to delete notice");
     }
+  };
+
+  const displayNotices = async () => {
+    const response = await fetch("/api/notice");
+    const data = await response.json();
+    setAllNotices(data.notices);
   };
 
   useEffect(() => {
@@ -158,22 +169,6 @@ export function UpdateProfile() {
 
   return (
     <div className="container mx-auto py-10">
-      {error && (
-        <Alert variant="destructive" className="mb-6">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Error</AlertTitle>
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
-      {success && (
-        <Alert className="mb-6 bg-green-100 text-green-800 border-green-300">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Success</AlertTitle>
-          <AlertDescription>
-            Your profile has been updated successfully.
-          </AlertDescription>
-        </Alert>
-      )}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="md:col-span-2 space-y-6">
           <Card>
@@ -186,8 +181,12 @@ export function UpdateProfile() {
                 id="email"
                 name="email"
                 type="email"
-                value={user && user.email ? getBaseEmail(user.email) : "nouser@gmail.com"}
-                disabled
+                value={
+                  user && typeof user !== "boolean" && user.email
+                    ? getBaseEmail(user.email)
+                    : "nouser@gmail.com"
+                }
+                readOnly
               />
             </CardContent>
             <CardFooter className="gap-4">
