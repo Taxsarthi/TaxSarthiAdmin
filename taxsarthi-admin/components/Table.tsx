@@ -267,6 +267,7 @@ const columns: GridColDef[] = [
     sortable: false,
     field: "actions",
     headerName: "Actions",
+    type: "actions",
     width: 200,
     renderCell: (params) => <Actions userData={params.row} />,
   },
