@@ -16,11 +16,14 @@ import { useRouter } from "next/navigation";
 import { Label } from "./ui/label";
 import toast from "react-hot-toast";
 import { Copy } from "lucide-react";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
 
 type Props = {};
 
 const AddUser = (props: Props) => {
   const router = useRouter();
+  const db = getFirestore();
+
   const [formData, setFormData] = useState({
     name: "",
     pan: "",
@@ -40,7 +43,8 @@ const AddUser = (props: Props) => {
   });
 
   const [loading, setLoading] = useState(false);
-  const [isPanValid, setIsPanValid] = useState(true); 
+  const [isPanValid, setIsPanValid] = useState(true);
+  const [errors, setErrors] = useState<{ pan: string }>({ pan: '' });
 
   useEffect(() => {
     const Fees = parseInt(formData.Fees) || 0;
@@ -57,49 +61,32 @@ const AddUser = (props: Props) => {
     }));
   }, [formData.Fees, formData.discount, formData.PaidFees]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
 
-    // Check if PAN is entered and validate it
-    // if (name === "pan") {
-    //   validatePan(value);
-    // }
+    if (name === 'pan') {
+      if (isValidPan(value)) {
+        const exists = await checkPanExists(value);
+        if (exists) {
+          setErrors({ ...errors, pan: 'PAN already exists' });
+          setIsPanValid(false);
+        } else {
+          setErrors({ ...errors, pan: '' });
+          setIsPanValid(true);
+        }
+      } else {
+        setErrors({ ...errors, pan: 'Invalid PAN format' });
+        setIsPanValid(false);
+      }
+    }
   };
 
-  // const validatePan = async (pan: string) => {
-  //   if (pan) {
-  //     try {
-  //       const response = await fetch(`/api/add-user`, { // New endpoint
-  //         method: 'POST',
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //         },
-  //         body: JSON.stringify({ pan }), // Send the PAN in the request body
-  //       });
-  
-  //       console.log('Response:', response); // Log the response
-  
-  //       if (response.ok) {
-  //         const data = await response.json();
-  //         setIsPanValid(!data.exists);
-  //         if (!data.exists) {
-  //           toast.success("PAN is valid.");
-  //         } else {
-  //           toast.error("PAN number already exists.");
-  //         }
-  //       } else {
-  //         toast.error("Error checking PAN.");
-  //       }
-  //     } catch (error) {
-  //       console.error("Error validating PAN:", error);
-  //       toast.error("Failed to validate PAN.");
-  //     }
-  //   } else {
-  //     setIsPanValid(true); // Reset if PAN is cleared
-  //   }
-  // };
-   
+  const checkPanExists = async (pan: string) => {
+    const panDocRef = doc(db, "users", pan);
+    const panDoc = await getDoc(panDocRef);
+    return panDoc.exists();
+  };
 
   const handleSelectChange = (name: string) => (value: string) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -114,13 +101,22 @@ const AddUser = (props: Props) => {
     }));
   };
 
-  const isValidEmail = (email: string) => /\S+@\S+\.\S+/.test(email);
-  const isValidMobile = (mobile: string) => /^\d{10}$/.test(mobile);
+  const isValidEmail = (email: string) => {
+    return /\S+@\S+\.\S+/.test(email) || email === "";
+  };
+
+  const isValidMobile = (mobile: string) => {
+    return /^\d{10}$/.test(mobile) || mobile === "";
+  };
+
+  const isValidPan = (pan: string) => {
+    return /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(pan);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isPanValid || !isValidEmail(formData.email) || !isValidMobile(formData.mobile)) {
-      toast.error("Invalid PAN, email, or mobile number.");
+      toast.error("Invalid email, mobile number, or PAN.");
       return;
     }
     setLoading(true);
@@ -207,6 +203,21 @@ const AddUser = (props: Props) => {
     "Shares Below 20L",
   ];
 
+  const isFormComplete = () => {
+    return (
+      formData.name &&
+      formData.pan &&
+      isPanValid &&
+      isValidEmail(formData.email) &&
+      isValidMobile(formData.mobile) &&
+      formData.userType &&
+      formData.itrType &&
+      formData.area &&
+      formData.Fees &&
+      formData.PaidFees
+    );
+  };
+
   return (
     <form onSubmit={handleSubmit} className="max-w-2xl mx-auto space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -231,6 +242,7 @@ const AddUser = (props: Props) => {
             onChange={handleInputChange}
             required
           />
+          {errors.pan && <span className="text-red-500 text-sm">{errors.pan}</span>}
         </div>
         <div className="space-y-2">
           <Label htmlFor="mobile">Mobile</Label>
@@ -290,17 +302,17 @@ const AddUser = (props: Props) => {
             <SelectContent>
               <SelectGroup>
                 <SelectLabel>User Type</SelectLabel>
-                <SelectItem value="police">Police</SelectItem>
-                <SelectItem value="defencepersonal">
+                <SelectItem value="Police">Police</SelectItem>
+                <SelectItem value="Defence Personal">
                   Defence Personal
                 </SelectItem>
-                <SelectItem value="pvtemployee">
+                <SelectItem value="Private Corporate Employee">
                   Private Corporate Employee
                 </SelectItem>
-                <SelectItem value="govtemployee">
+                <SelectItem value="Govt Employee">
                   Government Employee
                 </SelectItem>
-                <SelectItem value="other">
+                <SelectItem value="Other">
                   Self Employed / Freelancer / Student
                 </SelectItem>
               </SelectGroup>
@@ -372,9 +384,9 @@ const AddUser = (props: Props) => {
             placeholder="Area"
             value={formData.area}
             onChange={handleInputChange}
+            required
           />
         </div>
-        {/* Fees and Discount Inputs */}
         <div className="space-y-2">
           <Label htmlFor="fees">Fees</Label>
           <Input
@@ -385,6 +397,7 @@ const AddUser = (props: Props) => {
             min={0}
             value={formData.Fees}
             onChange={handleInputChange}
+            required
           />
         </div>
         <div className="space-y-2">
@@ -418,9 +431,10 @@ const AddUser = (props: Props) => {
             name="PaidFees"
             type="number"
             placeholder="0"
-            min={0}
+            min={200}
             value={formData.PaidFees}
             onChange={handleInputChange}
+            required
           />
         </div>
         <div className="space-y-2">
@@ -443,7 +457,7 @@ const AddUser = (props: Props) => {
         </Button>
         <Button
           type="submit"
-          disabled={loading || !formData.email || !formData.password || !isPanValid}
+          disabled={!isFormComplete() || loading}
           className="flex items-center justify-center"
         >
           {loading ? (
