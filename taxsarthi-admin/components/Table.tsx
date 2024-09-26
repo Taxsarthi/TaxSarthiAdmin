@@ -147,16 +147,20 @@ const AssignCell: React.FC<GridRenderCellParams> = (params) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const currentYear = process.env.NEXT_PUBLIC_CURRENT_YEAR; // Make sure to update this if needed
+        const currentYear = process.env.NEXT_PUBLIC_CURRENT_YEAR; // Ensure to update this if needed
         if (!currentYear) {
           throw new Error("Current year is not defined");
         }
-        const docRef = doc(db, currentYear.toString(), params.row.pan);
+        const docRef = doc(db, "users", params.row.pan);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           const data = docSnap.data();
           if (data.assign) {
             setSelectedAssign(data.assign);
+          } else {
+            // If 'assign' field doesn't exist, set it to a default value or handle accordingly
+            await updateDoc(docRef, { assign: defaultAssign });
+            setSelectedAssign(defaultAssign);
           }
         }
       } catch (error) {
@@ -174,9 +178,10 @@ const AssignCell: React.FC<GridRenderCellParams> = (params) => {
     if (!currentYear) {
       throw new Error("Current year is not defined");
     }
-    const docRef = doc(db, currentYear.toString(), params.row.pan);
+    const docRef = doc(db, "users", params.row.pan);
 
     try {
+      // Update the document with the new assignment
       await updateDoc(docRef, { assign: newAssign });
       setSelectedAssign(newAssign);
       console.log("Assignment updated successfully");
@@ -207,14 +212,12 @@ const AssignCell: React.FC<GridRenderCellParams> = (params) => {
       sx={{
         boxShadow: "none",
         ".MuiOutlinedInput-notchedOutline": { border: 0 },
-        "&.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline":
-                  {
-                    border: 0,
-                  },
-                "&.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                  {
-                    border: 0,
-                  },
+        "&.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+          border: 0,
+        },
+        "&.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+          border: 0,
+        },
       }}
       value={selectedAssign}
       onChange={handleAssignChange}
@@ -235,11 +238,11 @@ const AssignCell: React.FC<GridRenderCellParams> = (params) => {
 const columns: GridColDef[] = [
   { field: "srNo", headerName: "Sr.", width: 80 },
   { field: "name", headerName: "Name", width: 150 },
-  { field: "mobile", headerName: "Mobile", type: "number", width: 150 },
+  { field: "mobile", headerName: "Mobile", type: "number", width: 110 },
   {
     field: "pan",
     headerName: "PAN",
-    width: 150,
+    width: 110,
     cellClassName: "font-semibold",
   },
   { field: "itrType", headerName: "ITR Type", width: 100 },
