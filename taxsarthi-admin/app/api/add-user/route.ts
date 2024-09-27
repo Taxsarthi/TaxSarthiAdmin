@@ -46,7 +46,7 @@ export async function PUT(req: NextRequest) {
   try {
     const userRef = doc(collection(db, "users"), userData.pan);
     await setDoc(userRef, userData, { merge: true }); // Merge the document with user data
-    return new Response(JSON.stringify({ message: "User updated successfully", userId: userData.pan }), {
+    return new Response(JSON.stringify({ userId: userData.pan }), {
       status: 200,
       headers: {
         "content-type": "application/json",

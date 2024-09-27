@@ -14,16 +14,13 @@ import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
 import toast from "react-hot-toast";
 
-type UserData = {
-  remark: string; 
-};
-
 type Props = {
-  userData: UserData; 
+  userData: any; 
 };
 
 const Remarks: React.FC<Props> = ({ userData }) => {
   const [remark, setRemark] = useState(userData.remark || "");
+  const [isOpen, setIsOpen] = useState(false); // State for dialog open/close
 
   // Handle form submission to update the remark
   const handleSubmit = async (e: React.FormEvent) => {
@@ -40,35 +37,39 @@ const Remarks: React.FC<Props> = ({ userData }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ remark }), // Send only the remark
+        body: JSON.stringify({ ...userData, remark }), // Include userData and new remark
       });
 
       if (!response.ok) {
-        throw new Error('Failed to add remark');
+        const errorData = await response.json();
+        throw new Error('Failed to update remark');
       }
 
       const data = await response.json();
-      alert(data.message);
-      setRemark(""); // Clear the remark input after submission
+      toast.success("Remark updated successfully!");
+      setRemark(data.updatedRemark || remark); // Update the remark state with the response
+      
+      // Close the dialog on success
+      setIsOpen(false);
     } catch (error) {
-      console.error("Error adding remark:", error);
-      toast.error("Failed to add remark");
+      console.error("Error updating remark:", error);
+      toast.error(error instanceof Error ? error.message : "Failed to update remark");
     }
   };
 
-  // Optional: Effect to sync initial userData remark
   useEffect(() => {
-    setRemark(userData.remark);
+    setRemark(userData.remark || "");
   }, [userData.remark]);
 
   return (
     <div>
-      <Dialog>
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger>
           <ActionButton
             icon={<FaRegComment />}
             label="Remark"
             color="text-yellow-600"
+            onClick={() => setIsOpen(true)} // Open the dialog
           />
         </DialogTrigger>
         <DialogContent className="max-w-[60vw] max-h-[80vh] overflow-y-auto">
@@ -86,7 +87,7 @@ const Remarks: React.FC<Props> = ({ userData }) => {
                 />
                 <div className="flex justify-end gap-4 mt-4">
                   <DialogClose>
-                    <Button variant="outline" type="button">
+                    <Button variant="outline" type="button" onClick={() => setIsOpen(false)}>
                       Cancel
                     </Button>
                   </DialogClose>

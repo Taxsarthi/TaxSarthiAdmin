@@ -210,7 +210,7 @@ const EditUser = ({ userData }: Props) => {
                       Cancel
                     </Button>
                   </DialogClose>
-                  <Button variant="outline" type="submit">
+                  <Button type="submit">
                     Edit
                   </Button>
                 </div>
