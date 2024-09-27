@@ -269,7 +269,10 @@ const columns: GridColDef[] = [
     headerName: "Actions",
     type: "actions",
     width: 200,
-    renderCell: (params) => <Actions userData={params.row} />,
+    renderCell: (params) => {
+      console.log(params.row);
+      return <Actions userData={params.row} />;
+    },
   },
 ];
 
@@ -295,8 +298,8 @@ const Table: React.FC<Props> = ({ rows, loading }) => {
           },
         }}
         disableColumnMenu
-        pageSizeOptions={[10, 25, 50]} // Adding options for page size
-        getRowId={(row) => row.id} // Ensure unique row identifiers
+        pageSizeOptions={[10, 25, 50]}
+        getRowId={(row) => row.id}
       />
     </div>
   );

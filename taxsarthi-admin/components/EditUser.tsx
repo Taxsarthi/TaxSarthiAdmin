@@ -11,37 +11,42 @@ import {
 import { FaEdit } from "react-icons/fa";
 import ActionButton from "./ui/actionbutton";
 import { Button } from "./ui/button";
-import { Input } from "./ui/input";
+import { TextField } from "@mui/material";
 import { Checkbox } from "./ui/checkbox";
+import toast from "react-hot-toast";
 
-type Props = {};
+type Props = {
+  userData: any;
+};
 
-const EditUser = (props: Props) => {
+const EditUser = ({ userData }: Props) => {
   const [formData, setFormData] = useState({
-    fullname: "",
-    pan: "",
-    mobile: "",
-    fees: "",
+    name: userData.name,
+    pan: userData.pan,
+    mobile: userData.mobile,
+    Fees: userData.Fees,
     discount: "",
-    feesPaid: "",
+    PaidFees: userData.PaidFees,
     finalFees: "",
-    feesPending: "",
+    PendingFees: userData.PendingFees,
   });
 
-  useEffect(() => {
-    const fees = parseInt(formData.fees) || 0;
-    const discount = parseInt(formData.discount) || 0;
-    const feesPaid = parseInt(formData.feesPaid) || 0;
+  const [selectedServices, setSelectedServices] = useState<string[]>([]);
 
-    const calculatedFinalFees = Math.max(fees - discount, 0);
-    const calculatedFeesPending = Math.max(calculatedFinalFees - feesPaid, 0);
+  useEffect(() => {
+    const Fees = parseInt(formData.Fees) || 0;
+    const discount = parseInt(formData.discount) || 0;
+    const PaidFees = parseInt(formData.PaidFees) || 0;
+
+    const calculatedFinalFees = Math.max(Fees - discount, 0);
+    const calculatedPendingFees = Math.max(calculatedFinalFees - PaidFees, 0);
 
     setFormData((prev) => ({
       ...prev,
       finalFees: calculatedFinalFees.toString(),
-      feesPending: calculatedFeesPending.toString(),
+      PendingFees: calculatedPendingFees.toString(),
     }));
-  }, [formData.fees, formData.discount, formData.feesPaid]);
+  }, [formData.Fees, formData.discount, formData.PaidFees]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -49,6 +54,39 @@ const EditUser = (props: Props) => {
       ...prev,
       [name]: value,
     }));
+  };
+
+  const handleServiceChange = (service: string) => {
+    setSelectedServices((prev) =>
+      prev.includes(service)
+        ? prev.filter((s) => s !== service)
+        : [...prev, service]
+    );
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await fetch('/api/add-user', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ...formData, selectedServices }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      console.log("User updated successfully:", data);
+      toast.success("User updated successfully");
+
+    } catch (error) {
+      console.error("Error updating user:", error);
+      toast.error("Error updating user");
+    }
   };
 
   return (
@@ -63,65 +101,108 @@ const EditUser = (props: Props) => {
               Edit User Details
             </DialogTitle>
             <DialogDescription>
-              <form className="flex flex-col w-full gap-4">
-                <Input
-                  name="fullname"
-                  value={formData.fullname}
-                  placeholder="Fullname"
-                  readOnly
+              <form
+                className="flex flex-col w-full gap-4"
+                onSubmit={handleSubmit}
+              >
+                <TextField
+                  label="Full Name"
+                  name="name"
+                  value={formData.name}
+                  placeholder="Full Name"
+                  variant="outlined"
+                  size="small"
+                  disabled
                 />
-                <Input
+                <TextField
+                  label="PAN"
                   name="pan"
                   value={formData.pan}
                   placeholder="PAN"
-                  readOnly
+                  variant="outlined"
+                  size="small"
+                  disabled
                 />
-                <Input
+                <TextField
+                  label="Mobile"
                   name="mobile"
                   value={formData.mobile}
                   placeholder="Mobile"
-                  readOnly
+                  variant="outlined"
+                  size="small"
+                  disabled
                 />
-                <h1 className="text-black text-lg">Services</h1>
-                <div className="flex flex-col gap-2">
-                  {["Taxsarthi Portal", "Nil", "Itr Salary", "Itr Business", "Shares below 5L", "Shares below 10L", "Shares below 20L"].map((service) => (
+                <h1 className="text-black text-md">Services</h1>
+                <div className="flex flex-col gap-2 mb-2">
+                  {[
+                    "Taxsarthi Portal",
+                    "Nil",
+                    "Itr Salary",
+                    "Itr Business",
+                    "Shares below 5L",
+                    "Shares below 10L",
+                    "Shares below 20L",
+                  ].map((service) => (
                     <div className="flex gap-2 items-center" key={service}>
-                      <Checkbox id={service} />
-                      <label htmlFor={service} className="text-sm font-medium leading-none">
-                        {service.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+                      <Checkbox
+                        id={service}
+                        checked={selectedServices.includes(service)}
+                        onChange={() => handleServiceChange(service)}
+                      />
+                      <label
+                        htmlFor={service}
+                        className="text-sm font-medium leading-none"
+                      >
+                        {service
+                          .replace(/([A-Z])/g, " $1")
+                          .replace(/^./, (str) => str.toUpperCase())}
                       </label>
                     </div>
                   ))}
                 </div>
-                <Input
-                  name="fees"
-                  value={formData.fees}
+                <TextField
+                  label="Fees"
+                  name="Fees"
+                  value={formData.Fees}
                   onChange={handleInputChange}
-                  placeholder="Fees"
+                  variant="outlined"
+                  size="small"
                 />
-                <Input
+                <TextField
+                  label="Discount"
                   name="discount"
-                  value={formData.discount}
+                  value={formData.discount || 0}
                   onChange={handleInputChange}
                   placeholder="Discount (in Rs.)"
+                  variant="outlined"
+                  size="small"
                 />
-                <Input
+                <TextField
+                  label="Final Fees"
                   name="finalFees"
                   value={formData.finalFees}
                   placeholder="Final Fees"
-                  readOnly
+                  variant="outlined"
+                  size="small"
+                  disabled
                 />
-                <Input
-                  name="feesPaid"
-                  value={formData.feesPaid}
+                <TextField
+                  label="Fees Paid"
+                  name="PaidFees"
+                  value={formData.PaidFees}
                   onChange={handleInputChange}
                   placeholder="Fees Paid"
+                  variant="outlined"
+                  size="small"
                 />
-                <Input
-                  name="feesPending"
-                  value={formData.feesPending}
+                <TextField
+                  label="Fees Pending"
+                  name="PendingFees"
+                  value={formData.PendingFees}
                   placeholder="Fees Pending"
-                  readOnly
+                  variant="outlined"
+                  size="small"
+                  disabled
                 />
                 <div className="flex justify-end gap-4 mt-4">
                   <DialogClose>

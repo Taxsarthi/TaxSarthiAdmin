@@ -39,3 +39,27 @@ export async function POST(req: NextRequest) {
   }
 }
 
+export async function PUT(req: NextRequest) {
+  const userData = await req.json();
+  console.log("Received userData:", userData); 
+
+  try {
+    const userRef = doc(collection(db, "users"), userData.pan);
+    await setDoc(userRef, userData, { merge: true }); // Merge the document with user data
+    return new Response(JSON.stringify({ message: "User updated successfully", userId: userData.pan }), {
+      status: 200,
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+  } catch (error) {
+    console.error("Error updating user:", error);
+    return new Response(JSON.stringify({ error: "Failed to update user" }), {
+      status: 500, // Internal Server Error status code
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+  }
+}
+
