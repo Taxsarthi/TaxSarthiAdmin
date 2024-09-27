@@ -159,7 +159,7 @@ const AddUser = (props: Props) => {
         PaidFees: "",
         PendingFees: "",
       });
-      console.log(result);
+      // console.log(result);
 
       router.push("/dashboard");
     } catch (error) {

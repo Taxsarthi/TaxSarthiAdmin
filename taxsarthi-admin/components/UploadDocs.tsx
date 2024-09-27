@@ -54,7 +54,7 @@ const UploadDocs: React.FC<Props> = ({ userData }) => {
         
         try {
           await uploadBytes(storageRef, file);
-          console.log("Uploaded file:", fileName);
+          // console.log("Uploaded file:", fileName);
           toast.success(`File uploaded: ${fileName}`);
         } catch (error) {
           console.error("Upload failed:", error);

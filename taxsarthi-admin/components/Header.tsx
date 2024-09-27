@@ -37,7 +37,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 
 const Header = (props: Props) => {
   const user = useUser();
-  console.log(user)
+  // console.log(user)
 
   const getRole = (user: any) => {
     if (user.admin === true) {

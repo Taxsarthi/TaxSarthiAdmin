@@ -92,7 +92,7 @@ const StatusCell: React.FC<GridRenderCellParams> = (params) => {
 
       await updateDoc(docRef, { status: statusObject, lastStatus: newStatus });
       setSelectedStatus(newStatus);
-      console.log("Status updated successfully");
+      // console.log("Status updated successfully");
     } catch (error) {
       console.error("Error updating status:", error);
     }
@@ -184,7 +184,7 @@ const AssignCell: React.FC<GridRenderCellParams> = (params) => {
       // Update the document with the new assignment
       await updateDoc(docRef, { assign: newAssign });
       setSelectedAssign(newAssign);
-      console.log("Assignment updated successfully");
+      // console.log("Assignment updated successfully");
     } catch (error) {
       console.error("Error updating assignment:", error);
     }
@@ -270,7 +270,7 @@ const columns: GridColDef[] = [
     type: "actions",
     width: 200,
     renderCell: (params) => {
-      console.log(params.row);
+      // console.log(params.row);
       return <Actions userData={params.row} />;
     },
   },

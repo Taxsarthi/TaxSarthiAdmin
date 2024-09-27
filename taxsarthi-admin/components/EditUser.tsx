@@ -80,7 +80,7 @@ const EditUser = ({ userData }: Props) => {
       }
 
       const data = await response.json();
-      console.log("User updated successfully:", data);
+      // console.log("User updated successfully:", data);
       toast.success("User updated successfully");
 
     } catch (error) {

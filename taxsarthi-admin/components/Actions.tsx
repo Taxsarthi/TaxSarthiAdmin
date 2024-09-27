@@ -16,7 +16,7 @@ const Actions: React.FC<Props> = ({ userData }) => {
         <ActionButton icon={<FaDownload />} label="Download" color="text-slate-900" />
         <EditUser userData={userData}/>
         <Remarks userData={userData} /> {/* Pass userId to Remarks */}
-        <Link href="/user">
+        <Link href={`/user/${userData.pan}`}>
           <ActionButton icon={<FaEye />} label="View" color="text-purple-700" />
         </Link>
       </div>

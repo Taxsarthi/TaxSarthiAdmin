@@ -4,7 +4,7 @@ import { NextRequest } from 'next/server';
 
 export async function POST(req: NextRequest) {
   const userData = await req.json();
-  console.log("Received userData:", userData); 
+  // console.log("Received userData:", userData); 
 
   // Check if PAN already exists
   const panQuery = query(collection(db, "users"), where("pan", "==", userData.pan));
@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
 
 export async function PUT(req: NextRequest) {
   const userData = await req.json();
-  console.log("Received userData:", userData); 
+  // console.log("Received userData:", userData); 
 
   try {
     const userRef = doc(collection(db, "users"), userData.pan);
