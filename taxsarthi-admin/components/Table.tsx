@@ -294,11 +294,11 @@ const Table: React.FC<Props> = ({ rows, loading }) => {
         experimentalFeatures={{}}
         initialState={{
           pagination: {
-            paginationModel: { pageSize: 25, page: 0 },
+            paginationModel: { pageSize: 10, page: 0 },
           },
         }}
         disableColumnMenu
-        pageSizeOptions={[10, 25, 50]}
+        pageSizeOptions={[10, 25, 50, 100]}
         getRowId={(row) => row.id}
       />
     </div>

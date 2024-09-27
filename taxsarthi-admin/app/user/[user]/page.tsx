@@ -58,7 +58,7 @@ const User = (props: Props) => {
           Tax Payable: <span className="text-green-500 p-3">₹ 0000</span>
         </div>
       </div>
-      <ViewUserTabs userPan={pan} />
+      <ViewUserTabs />
     </>
   );
 };
