@@ -73,8 +73,13 @@ export const modifyAndDownloadPDF = async (pan) => {
       sharesBelow5L: "Shares Below 5 Lakhs",
     };
 
-    page.drawText(`${name}`, { x: 10, y: page.getHeight() - 142, size: 12, color: rgb(0, 0, 0) });
-    page.drawText(`${policeStation}`, { x: 10, y: page.getHeight() - 175, size: 12, color: rgb(0, 0, 0) });
+    page.drawText(`${name}`, { x: 10, y: page.getHeight() - 142, size: 12, color: rgb(0, 0, 0) });if (policeStation) {
+      page.drawText(`${policeStation}`, { x: 10, y: page.getHeight() - 175, size: 12, color: rgb(0, 0, 0) });
+    } else {
+      // Optionally, draw an empty space or nothing
+      page.drawText('', { x: 10, y: page.getHeight() - 175, size: 12, color: rgb(0, 0, 0) });
+    }
+    
     page.drawText(`${mobile}`, { x: 60, y: page.getHeight() - 207, size: 12, color: rgb(0, 0, 0) });
 
     for (let i = 0; i < services.length; i++) {
