@@ -3,9 +3,9 @@ import { FaUsers, FaUserCheck } from "react-icons/fa";
 import { RiFileUserLine } from "react-icons/ri";
 import Card from "./Card";
 import {
-  fetchAssignedcount,
-  fetchPunchCount,
-  fetchUserCount,
+  listenToUserCount,
+  listenToPunchCount,
+  listenToAssignedCount,
 } from "@/app/api/user-data/route";
 
 interface UsersCardsProps {
@@ -19,20 +19,15 @@ const UsersCards: React.FC<UsersCardsProps> = ({ onCardClick }) => {
   const [activeCard, setActiveCard] = useState<string>("all");
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const totalUserCount = await fetchUserCount();
-        setUserCount(totalUserCount);
-        const totalAssignedCount = await fetchAssignedcount();
-        setAssignedCount(totalAssignedCount);
-        const totalPunchedCount = await fetchPunchCount();
-        setPunchedCount(totalPunchedCount);
-      } catch (error) {
-        console.error("Error fetching counts: ", error);
-      }
-    };
+    const unsubscribeUser = listenToUserCount(setUserCount);
+    const unsubscribeAssigned = listenToAssignedCount(setAssignedCount);
+    const unsubscribePunch = listenToPunchCount(setPunchedCount);
 
-    fetchData();
+    return () => {
+      unsubscribeUser();
+      unsubscribeAssigned();
+      unsubscribePunch();
+    };
   }, []);
 
   const handleCardClick = (type: string) => {
@@ -46,7 +41,7 @@ const UsersCards: React.FC<UsersCardsProps> = ({ onCardClick }) => {
         <button onClick={() => handleCardClick("all")}>
           <Card 
             icon={<FaUsers />} 
-            count={userCount.toString()} 
+            count={userCount.toString()}  
             title="Total Users" 
             isActive={activeCard === "all"} 
           />
@@ -54,7 +49,7 @@ const UsersCards: React.FC<UsersCardsProps> = ({ onCardClick }) => {
         <button onClick={() => handleCardClick("assigned")}>
           <Card
             icon={<FaUserCheck />}
-            count={assignedCount.toString()}
+            count={assignedCount.toString()}  
             title="Assigned"
             isActive={activeCard === "assigned"} 
           />
@@ -62,7 +57,7 @@ const UsersCards: React.FC<UsersCardsProps> = ({ onCardClick }) => {
         <button onClick={() => handleCardClick("punched")}>
           <Card
             icon={<RiFileUserLine />}
-            count={punchedCount.toString()}
+            count={punchedCount.toString()}  
             title="Punched"
             isActive={activeCard === "punched"}
           />

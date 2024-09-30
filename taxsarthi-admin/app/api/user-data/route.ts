@@ -7,34 +7,39 @@ import {
   DocumentData,
   doc,
   updateDoc,
+  onSnapshot,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { NextResponse, NextRequest } from "next/server";
 
-export const fetchUserCount = async () => {
-  let querySnapshot: QuerySnapshot<DocumentData>;
-  const countQuery = query(collection(db, "users"));
-  querySnapshot = await getDocs(countQuery);
-  return querySnapshot.size;
+export const listenToUserCount = (setUserCount: (count: number) => void) => {
+  const userRef = collection(db, "users");
+  const unsubscribe = onSnapshot(userRef, (snapshot) => {
+    setUserCount(snapshot.size);
+  });
+  return unsubscribe;
 };
 
-export const fetchPunchCount = async () => {
-  let querySnapshot: QuerySnapshot<DocumentData>;
+export const listenToPunchCount = (setPunchedCount: (count: number) => void) => {
   const punchQuery = query(
     collection(db, "2024-25"),
     where("punch", "==", true)
   );
-  querySnapshot = await getDocs(punchQuery);
-  return querySnapshot.size;
+  const unsubscribe = onSnapshot(punchQuery, (snapshot) => {
+    setPunchedCount(snapshot.size);
+  });
+  return unsubscribe;
 };
 
-export const fetchAssignedcount = async () => {
+export const listenToAssignedCount = (setAssignedCount: (count: number) => void) => {
   const assignQuery = query(
     collection(db, "users"),
     where("assign", "!=", null || "")
   );
-  const querySnapshot = await getDocs(assignQuery);
-  return querySnapshot.size;
+  const unsubscribe = onSnapshot(assignQuery, (snapshot) => {
+    setAssignedCount(snapshot.size);
+  });
+  return unsubscribe;
 };
 
 export async function GET(req: NextRequest) {
