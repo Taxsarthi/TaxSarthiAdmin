@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 import { Label } from "./ui/label";
 import toast from "react-hot-toast";
 import { Copy } from "lucide-react";
-import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { getFirestore, doc, getDoc, collection, getDocs } from "firebase/firestore";
 
 type Props = {};
 
@@ -45,6 +45,27 @@ const AddUser = (props: Props) => {
   const [loading, setLoading] = useState(false);
   const [isPanValid, setIsPanValid] = useState(true);
   const [errors, setErrors] = useState<{ pan: string }>({ pan: '' });
+  const [servicesList, setServicesList] = useState<{ name: string; value: number }[]>([]);
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      const itrDocRef = doc(db, "services", "itr");
+      const itrDoc = await getDoc(itrDocRef);
+
+      if (itrDoc.exists()) {
+        const servicesData = itrDoc.data();
+        const servicesArray = Object.entries(servicesData).map(([name, value]) => ({
+          name,
+          value,
+        }));
+        setServicesList(servicesArray);
+      } else {
+        console.error("No such document!");
+      }
+    };
+
+    fetchServices();
+  }, [db]);
 
   useEffect(() => {
     const Fees = parseInt(formData.Fees) || 0;
@@ -92,12 +113,21 @@ const AddUser = (props: Props) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleCheckboxChange = (service: string) => {
+  const handleCheckboxChange = (service: { name: string; value: number }) => {
+    const isChecked = formData.services.includes(service.name);
+    const updatedServices = isChecked
+      ? formData.services.filter((s) => s !== service.name)
+      : [...formData.services, service.name];
+
+    const totalFees = updatedServices.reduce((total, serviceName) => {
+      const serviceItem = servicesList.find(s => s.name === serviceName);
+      return serviceItem ? total + serviceItem.value : total;
+    }, 0);
+
     setFormData((prev) => ({
       ...prev,
-      services: prev.services.includes(service)
-        ? prev.services.filter((s) => s !== service)
-        : [...prev.services, service],
+      services: updatedServices,
+      Fees: totalFees.toString(),
     }));
   };
 
@@ -127,7 +157,7 @@ const AddUser = (props: Props) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(formData), // Make sure to send the discount here
       });
 
       if (response.status === 409) {
@@ -159,7 +189,6 @@ const AddUser = (props: Props) => {
         PaidFees: "",
         PendingFees: "",
       });
-      // console.log(result);
 
       router.push("/dashboard");
     } catch (error) {
@@ -192,16 +221,6 @@ const AddUser = (props: Props) => {
   const handleRedirect = () => {
     router.push("/dashboard");
   };
-
-  const servicesList = [
-    "TaxSarthiPortal",
-    "Nil",
-    "ITR Salary",
-    "ITR Business",
-    "Shares Below 5L",
-    "Shares Below 10L",
-    "Shares Below 20L",
-  ];
 
   const isFormComplete = () => {
     return (
@@ -271,7 +290,7 @@ const AddUser = (props: Props) => {
       </div>
       <div className="space-y-2">
         <Label htmlFor="password">Password</Label>
-        <div className="flex gap-4">
+        <div className="flex items-center space-x-2">
           <Input
             id="password"
             name="password"
@@ -303,18 +322,10 @@ const AddUser = (props: Props) => {
               <SelectGroup>
                 <SelectLabel>User Type</SelectLabel>
                 <SelectItem value="Police">Police</SelectItem>
-                <SelectItem value="Defence Personal">
-                  Defence Personal
-                </SelectItem>
-                <SelectItem value="Private Corporate Employee">
-                  Private Corporate Employee
-                </SelectItem>
-                <SelectItem value="Govt Employee">
-                  Government Employee
-                </SelectItem>
-                <SelectItem value="Other">
-                  Self Employed / Freelancer / Student
-                </SelectItem>
+                <SelectItem value="Defence Personal">Defence Personal</SelectItem>
+                <SelectItem value="Private Corporate Employee">Private Corporate Employee</SelectItem>
+                <SelectItem value="Govt Employee">Government Employee</SelectItem>
+                <SelectItem value="Other">Self Employed / Freelancer / Student</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -336,9 +347,7 @@ const AddUser = (props: Props) => {
                 <SelectItem value="ITR-2">ITR-2 - Salary + Shares</SelectItem>
                 <SelectItem value="ITR-3">ITR-3 - Business + Shares</SelectItem>
                 <SelectItem value="ITR-4">ITR-4 - Business</SelectItem>
-                <SelectItem value="ITR-5">
-                  ITR-5 - Partnership Firm/LLP
-                </SelectItem>
+                <SelectItem value="ITR-5">ITR-5 - Partnership Firm/LLP</SelectItem>
                 <SelectItem value="ITR-6">ITR-6 - Company</SelectItem>
                 <SelectItem value="ITR-7">ITR-7 - Trust</SelectItem>
               </SelectGroup>
@@ -351,14 +360,14 @@ const AddUser = (props: Props) => {
         <h2 className="text-lg font-semibold">Services</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {servicesList.map((service) => (
-            <div key={service} className="flex items-center space-x-2">
+            <div key={service.name} className="flex items-center space-x-2">
               <Checkbox
-                id={service.toLowerCase().replace(/\s+/g, "-")}
-                checked={formData.services.includes(service)}
+                id={service.name}
+                checked={formData.services.includes(service.name)}
                 onCheckedChange={() => handleCheckboxChange(service)}
               />
-              <Label htmlFor={service.toLowerCase().replace(/\s+/g, "-")}>
-                {service}
+              <Label htmlFor={service.name}>
+                {service.name} (₹{service.value})
               </Label>
             </div>
           ))}

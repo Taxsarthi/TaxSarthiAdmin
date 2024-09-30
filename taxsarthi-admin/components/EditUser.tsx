@@ -25,9 +25,9 @@ const EditUser = ({ userData }: Props) => {
     pan: userData.pan,
     mobile: userData.mobile,
     Fees: userData.Fees,
-    discount: "",
+    discount: userData.discount,
     PaidFees: userData.PaidFees,
-    finalFees: "",
+    finalFees: userData.finalFees,
     PendingFees: userData.PendingFees,
   });
 

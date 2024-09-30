@@ -20,6 +20,7 @@ type UserTask = {
   area: string;
   city: string;
   Fees: number;
+  discount: number;
   PaidFees: number;
   PendingFees: number;
   assign?: string;
@@ -31,7 +32,6 @@ type Props = {
   loading: boolean;
 };
 
-const assignOptions = ["Abhishek", "Ravina", "Kunal", "DataCenter"];
 const statusOptions = [
   "Manager Assigned",
   "ITR Password Generated",
@@ -249,6 +249,7 @@ const columns: GridColDef[] = [
   { field: "area", headerName: "Area", width: 150 },
   { field: "city", headerName: "City", width: 80 },
   { field: "Fees", headerName: "Fees", type: "number", width: 80 },
+  { field: "discount", headerName: "Discount", type: "number", width: 80 },
   { field: "PaidFees", headerName: "Paid", type: "number", width: 80 },
   { field: "PendingFees", headerName: "Pending", type: "number", width: 80 },
   {
