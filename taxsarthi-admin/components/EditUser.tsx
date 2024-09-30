@@ -14,39 +14,75 @@ import { Button } from "./ui/button";
 import { TextField } from "@mui/material";
 import { Checkbox } from "./ui/checkbox";
 import toast from "react-hot-toast";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
 
 type Props = {
   userData: any;
 };
 
 const EditUser = ({ userData }: Props) => {
+  const db = getFirestore();
   const [formData, setFormData] = useState({
-    name: userData.name,
-    pan: userData.pan,
-    mobile: userData.mobile,
-    Fees: userData.Fees,
-    discount: userData.discount,
-    PaidFees: userData.PaidFees,
-    finalFees: userData.finalFees,
-    PendingFees: userData.PendingFees,
+    name: userData.name || "",
+    pan: userData.pan || "",
+    mobile: userData.mobile || "",
+    Fees: userData.Fees || "0",
+    discount: userData.discount || "0",
+    PaidFees: userData.PaidFees || "0",
+    finalFees: userData.finalFees || "0",
+    PendingFees: userData.PendingFees || "0",
+    area: userData.area || "",
+    email: userData.email || "",
+    userType: userData.userType || "",
+    remark: userData.remark || "",
   });
 
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
+  const [servicesList, setServicesList] = useState<{ name: string; value: number }[]>([]);
 
   useEffect(() => {
-    const Fees = parseInt(formData.Fees) || 0;
-    const discount = parseInt(formData.discount) || 0;
-    const PaidFees = parseInt(formData.PaidFees) || 0;
+    const fetchServices = async () => {
+      const itrDocRef = doc(db, "services", "itr");
+      const itrDoc = await getDoc(itrDocRef);
 
-    const calculatedFinalFees = Math.max(Fees - discount, 0);
+      if (itrDoc.exists()) {
+        const servicesData = itrDoc.data();
+        const servicesArray = Object.entries(servicesData).map(([name, value]) => ({
+          name,
+          value,
+        }));
+        setServicesList(servicesArray);
+      } else {
+        console.error("No such document!");
+      }
+    };
+
+    fetchServices();
+  }, [db]);
+
+  useEffect(() => {
+    setSelectedServices(userData.services?.map((service: { name: string }) => service.name) || []);
+  }, [userData]);
+
+  // Calculate total fees based on selected services
+  useEffect(() => {
+    const selectedFees = selectedServices.reduce((total, serviceName) => {
+      const service = servicesList.find(s => s.name === serviceName);
+      return total + (service ? service.value : 0);
+    }, 0);
+    
+    const discount = parseInt(formData.discount) || 0;
+    const calculatedFinalFees = Math.max(selectedFees - discount, 0);
+    const PaidFees = parseInt(formData.PaidFees) || 0;
     const calculatedPendingFees = Math.max(calculatedFinalFees - PaidFees, 0);
 
     setFormData((prev) => ({
       ...prev,
+      Fees: selectedFees.toString(),
       finalFees: calculatedFinalFees.toString(),
       PendingFees: calculatedPendingFees.toString(),
     }));
-  }, [formData.Fees, formData.discount, formData.PaidFees]);
+  }, [selectedServices, formData.discount, formData.PaidFees, servicesList]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -80,9 +116,7 @@ const EditUser = ({ userData }: Props) => {
       }
 
       const data = await response.json();
-      // console.log("User updated successfully:", data);
       toast.success("User updated successfully");
-
     } catch (error) {
       console.error("Error updating user:", error);
       toast.error("Error updating user");
@@ -109,7 +143,7 @@ const EditUser = ({ userData }: Props) => {
                   label="Full Name"
                   name="name"
                   value={formData.name}
-                  placeholder="Full Name"
+                  onChange={handleInputChange}
                   variant="outlined"
                   size="small"
                   disabled
@@ -118,7 +152,7 @@ const EditUser = ({ userData }: Props) => {
                   label="PAN"
                   name="pan"
                   value={formData.pan}
-                  placeholder="PAN"
+                  onChange={handleInputChange}
                   variant="outlined"
                   size="small"
                   disabled
@@ -126,36 +160,26 @@ const EditUser = ({ userData }: Props) => {
                 <TextField
                   label="Mobile"
                   name="mobile"
+                  disabled
                   value={formData.mobile}
-                  placeholder="Mobile"
+                  onChange={handleInputChange}
                   variant="outlined"
                   size="small"
-                  disabled
                 />
                 <h1 className="text-black text-md">Services</h1>
                 <div className="flex flex-col gap-2 mb-2">
-                  {[
-                    "Taxsarthi Portal",
-                    "Nil",
-                    "Itr Salary",
-                    "Itr Business",
-                    "Shares below 5L",
-                    "Shares below 10L",
-                    "Shares below 20L",
-                  ].map((service) => (
-                    <div className="flex gap-2 items-center" key={service}>
+                  {servicesList.map((service) => (
+                    <div className="flex gap-2 items-center" key={service.name}>
                       <Checkbox
-                        id={service}
-                        checked={selectedServices.includes(service)}
-                        onChange={() => handleServiceChange(service)}
+                        id={service.name}
+                        checked={selectedServices.includes(service.name)}
+                        onChange={() => handleServiceChange(service.name)}
                       />
                       <label
-                        htmlFor={service}
+                        htmlFor={service.name}
                         className="text-sm font-medium leading-none"
                       >
-                        {service
-                          .replace(/([A-Z])/g, " $1")
-                          .replace(/^./, (str) => str.toUpperCase())}
+                        {service.name} (Rs. {service.value})
                       </label>
                     </div>
                   ))}
@@ -167,11 +191,12 @@ const EditUser = ({ userData }: Props) => {
                   onChange={handleInputChange}
                   variant="outlined"
                   size="small"
+                  disabled
                 />
                 <TextField
                   label="Discount"
                   name="discount"
-                  value={formData.discount || 0}
+                  value={formData.discount}
                   onChange={handleInputChange}
                   placeholder="Discount (in Rs.)"
                   variant="outlined"
@@ -181,7 +206,6 @@ const EditUser = ({ userData }: Props) => {
                   label="Final Fees"
                   name="finalFees"
                   value={formData.finalFees}
-                  placeholder="Final Fees"
                   variant="outlined"
                   size="small"
                   disabled
@@ -199,11 +223,11 @@ const EditUser = ({ userData }: Props) => {
                   label="Fees Pending"
                   name="PendingFees"
                   value={formData.PendingFees}
-                  placeholder="Fees Pending"
                   variant="outlined"
                   size="small"
                   disabled
                 />
+                
                 <div className="flex justify-end gap-4 mt-4">
                   <DialogClose>
                     <Button variant="outline" type="button">
