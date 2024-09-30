@@ -4,18 +4,28 @@ import ActionButton from './ui/actionbutton';
 import EditUser from './EditUser';
 import Remarks from './Remarks';
 import Link from 'next/link';
+import { modifyAndDownloadPDF } from '../services/invoice';
 
 type Props = {
   userData: any;
 };
 
 const Actions: React.FC<Props> = ({ userData }) => {
+  const handleDownload = () => {
+    modifyAndDownloadPDF(userData.pan); // Pass PAN to the download function
+  };
+
   return (
     <div className="flex justify-start items-center h-full">
       <div className="flex space-x-2">
-        <ActionButton icon={<FaDownload />} label="Download" color="text-slate-900" />
-        <EditUser userData={userData}/>
-        <Remarks userData={userData} /> {/* Pass userId to Remarks */}
+        <ActionButton
+          icon={<FaDownload />}
+          label="Download"
+          color="text-slate-900"
+          onClick={handleDownload} // Add the onClick handler
+        />
+        <EditUser userData={userData} />
+        <Remarks userData={userData} />
         <Link href={`/user/${userData.pan}`}>
           <ActionButton icon={<FaEye />} label="View" color="text-purple-700" />
         </Link>
