@@ -249,7 +249,15 @@ const columns: GridColDef[] = [
   { field: "area", headerName: "Area", width: 150 },
   { field: "city", headerName: "City", width: 80 },
   { field: "Fees", headerName: "Fees", type: "number", width: 80 },
-  { field: "discount", headerName: "Discount", type: "number", width: 80 },
+  {
+    field: "discount",
+    headerName: "Discount",
+    type: "number",
+    width: 80,
+    renderCell: (params) => (
+      <span>{params.value || 0}</span> // Display 0 if value is blank
+    ),
+  },
   { field: "PaidFees", headerName: "Paid", type: "number", width: 80 },
   { field: "PendingFees", headerName: "Pending", type: "number", width: 80 },
   {

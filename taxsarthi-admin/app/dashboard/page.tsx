@@ -18,6 +18,7 @@ type UserTask = {
   area: string;
   city: string;
   Fees: number;
+  discount: number;
   PaidFees: number;
   PendingFees: number;
   assign?: string;
