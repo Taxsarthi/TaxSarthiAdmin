@@ -1,13 +1,13 @@
-import { db } from "@/lib/firebase";
+import { auth, db } from "@/lib/firebase";
 import { collection, doc, setDoc, query, where, getDocs } from "firebase/firestore";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { NextRequest } from 'next/server';
 
 export async function POST(req: NextRequest) {
   const userData = await req.json();
-  // console.log("Received userData:", userData); 
 
   // Check if PAN already exists
-  const panQuery = query(collection(db, "users"), where("pan", "==", userData.pan));
+  const panQuery = query(collection(db, "usersTable"), where("pan", "==", userData.pan));
   const querySnapshot = await getDocs(panQuery);
 
   if (!querySnapshot.empty) {
@@ -20,10 +20,14 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const userRef = doc(collection(db, "users"), userData.pan);
-    await setDoc(userRef, userData); // Set the document with user data
+    const userRef = doc(collection(db, "usersTable"), userData.pan);
+    await setDoc(userRef, userData);
+    const user = await createUserWithEmailAndPassword(auth, userData.email, userData.password);
+    console.log(user);
+    
+
     return new Response(JSON.stringify({ message: "User added successfully", userId: userData.pan }), {
-      status: 201, // Created status code
+      status: 201,
       headers: {
         "content-type": "application/json",
       },
@@ -31,7 +35,7 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error("Error adding user:", error);
     return new Response(JSON.stringify({ error: "Failed to add user" }), {
-      status: 500, // Internal Server Error status code
+      status: 500,
       headers: {
         "content-type": "application/json",
       },
@@ -41,10 +45,9 @@ export async function POST(req: NextRequest) {
 
 export async function PUT(req: NextRequest) {
   const userData = await req.json();
-  // console.log("Received userData:", userData); 
 
   try {
-    const userRef = doc(collection(db, "users"), userData.pan);
+    const userRef = doc(collection(db, "usersTable"), userData.pan);
     await setDoc(userRef, userData, { merge: true }); // Merge the document with user data
     return new Response(JSON.stringify({ userId: userData.pan }), {
       status: 200,

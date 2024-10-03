@@ -2,11 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FaUsers, FaUserCheck } from "react-icons/fa";
 import { RiFileUserLine } from "react-icons/ri";
 import Card from "./Card";
-import {
-  listenToUserCount,
-  listenToPunchCount,
-  listenToAssignedCount,
-} from "@/app/api/user-data/route";
+import { listenToITRCount, listenToITRTDSCount, listenToUserCount } from "@/app/api/user-data/route";
 
 interface UsersCardsProps {
   onCardClick: (type: string) => void;
@@ -20,8 +16,8 @@ const UsersCards: React.FC<UsersCardsProps> = ({ onCardClick }) => {
 
   useEffect(() => {
     const unsubscribeUser = listenToUserCount(setUserCount);
-    const unsubscribeAssigned = listenToAssignedCount(setAssignedCount);
-    const unsubscribePunch = listenToPunchCount(setPunchedCount);
+    const unsubscribeAssigned = listenToITRTDSCount(setAssignedCount);
+    const unsubscribePunch = listenToITRCount(setPunchedCount);
 
     return () => {
       unsubscribeUser();
@@ -42,7 +38,7 @@ const UsersCards: React.FC<UsersCardsProps> = ({ onCardClick }) => {
           <Card 
             icon={<FaUsers />} 
             count={userCount.toString()}  
-            title="Total Users" 
+            title="Enquiry" 
             isActive={activeCard === "all"} 
           />
         </button>
@@ -50,7 +46,7 @@ const UsersCards: React.FC<UsersCardsProps> = ({ onCardClick }) => {
           <Card
             icon={<FaUserCheck />}
             count={assignedCount.toString()}  
-            title="Assigned"
+            title="Active : TDS"
             isActive={activeCard === "assigned"} 
           />
         </button>
@@ -58,7 +54,7 @@ const UsersCards: React.FC<UsersCardsProps> = ({ onCardClick }) => {
           <Card
             icon={<RiFileUserLine />}
             count={punchedCount.toString()}  
-            title="Punched"
+            title="Active : ITR"
             isActive={activeCard === "punched"}
           />
         </button>

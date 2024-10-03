@@ -11,8 +11,8 @@ const Card: React.FC<CardProps> = ({ icon, count, title, isActive }) => {
   const activeClass = isActive ? "text-green-500" : "text-gray-700";
 
   return (
-    <div className={`group relative border shadow-sm bg-white flex flex-col md:flex-row justify-center gap-4 items-center rounded-lg p-4 md:p-6 transition-transform transform hover:scale-105 hover:shadow-lg cursor-pointer`}>
-      <div className={`flex-shrink-0 text-xl ${activeClass}`}>
+    <div className={`group relative border min-w-60 shadow-sm bg-white flex flex-col md:flex-row justify-center gap-4 items-center rounded-lg p-4 md:p-6 transition-transform transform hover:scale-105 hover:shadow-lg cursor-pointer`}>
+      <div className={`flex-shrink-0 text-5xl ${activeClass}`}>
         {icon}
       </div>
       <div className={`flex items-center justify-center flex-col ${activeClass}`}>

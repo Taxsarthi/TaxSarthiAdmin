@@ -2,7 +2,6 @@ import React from 'react';
 import { FaDownload, FaEdit, FaRegComment, FaEye } from 'react-icons/fa';
 import ActionButton from './ui/actionbutton';
 import EditUser from './EditUser';
-import Remarks from './Remarks';
 import Link from 'next/link';
 import { modifyAndDownloadPDF } from '../services/invoice';
 
@@ -25,7 +24,6 @@ const Actions: React.FC<Props> = ({ userData }) => {
           onClick={handleDownload} // Add the onClick handler
         />
         <EditUser userData={userData} />
-        <Remarks userData={userData} />
         <Link href={`/user/${userData.pan}`}>
           <ActionButton icon={<FaEye />} label="View" color="text-purple-700" />
         </Link>

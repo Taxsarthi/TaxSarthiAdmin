@@ -29,12 +29,12 @@ const EditUser = ({ userData }: Props) => {
     Fees: userData.Fees || "0",
     discount: userData.discount || "0",
     PaidFees: userData.PaidFees || "0",
-    finalFees: userData.finalFees || "0",
+    FinalFees: userData.FinalFees || "0",
     PendingFees: userData.PendingFees || "0",
     area: userData.area || "",
     email: userData.email || "",
     userType: userData.userType || "",
-    remark: userData.remark || "",
+    Remark: userData.Remark || "",
   });
 
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
@@ -64,25 +64,23 @@ const EditUser = ({ userData }: Props) => {
     setSelectedServices(userData.services?.map((service: { name: string }) => service.name) || []);
   }, [userData]);
 
-  // Calculate total fees based on selected services
-  useEffect(() => {
-    const selectedFees = selectedServices.reduce((total, serviceName) => {
-      const service = servicesList.find(s => s.name === serviceName);
-      return total + (service ? service.value : 0);
-    }, 0);
-    
-    const discount = parseInt(formData.discount) || 0;
-    const calculatedFinalFees = Math.max(selectedFees - discount, 0);
-    const PaidFees = parseInt(formData.PaidFees) || 0;
-    const calculatedPendingFees = Math.max(calculatedFinalFees - PaidFees, 0);
+  const calculateFinalAndPendingFees = (changedValue: string, fieldName: string) => {
+    const fees = parseFloat(formData.Fees) || 0;
+
+    // Get current values or new value based on which field changed
+    const discount = fieldName === "discount" ? parseFloat(changedValue) || 0 : parseFloat(formData.discount) || 0;
+    const paidFees = fieldName === "PaidFees" ? parseFloat(changedValue) || 0 : parseFloat(formData.PaidFees) || 0;
+
+    // Calculate final and pending fees
+    const finalFees = Math.max(0, fees - discount); // Ensure finalFees is not negative
+    const pendingFees = Math.max(0, finalFees - paidFees); // Ensure pendingFees is not negative
 
     setFormData((prev) => ({
-      ...prev,
-      Fees: selectedFees.toString(),
-      finalFees: calculatedFinalFees.toString(),
-      PendingFees: calculatedPendingFees.toString(),
+        ...prev,
+        FinalFees: finalFees.toFixed(0), // Format to two decimal places
+        PendingFees: pendingFees.toFixed(0),
     }));
-  }, [selectedServices, formData.discount, formData.PaidFees, servicesList]);
+};
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -90,6 +88,10 @@ const EditUser = ({ userData }: Props) => {
       ...prev,
       [name]: value,
     }));
+
+    if (name === "discount" || name === "PaidFees") {
+      calculateFinalAndPendingFees(value, name);
+    }
   };
 
   const handleServiceChange = (service: string) => {
@@ -108,7 +110,7 @@ const EditUser = ({ userData }: Props) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ ...formData, selectedServices }),
+        body: JSON.stringify({ ...formData }),
       });
 
       if (!response.ok) {
@@ -135,10 +137,7 @@ const EditUser = ({ userData }: Props) => {
               Edit User Details
             </DialogTitle>
             <DialogDescription>
-              <form
-                className="flex flex-col w-full gap-4"
-                onSubmit={handleSubmit}
-              >
+              <form className="flex flex-col w-full gap-4" onSubmit={handleSubmit}>
                 <TextField
                   label="Full Name"
                   name="name"
@@ -166,6 +165,14 @@ const EditUser = ({ userData }: Props) => {
                   variant="outlined"
                   size="small"
                 />
+                <TextField
+                  label="Remark"
+                  name="Remark"
+                  value={formData.Remark}
+                  onChange={handleInputChange}
+                  variant="outlined"
+                  size="small"
+                />
                 <h1 className="text-black text-md">Services</h1>
                 <div className="flex flex-col gap-2 mb-2">
                   {servicesList.map((service) => (
@@ -187,6 +194,7 @@ const EditUser = ({ userData }: Props) => {
                 <TextField
                   label="Fees"
                   name="Fees"
+                  type="number"
                   value={formData.Fees}
                   onChange={handleInputChange}
                   variant="outlined"
@@ -196,6 +204,7 @@ const EditUser = ({ userData }: Props) => {
                 <TextField
                   label="Discount"
                   name="discount"
+                  type="number"
                   value={formData.discount}
                   onChange={handleInputChange}
                   placeholder="Discount (in Rs.)"
@@ -204,8 +213,9 @@ const EditUser = ({ userData }: Props) => {
                 />
                 <TextField
                   label="Final Fees"
-                  name="finalFees"
-                  value={formData.finalFees}
+                  name="FinalFees"
+                  type="number"
+                  value={formData.FinalFees}
                   variant="outlined"
                   size="small"
                   disabled
@@ -213,6 +223,7 @@ const EditUser = ({ userData }: Props) => {
                 <TextField
                   label="Fees Paid"
                   name="PaidFees"
+                  type="number"
                   value={formData.PaidFees}
                   onChange={handleInputChange}
                   placeholder="Fees Paid"
@@ -222,21 +233,19 @@ const EditUser = ({ userData }: Props) => {
                 <TextField
                   label="Fees Pending"
                   name="PendingFees"
+                  type="number"
                   value={formData.PendingFees}
                   variant="outlined"
                   size="small"
                   disabled
                 />
-                
                 <div className="flex justify-end gap-4 mt-4">
                   <DialogClose>
                     <Button variant="outline" type="button">
                       Cancel
                     </Button>
                   </DialogClose>
-                  <Button type="submit">
-                    Edit
-                  </Button>
+                  <Button type="submit">Edit</Button>
                 </div>
               </form>
             </DialogDescription>

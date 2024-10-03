@@ -23,6 +23,7 @@ type UserTask = {
   PendingFees: number;
   assign?: string;
   lastStatus?: string;
+  remarks?: string;
   srNo?: number;
 };
 
@@ -40,7 +41,7 @@ const page: React.FC = () => {
   const fetchPunchedData = async () => {
     setIsLoading(true); // Start loading
     try {
-      const punchedRes = await fetch("/api/user-data?status=punched");
+      const punchedRes = await fetch("/api/user-data?closedFor=itr+tds");
       if (!punchedRes.ok) throw new Error("Failed to fetch punched data");
       const punchedData = await punchedRes.json();
       // console.log("Punched Data:", punchedData);
@@ -139,6 +140,7 @@ const page: React.FC = () => {
         PendingFees,
         assign,
         lastStatus,
+        remarks
       }) => ({
         name,
         mobile,
@@ -151,6 +153,7 @@ const page: React.FC = () => {
         PendingFees,
         assign,
         lastStatus,
+        remarks
       })
     );
 
@@ -186,13 +189,7 @@ const page: React.FC = () => {
           </div>
         </div>
         <div>
-          {/* {isLoading ? (
-            <div className="flex justify-center items-center h-32">
-              <span>Loading...</span> 
-            </div>
-          ) : ( */}
           <DataTable loading={isLoading} rows={filteredRows} />
-          {/* )} */}
         </div>
       </div>
     </div>

@@ -13,30 +13,32 @@ import { db } from "@/lib/firebase";
 import { NextResponse, NextRequest } from "next/server";
 
 export const listenToUserCount = (setUserCount: (count: number) => void) => {
-  const userRef = collection(db, "users");
+  const userRef = collection(db, "usersTable");
   const unsubscribe = onSnapshot(userRef, (snapshot) => {
     setUserCount(snapshot.size);
   });
   return unsubscribe;
 };
 
-export const listenToPunchCount = (setPunchedCount: (count: number) => void) => {
-  const punchQuery = query(
-    collection(db, "2024-25"),
-    where("punch", "==", true)
+export const listenToITRCount = (setPunchedCount: (count: number) => void) => {
+  const itrQuery = query(
+    collection(db, "usersTable"),
+    where("closedFor", "==", "itr")
   );
-  const unsubscribe = onSnapshot(punchQuery, (snapshot) => {
+  const unsubscribe = onSnapshot(itrQuery, (snapshot) => {
     setPunchedCount(snapshot.size);
   });
   return unsubscribe;
 };
 
-export const listenToAssignedCount = (setAssignedCount: (count: number) => void) => {
-  const assignQuery = query(
-    collection(db, "users"),
-    where("assign", "!=", null || "")
+export const listenToITRTDSCount = (
+  setAssignedCount: (count: number) => void
+) => {
+  const itrtdsQuery = query(
+    collection(db, "usersTable"),
+    where("closedFor", "==", "itr+tds")
   );
-  const unsubscribe = onSnapshot(assignQuery, (snapshot) => {
+  const unsubscribe = onSnapshot(itrtdsQuery, (snapshot) => {
     setAssignedCount(snapshot.size);
   });
   return unsubscribe;
@@ -44,14 +46,19 @@ export const listenToAssignedCount = (setAssignedCount: (count: number) => void)
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const status = searchParams.get("status");
+  const status = searchParams.get("closedFor");
 
   let q;
 
-  if (status === "punched") {
-    q = query(collection(db, "2024-25"), where("punch", "==", true));
+  if (status === "itr") {
+    q = query(collection(db, "usersTable"), where("closedFor", "==", "itr"));
+  } else if (status === "itr+tds") {
+    q = query(
+      collection(db, "usersTable"),
+      where("closedFor", "==", "itr+tds")
+    );
   } else {
-    q = query(collection(db, "users"));
+    q = query(collection(db, "usersTable"));
   }
   const querySnapshot = await getDocs(q);
   const tasks: { [key: string]: any }[] = [];
@@ -64,17 +71,20 @@ export async function GET(req: NextRequest) {
 export async function PUT(req: NextRequest) {
   try {
     const { id, lastStatus, assign } = await req.json();
-    
+
     const userDoc = doc(db, "2024-25", id);
-    
-    await updateDoc(userDoc, { 
-      ...(lastStatus !== undefined && { lastStatus }), 
-      ...(assign !== undefined && { assign }) 
+
+    await updateDoc(userDoc, {
+      ...(lastStatus !== undefined && { lastStatus }),
+      ...(assign !== undefined && { assign }),
     });
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error updating Firestore:', error);
-    return NextResponse.json({ success: false, error: (error as any).message }, { status: 500 });
+    console.error("Error updating Firestore:", error);
+    return NextResponse.json(
+      { success: false, error: (error as any).message },
+      { status: 500 }
+    );
   }
 }
