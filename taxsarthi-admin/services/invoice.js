@@ -5,8 +5,10 @@ const { toWords } = require("number-to-words");
 
 function numberToWords(num) {
   const words = toWords(num).toLowerCase().split(" ");
-  const capitalizedWords = words.map(word => word.charAt(0).toUpperCase() + word.slice(1));
-  return capitalizedWords.join(" "); 
+  const capitalizedWords = words.map(
+    (word) => word.charAt(0).toUpperCase() + word.slice(1)
+  );
+  return capitalizedWords.join(" ");
 }
 
 function getFormattedDate() {
@@ -20,32 +22,32 @@ function getFormattedDate() {
 export const modifyAndDownloadPDF = async (pan) => {
   try {
     console.log("Fetching data for PAN:", pan);
-  
-    const userRef = doc(db, "users", pan);
+
+    const userRef = doc(db, "usersTable", pan);
     const userSnap = await getDoc(userRef);
-  
+
     if (!userSnap.exists()) {
       console.error("User document not found for PAN:", pan);
       return;
     }
     const userData = userSnap.data();
-    const { name, policeStation, mobile } = userData;
-  
-    const currentYear = process.env.NEXT_PUBLIC_CURRENT_YEAR;
-    const docRef = doc(db, currentYear.toString(), pan);
-  
+    const { name, mobile, userType } = userData;
+
+    const docRef = doc(db, "usersTable", pan);
+
     const snap = await getDoc(docRef);
-  
+
     if (!snap.exists()) {
       console.error("Invoice document not found for PAN:", pan);
       return;
     }
-    
-    const data = snap.data();
-    const { services, discount, PaidFees, actualFees, Fees, invNo } = data;
-    const totalPayable = Fees - PaidFees;
 
-    const existingPdfBytes = await fetch("/assets/Invoice Format Blank.pdf").then((res) => {
+    const data = snap.data();
+    const { services, discount, PaidFees, Fees, PendingFees, invNo } = data;
+
+    const existingPdfBytes = await fetch(
+      "/assets/Invoice Format Blank.pdf"
+    ).then((res) => {
       if (!res.ok) throw new Error("Failed to fetch PDF template");
       return res.arrayBuffer();
     });
@@ -73,45 +75,127 @@ export const modifyAndDownloadPDF = async (pan) => {
       sharesBelow5L: "Shares Below 5 Lakhs",
     };
 
-    page.drawText(`${name}`, { x: 10, y: page.getHeight() - 142, size: 12, color: rgb(0, 0, 0) });if (policeStation) {
-      page.drawText(`${policeStation}`, { x: 10, y: page.getHeight() - 175, size: 12, color: rgb(0, 0, 0) });
+    page.drawText(`${name}`, {
+      x: 10,
+      y: page.getHeight() - 142,
+      size: 12,
+      color: rgb(0, 0, 0),
+    });
+
+    if (userType) {
+      page.drawText(`${userType}`, {
+        x: 10,
+        y: page.getHeight() - 175,
+        size: 12,
+        color: rgb(0, 0, 0),
+      });
     } else {
       // Optionally, draw an empty space or nothing
-      page.drawText('', { x: 10, y: page.getHeight() - 175, size: 12, color: rgb(0, 0, 0) });
+      page.drawText("", {
+        x: 10,
+        y: page.getHeight() - 175,
+        size: 12,
+        color: rgb(0, 0, 0),
+      });
     }
-    
-    page.drawText(`${mobile}`, { x: 60, y: page.getHeight() - 207, size: 12, color: rgb(0, 0, 0) });
+
+    page.drawText(`${mobile}`, {
+      x: 60,
+      y: page.getHeight() - 207,
+      size: 12,
+      color: rgb(0, 0, 0),
+    });
 
     for (let i = 0; i < services.length; i++) {
       const service = services[i];
-      const { name } = service;
+      const { name } = service[i];
 
       if (priceMap.hasOwnProperty(name)) {
         const price = priceMap[name];
         const serviceName = renamedPriceMap[name];
 
-        page.drawText(`${serviceName}`, { x: 20, y: page.getHeight() - (270 + i * 30), size: 12, color: rgb(0, 0, 0) });
-        page.drawText(`Rs. ${price}`, { x: 400, y: page.getHeight() - (270 + i * 30), size: 12, color: rgb(0, 0, 0) });
-        page.drawText(`Rs. ${price}`, { x: 500, y: page.getHeight() - (270 + i * 30), size: 12, color: rgb(0, 0, 0) });
+        page.drawText(`${serviceName}`, {
+          x: 20,
+          y: page.getHeight() - (270 + i * 30),
+          size: 12,
+          color: rgb(0, 0, 0),
+        });
+        page.drawText(`Rs. ${price}`, {
+          x: 400,
+          y: page.getHeight() - (270 + i * 30),
+          size: 12,
+          color: rgb(0, 0, 0),
+        });
+        page.drawText(`Rs. ${price}`, {
+          x: 500,
+          y: page.getHeight() - (270 + i * 30),
+          size: 12,
+          color: rgb(0, 0, 0),
+        });
       }
-      page.drawText("01", { x: 300, y: page.getHeight() - (270 + i * 30), size: 12, color: rgb(0, 0, 0) });
+      page.drawText("01", {
+        x: 300,
+        y: page.getHeight() - (270 + i * 30),
+        size: 12,
+        color: rgb(0, 0, 0),
+      });
     }
 
-    page.drawText(`INV${invNo.toString().padStart(2, "0")}`, { x: 375, y: page.getHeight() - 147, size: 12, color: rgb(0, 0, 0) });
-    page.drawText(`${getFormattedDate()}`, { x: 355, y: page.getHeight() - 175, size: 12, color: rgb(0, 0, 0) });
+    page.drawText(`INV${invNo.toString().padStart(2, "0")}`, {
+      x: 375,
+      y: page.getHeight() - 147,
+      size: 12,
+      color: rgb(0, 0, 0),
+    });
+    page.drawText(`${getFormattedDate()}`, {
+      x: 355,
+      y: page.getHeight() - 175,
+      size: 12,
+      color: rgb(0, 0, 0),
+    });
 
-    page.drawText(`Rs. ${discount} /-`, { x: 500, y: page.getHeight() - 470, size: 12, color: rgb(0, 0, 0) });
-    page.drawText(`Rs. ${actualFees} /-`, { x: 500, y: page.getHeight() - 440, size: 12, color: rgb(0, 0, 0) });
-    page.drawText(`Rs. ${PaidFees} /-`, { x: 500, y: page.getHeight() - 500, size: 12, color: rgb(0, 0, 0) });
-    page.drawText(`Rs. ${totalPayable}/-`, { x: 500, y: page.getHeight() - 530, size: 12, color: rgb(1, 1, 1) });
+    page.drawText(`Rs. ${discount} /-`, {
+      x: 500,
+      y: page.getHeight() - 470,
+      size: 12,
+      color: rgb(0, 0, 0),
+    });
+    page.drawText(`Rs. ${Fees} /-`, {
+      x: 500,
+      y: page.getHeight() - 440,
+      size: 12,
+      color: rgb(0, 0, 0),
+    });
+    page.drawText(`Rs. ${PaidFees} /-`, {
+      x: 500,
+      y: page.getHeight() - 500,
+      size: 12,
+      color: rgb(0, 0, 0),
+    });
+    page.drawText(`Rs. ${PendingFees}/-`, {
+      x: 500,
+      y: page.getHeight() - 530,
+      size: 12,
+      color: rgb(1, 1, 1),
+    });
 
-    if (totalPayable > 0) {
-      page.drawText(`INR ${numberToWords(totalPayable)} Only`, { x: 260, y: page.getHeight() - 555, size: 8, color: rgb(0, 0, 0) });
+    if (PendingFees > 0) {
+      page.drawText(`INR ${numberToWords(PendingFees)} Only`, {
+        x: 260,
+        y: page.getHeight() - 555,
+        size: 8,
+        color: rgb(0, 0, 0),
+      });
     } else {
       // Optionally draw an empty string or perform other actions if needed
-      page.drawText(``, { x: 260, y: page.getHeight() - 555, size: 11, color: rgb(0, 0, 0) }); // This line can be omitted
+      page.drawText(``, {
+        x: 260,
+        y: page.getHeight() - 555,
+        size: 11,
+        color: rgb(0, 0, 0),
+      }); // This line can be omitted
     }
-    
+
     const modifiedPdfBytes = await pdfDoc.save();
     const blob = new Blob([modifiedPdfBytes], { type: "application/pdf" });
     const url = URL.createObjectURL(blob);

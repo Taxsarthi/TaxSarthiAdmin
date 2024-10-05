@@ -12,7 +12,7 @@ import * as XLSX from "xlsx";
 type UserTask = {
   id: string;
   name: string;
-  mobile: number;
+  mobile: string;
   pan: string;
   itrType: string;
   area: string;
@@ -21,8 +21,6 @@ type UserTask = {
   discount: number;
   PaidFees: number;
   PendingFees: number;
-  assign?: string;
-  lastStatus?: string;
   remarks?: string;
   srNo?: number;
 };
@@ -38,71 +36,22 @@ const page: React.FC = () => {
     setSearchText(event.target.value);
   };
 
-  const fetchPunchedData = async () => {
-    setIsLoading(true); // Start loading
-    try {
-      const punchedRes = await fetch("/api/user-data?closedFor=itr+tds");
-      if (!punchedRes.ok) throw new Error("Failed to fetch punched data");
-      const punchedData = await punchedRes.json();
-      // console.log("Punched Data:", punchedData);
-
-      const punchedTasks = punchedData?.tasks || [];
-
-      const usersRes = await fetch("/api/user-data");
-      if (!usersRes.ok) throw new Error("Failed to fetch user data");
-      const usersData = await usersRes.json();
-      // console.log("User Data:", usersData);
-
-      const usersTasks = usersData?.tasks || [];
-      const usersMap = new Map(
-        usersTasks.map((user: UserTask) => [user.id, user])
-      );
-
-      const updatedTasks = punchedTasks.map(
-        (punchedTask: UserTask, index: number) => {
-          const userDetails = usersMap.get(punchedTask.id) || {};
-          return {
-            ...userDetails,
-            ...punchedTask,
-            srNo: index + 1,
-          };
-        }
-      );
-
-      setFilteredData(updatedTasks);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    } finally {
-      setIsLoading(false); // End loading
-    }
-  };
 
   const fetchTableData = async (type: string) => {
     setIsLoading(true); // Start loading
     try {
-      if (type === "punched") {
-        await fetchPunchedData();
-        return;
-      }
 
-      const res = await fetch("/api/user-data");
+      const res = await fetch(`/api/user-data?closedFor=${type}`);
       const data = await res.json();
       const tasks = data?.tasks || [];
 
-      const updatedTasks = tasks.map((task: UserTask, index: number) => ({
+      const finalTasks = tasks.map((task: UserTask, index: number) => ({
         ...task,
         srNo: index + 1,
       }));
 
-      const filteredTasks = updatedTasks.filter((task: UserTask) => {
-        if (type === "assigned") return task.assign;
-        return true; // Show all for "all"
-      });
 
-      const finalTasks = filteredTasks.map((task: UserTask, index: number) => ({
-        ...task,
-        srNo: index + 1,
-      }));
+
 
       setFilteredData(finalTasks);
     } catch (error) {
@@ -138,8 +87,6 @@ const page: React.FC = () => {
         Fees,
         PaidFees,
         PendingFees,
-        assign,
-        lastStatus,
         remarks
       }) => ({
         name,
@@ -151,8 +98,6 @@ const page: React.FC = () => {
         Fees,
         PaidFees,
         PendingFees,
-        assign,
-        lastStatus,
         remarks
       })
     );

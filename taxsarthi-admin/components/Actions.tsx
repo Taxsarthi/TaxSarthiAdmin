@@ -11,7 +11,7 @@ type Props = {
 
 const Actions: React.FC<Props> = ({ userData }) => {
   const handleDownload = () => {
-    modifyAndDownloadPDF(userData.pan); // Pass PAN to the download function
+    modifyAndDownloadPDF(userData.pan); 
   };
 
   return (
@@ -21,7 +21,7 @@ const Actions: React.FC<Props> = ({ userData }) => {
           icon={<FaDownload />}
           label="Download"
           color="text-slate-900"
-          onClick={handleDownload} // Add the onClick handler
+          onClick={handleDownload} 
         />
         <EditUser userData={userData} />
         <Link href={`/user/${userData.pan}`}>

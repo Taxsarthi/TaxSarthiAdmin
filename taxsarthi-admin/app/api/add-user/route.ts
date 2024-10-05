@@ -3,7 +3,7 @@ import { collection, doc, setDoc, query, where, getDocs } from "firebase/firesto
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { NextRequest } from 'next/server';
 
-export async function POST(req: NextRequest) {
+export async function POST(req: NextRequest) { 
   const userData = await req.json();
 
   // Check if PAN already exists
@@ -24,17 +24,29 @@ export async function POST(req: NextRequest) {
     await setDoc(userRef, userData);
     const user = await createUserWithEmailAndPassword(auth, userData.email, userData.password);
     console.log(user);
-    
 
-    return new Response(JSON.stringify({ message: "User added successfully", userId: userData.pan }), {
+    // Create corresponding EnquirySheet document
+    const enquirySheetData = {
+      pan: userData.pan,
+      clientStatus: null,  // Set initial values as null
+      closedBy: null,
+      assignedTo: null,
+      closedFor: null,
+      Status: null,
+      Remark: null,
+    };
+    const enquiryRef = doc(collection(db, "EnquirySheet"), userData.pan);
+    await setDoc(enquiryRef, enquirySheetData);
+
+    return new Response(JSON.stringify({ message: "User and enquiry sheet added successfully", userId: userData.pan }), {
       status: 201,
       headers: {
         "content-type": "application/json",
       },
     });
   } catch (error) {
-    console.error("Error adding user:", error);
-    return new Response(JSON.stringify({ error: "Failed to add user" }), {
+    console.error("Error adding user or enquiry sheet:", error);
+    return new Response(JSON.stringify({ error: "Failed to add user or enquiry sheet" }), {
       status: 500,
       headers: {
         "content-type": "application/json",

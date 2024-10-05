@@ -17,7 +17,8 @@ import { useRouter } from "next/navigation";
 import { Label } from "@/components/ui/label";
 import toast from "react-hot-toast";
 import { Copy } from "lucide-react";
-import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { getFirestore, doc, getDoc, setDoc, increment } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 type FormData = {
   name: string;
@@ -40,7 +41,6 @@ type FormData = {
 
 const AddUser: React.FC = () => {
   const router = useRouter();
-  const db = getFirestore();
   const [loading, setLoading] = useState(false);
   const [servicesList, setServicesList] = useState<{ name: string; value: number }[]>([]);
 
@@ -141,12 +141,27 @@ const AddUser: React.FC = () => {
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     setLoading(true);
     try {
+      const invoiceRef = doc(db, "invoice", "INV");
+      const invoiceDoc = await getDoc(invoiceRef);
+
+      if (!invoiceDoc.exists()) {
+        throw new Error("Invoice document does not exist");
+      }
+
+      const currentInvNo = invoiceDoc.data().currentInvNo;
+
+      // Prepare data for user submission
+      const userData = {
+        ...data,
+        invNo: currentInvNo, // Add the invoice number to the user data
+      };
+
       const response = await fetch("/api/add-user", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(userData),
       });
 
       if (response.status === 409) {
@@ -158,6 +173,9 @@ const AddUser: React.FC = () => {
         throw new Error("Failed to add user");
       }
 
+      // Increment the invoice number after successful user addition
+      await setDoc(invoiceRef, { currentInvNo: increment(1) }, { merge: true });
+
       toast.success("User added successfully");
       router.push("/dashboard");
     } catch (error) {
@@ -167,7 +185,7 @@ const AddUser: React.FC = () => {
       setLoading(false);
     }
   };
-
+  
   const generatePassword = () => {
     const fullName = getValues("name").trim();
     const firstName = fullName.split(" ")[0] || "User";

@@ -1,20 +1,39 @@
-import React, { useState, useEffect } from "react";
-import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
+// components/Table.tsx
+
+import React from "react";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import Actions from "./Actions";
+import { useForm, FormProvider } from "react-hook-form";
+import SelectCell from "./SelectCell";
 import {
-  Select,
-  MenuItem,
-  CircularProgress,
-  SelectChangeEvent,
-  Skeleton,
-} from "@mui/material";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+  assignOptions,
+  clientStatusOptions,
+  computationITAOptions,
+  deductionDetailsOptions,
+  divisionOptions,
+  incomeDetailsOptions,
+  packageCallOptions,
+  packageClosureOptions,
+  statusClosedOptions,
+  statusOptions,
+} from "@/tableOptions/tableOptions";
+import { Download } from "lucide-react";
+
+type EnquiryData = {
+  Remark?: string;
+  Status?: string;
+  closedFor?: string;
+  pan?: string;
+  closedBy?: string;
+  assignedTo?: string;
+  division?: string;
+  clientStatus?: string;
+};
 
 type UserTask = {
   id: string;
   name: string;
-  mobile: number;
+  mobile: string;
   pan: string;
   itrType: string;
   area: string;
@@ -25,503 +44,27 @@ type UserTask = {
   PendingFees: number;
   assign?: string;
   lastStatus?: string;
+  division?: string;
+  clientStatus?: string;
+  statusClosed?: string;
+  entryMonth?: string;
+  FinalFees?: number;
+  enquiryData?: EnquiryData;
+  Remark?: string;
+  tdsData?: {
+    incomeDetails?: string;
+    deductionDetails?: string;
+    taxDetails?: string;
+    computationITA?: string;
+    packageCall?: string;
+    managedBy?: string;
+    packageClosure?: string;
+  };
 };
 
 type Props = {
   rows: UserTask[];
   loading: boolean;
-};
-
-const statusOptions = [
-  "Manager Assigned",
-  "ITR Password Generated",
-  "Data Entered",
-  "Data Punched",
-  "Verification",
-  "ITR Filed",
-  "ITR Pending",
-  "Refund Processed",
-];
-
-const divisionOptions = [
-  { name: "Pune", color: "#3CB371" }, // Green
-  { name: "Kokan", color: "#A9A9A9" }, // Dark Gray
-  { name: "Aurangabad", color: "#483D8B" }, // Dark Slate Blue
-  { name: "Nasik", color: "#FFD700" }, // Gold
-  { name: "Amravati", color: "#FF69B4" }, // Hot Pink
-  { name: "Nagpur", color: "#FFA500" }, // Orange
-  { name: "Goa", color: "#C0C0C0" }, // Silver
-];
-
-const clientStatusOptions = [
-  { status: "Closed", color: "#3CB371" }, // Parrot Green
-  { status: "Pending", color: "#FFD700" }, // Bright Yellow
-  { status: "Left", color: "#C70039" },    // Dark Red
-  { status: "Interested - Know More", color: "#1E90FF" }, // Dodger Blue
-];
-
-const statusClosedOptions = [
-  "ITR + TDS",
-  "ITR",
-];
-
-const StatusClosedCell: React.FC<GridRenderCellParams> = (params) => {
-  const defaultStatus = params.row.lastStatus || "";
-  const [selectedStatus, setSelectedStatus] = useState<string>(defaultStatus);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const currentYear = process.env.NEXT_PUBLIC_CURRENT_YEAR;
-        if (!currentYear) {
-          throw new Error("Current year is not defined");
-        }
-        const docRef = doc(db, currentYear.toString(), params.row.pan);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          if (data.lastStatus) {
-            setSelectedStatus(data.lastStatus);
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-      setLoading(false);
-    };
-
-    fetchData();
-  }, [params.row.pan]);
-
-  const handleStatusChange = async (event: SelectChangeEvent<any>) => {
-    const newStatus = event.target.value;
-    const currentYear = process.env.NEXT_PUBLIC_CURRENT_YEAR;
-    if (!currentYear) {
-      throw new Error("Current year is not defined");
-    }
-    const docRef = doc(db, currentYear.toString(), params.row.pan);
-
-    try {
-      const statusObject = statusClosedOptions.reduce(
-        (obj: { [key: string]: boolean }, status, index) => {
-          obj[status] = index <= statusClosedOptions.indexOf(newStatus as string);
-          return obj;
-        },
-        {}
-      );
-
-      await updateDoc(docRef, { status: statusObject, lastStatus: newStatus });
-      setSelectedStatus(newStatus);
-      // console.log("Status updated successfully");
-    } catch (error) {
-      console.error("Error updating status:", error);
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="mt-2">
-        <Skeleton variant="text" width={150} height={24} />
-      </div>
-    );
-  }
-
-  return (
-    <Select
-      sx={{
-        boxShadow: "none",
-        ".MuiOutlinedInput-notchedOutline": { border: 0 },
-        "&.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline":
-                  {
-                    border: 0,
-                  },
-                "&.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                  {
-                    border: 0,
-                  },
-      }}
-      value={selectedStatus}
-      onChange={handleStatusChange}
-      className="border-0 w-[120px]"
-    >
-      {statusClosedOptions.map((option) => (
-        <MenuItem key={option} value={option}>
-          <p className="text-sm font-semibold">{option}</p>
-        </MenuItem>
-      ))}
-    </Select>
-  );
-};
-
-// StatusCell Component
-const StatusCell: React.FC<GridRenderCellParams> = (params) => {
-  const defaultStatus = params.row.lastStatus || "";
-  const [selectedStatus, setSelectedStatus] = useState<string>(defaultStatus);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const currentYear = process.env.NEXT_PUBLIC_CURRENT_YEAR;
-        if (!currentYear) {
-          throw new Error("Current year is not defined");
-        }
-        const docRef = doc(db, currentYear.toString(), params.row.pan);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          if (data.lastStatus) {
-            setSelectedStatus(data.lastStatus);
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-      setLoading(false);
-    };
-
-    fetchData();
-  }, [params.row.pan]);
-
-  const handleStatusChange = async (event: SelectChangeEvent<any>) => {
-    const newStatus = event.target.value;
-    const currentYear = process.env.NEXT_PUBLIC_CURRENT_YEAR;
-    if (!currentYear) {
-      throw new Error("Current year is not defined");
-    }
-    const docRef = doc(db, currentYear.toString(), params.row.pan);
-
-    try {
-      const statusObject = statusOptions.reduce(
-        (obj: { [key: string]: boolean }, status, index) => {
-          obj[status] = index <= statusOptions.indexOf(newStatus as string);
-          return obj;
-        },
-        {}
-      );
-
-      await updateDoc(docRef, { status: statusObject, lastStatus: newStatus });
-      setSelectedStatus(newStatus);
-      // console.log("Status updated successfully");
-    } catch (error) {
-      console.error("Error updating status:", error);
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="mt-2">
-        <Skeleton variant="text" width={150} height={24} />
-      </div>
-    );
-  }
-
-  return (
-    <Select
-      sx={{
-        boxShadow: "none",
-        ".MuiOutlinedInput-notchedOutline": { border: 0 },
-        "&.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline":
-                  {
-                    border: 0,
-                  },
-                "&.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                  {
-                    border: 0,
-                  },
-      }}
-      value={selectedStatus}
-      onChange={handleStatusChange}
-      className="border-0 w-[220px]"
-    >
-      {statusOptions.map((option) => (
-        <MenuItem key={option} value={option}>
-          <p className="text-sm font-semibold">{option}</p>
-        </MenuItem>
-      ))}
-    </Select>
-  );
-};
-
-const DivisionCell: React.FC<GridRenderCellParams> = (params) => {
-  const defaultStatus = "";
-  const [selectedStatus, setSelectedStatus] = useState<string>(defaultStatus);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const currentYear = process.env.NEXT_PUBLIC_CURRENT_YEAR;
-        if (!currentYear) {
-          throw new Error("Current year is not defined");
-        }
-        const docRef = doc(db, currentYear.toString(), params.row.pan);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          if (data.lastStatus) {
-            setSelectedStatus(data.lastStatus);
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-      setLoading(false);
-    };
-
-    fetchData();
-  }, [params.row.pan]);
-
-  const handleStatusChange = async (event: SelectChangeEvent<any>) => {
-    const newStatus = event.target.value;
-    const currentYear = process.env.NEXT_PUBLIC_CURRENT_YEAR;
-    if (!currentYear) {
-      throw new Error("Current year is not defined");
-    }
-    const docRef = doc(db, currentYear.toString(), params.row.pan);
-
-    try {
-      const statusObject = divisionOptions.reduce(
-        (obj: { [key: string]: boolean }, status, index) => {
-          obj[status.name] = index <= divisionOptions.findIndex(option => option.name === newStatus);
-          return obj;
-        },
-        {}
-      );
-
-      await updateDoc(docRef, { status: statusObject, lastStatus: newStatus });
-      setSelectedStatus(newStatus);
-      // console.log("Status updated successfully");
-    } catch (error) {
-      console.error("Error updating status:", error);
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="mt-2">
-        <Skeleton variant="text" width={150} height={24} />
-      </div>
-    );
-  }
-
-  return (
-    <Select
-      sx={{
-        boxShadow: "none",
-        ".MuiOutlinedInput-notchedOutline": { border: 0 },
-        "&.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline":
-                  {
-                    border: 0,
-                  },
-                "&.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                  {
-                    border: 0,
-                  },
-      }}
-      value={selectedStatus}
-      onChange={handleStatusChange}
-      className="border-0 w-[140px]"
-    >
-      {divisionOptions.map((option) => (
-        <MenuItem key={option.name} value={option.name} style={{ color: option.color }}>
-        <p className="text-sm font-semibold">{option.name}</p>
-      </MenuItem>
-      ))}
-    </Select>
-  );
-};
-
-const ClientStatusCell: React.FC<GridRenderCellParams> = (params) => {
-  const defaultStatus = "";
-  const [selectedStatus, setSelectedStatus] = useState<string>(defaultStatus);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const currentYear = process.env.NEXT_PUBLIC_CURRENT_YEAR;
-        if (!currentYear) {
-          throw new Error("Current year is not defined");
-        }
-        const docRef = doc(db, currentYear.toString(), params.row.pan);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          if (data.lastStatus) {
-            setSelectedStatus(data.lastStatus);
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-      setLoading(false);
-    };
-
-    fetchData();
-  }, [params.row.pan]);
-
-  const handleStatusChange = async (event: SelectChangeEvent<any>) => {
-    const newStatus = event.target.value;
-    const currentYear = process.env.NEXT_PUBLIC_CURRENT_YEAR;
-    if (!currentYear) {
-      throw new Error("Current year is not defined");
-    }
-    const docRef = doc(db, currentYear.toString(), params.row.pan);
-
-    try {
-      const statusObject = clientStatusOptions.reduce(
-        (obj: { [key: string]: boolean }, status, index) => {
-          obj[status.status] = index <= clientStatusOptions.findIndex(option => option.status === newStatus);
-          return obj;
-        },
-        {}
-      );
-
-      await updateDoc(docRef, { status: statusObject, lastStatus: newStatus });
-      setSelectedStatus(newStatus);
-      // console.log("Status updated successfully");
-    } catch (error) {
-      console.error("Error updating status:", error);
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="mt-2">
-        <Skeleton variant="text" width={150} height={24} />
-      </div>
-    );
-  }
-
-  return (
-    <Select
-      sx={{
-        boxShadow: "none",
-        ".MuiOutlinedInput-notchedOutline": { border: 0 },
-        "&.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline":
-                  {
-                    border: 0,
-                  },
-                "&.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                  {
-                    border: 0,
-                  },
-      }}
-      value={selectedStatus}
-      onChange={handleStatusChange}
-      className="border-0 w-[140px]"
-    >
-      {clientStatusOptions.map((option) => (
-        <MenuItem key={option.status} value={option.status} style={{ color: option.color }}>
-        <p className="text-sm font-semibold">{option.status}</p>
-      </MenuItem>
-      ))}
-    </Select>
-  );
-};
-
-// AssignCell Component
-const AssignCell: React.FC<GridRenderCellParams> = (params) => {
-  const defaultAssign = params.row.assign || "";
-  const [selectedAssign, setSelectedAssign] = useState<string>(defaultAssign);
-  const [loading, setLoading] = useState(true);
-
-  // Parse the environment variable into an array
-  const assignOptions = process.env.NEXT_PUBLIC_OPS_EMAILS
-    ? process.env.NEXT_PUBLIC_OPS_EMAILS.split(",")
-    : [];
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const currentYear = process.env.NEXT_PUBLIC_CURRENT_YEAR; // Ensure to update this if needed
-        if (!currentYear) {
-          throw new Error("Current year is not defined");
-        }
-        const docRef = doc(db, "users", params.row.pan);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          if (data.assign) {
-            setSelectedAssign(data.assign);
-          } else {
-            // If 'assign' field doesn't exist, set it to a default value or handle accordingly
-            await updateDoc(docRef, { assign: defaultAssign });
-            setSelectedAssign(defaultAssign);
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-      setLoading(false);
-    };
-
-    fetchData();
-  }, [params.row.pan]);
-
-  const handleAssignChange = async (event: SelectChangeEvent<any>) => {
-    const newAssign = event.target.value;
-    const currentYear = process.env.NEXT_PUBLIC_CURRENT_YEAR; // Update this as needed
-    if (!currentYear) {
-      throw new Error("Current year is not defined");
-    }
-    const docRef = doc(db, "users", params.row.pan);
-
-    try {
-      // Update the document with the new assignment
-      await updateDoc(docRef, { assign: newAssign });
-      setSelectedAssign(newAssign);
-      // console.log("Assignment updated successfully");
-    } catch (error) {
-      console.error("Error updating assignment:", error);
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="mt-2">
-        <Skeleton variant="text" width={150} height={24} />
-      </div>
-    );
-  }
-
-  const formatDisplayName = (email: string) => {
-    return email
-      .split("+")[0] // Get the part before the +
-      .split("@")[0] // Get the part before the @
-      .split(".")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-      .join(" ");
-  };
-
-  return (
-    <Select
-      sx={{
-        boxShadow: "none",
-        ".MuiOutlinedInput-notchedOutline": { border: 0 },
-        "&.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
-          border: 0,
-        },
-        "&.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-          border: 0,
-        },
-      }}
-      value={selectedAssign}
-      onChange={handleAssignChange}
-      className="w-[140px] bg-transparent text-sm"
-    >
-      {assignOptions.map((option) => {
-        const displayName = formatDisplayName(option);
-        return (
-          <MenuItem key={option} value={option}>
-            <p className="text-sm font-semibold">{displayName}</p>
-          </MenuItem>
-        );
-      })}
-    </Select>
-  );
 };
 
 const columns: GridColDef[] = [
@@ -545,7 +88,7 @@ const columns: GridColDef[] = [
     type: "number",
     width: 80,
     renderCell: (params) => (
-      <span>{params.value || 0}</span> // Display 0 if value is blank
+      <span>{params.value !== undefined ? params.value : 0}</span>
     ),
   },
   { field: "FinalFees", headerName: "Payable", type: "number", width: 80 },
@@ -556,37 +99,76 @@ const columns: GridColDef[] = [
     field: "division",
     headerName: "Division",
     width: 150,
-    renderCell: (params) => <DivisionCell {...params} />,
+    renderCell: (params) => (
+      <SelectCell
+        fieldName={`division_${params.row.id}`}
+        options={divisionOptions}
+        label="Division"
+        width="140px"
+        rowId={params.row.pan}
+        defaultValue={params.row?.enquiryData?.division || ""}
+      />
+    ),
   },
   {
     field: "clientStatus",
     headerName: "Client Status",
     width: 150,
-    renderCell: (params) => <ClientStatusCell {...params} />,
-  },
-  {
-    field: "closedBy",
-    headerName: "Closed By",
-    width: 150,
-    renderCell: (params) => <AssignCell {...params} />,
+    renderCell: (params) => (
+      <SelectCell
+        fieldName={`clientStatus_${params.row.id}`}
+        options={clientStatusOptions}
+        label="Client Status"
+        width="140px"
+        rowId={params.row.pan}
+        defaultValue={params.row?.enquiryData?.clientStatus || ""}
+      />
+    ),
   },
   {
     field: "assign",
     headerName: "Assigned To",
     width: 150,
-    renderCell: (params) => <AssignCell {...params} />,
+    renderCell: (params) => (
+      <SelectCell
+        fieldName={`assignedTo_${params.row.id}`}
+        options={assignOptions}
+        label="Assigned To"
+        width="140px"
+        rowId={params.row.pan}
+        defaultValue={params.row?.enquiryData?.assignedTo || ""}
+      />
+    ),
   },
   {
     field: "statusClosed",
     headerName: "Closed for",
     width: 130,
-    renderCell: (params) => <StatusClosedCell {...params} />,
+    renderCell: (params) => (
+      <SelectCell
+        fieldName={`closedFor_${params.row.id}`}
+        options={statusClosedOptions}
+        label="Closed for"
+        width="130px"
+        rowId={params.row.pan}
+        defaultValue={params.row?.enquiryData?.closedFor || ""}
+      />
+    ),
   },
   {
     field: "lastStatus",
     headerName: "Status",
     width: 230,
-    renderCell: (params) => <StatusCell {...params} />,
+    renderCell: (params) => (
+      <SelectCell
+        fieldName={`Status_${params.row.id}`}
+        options={statusOptions.map((opt) => ({ label: opt, value: opt }))}
+        label="Status"
+        width="140px"
+        rowId={params.row.pan}
+        defaultValue={params.row?.enquiryData?.Status || ""}
+      />
+    ),
   },
   {
     sortable: false,
@@ -594,39 +176,215 @@ const columns: GridColDef[] = [
     headerName: "Actions",
     type: "actions",
     width: 200,
-    renderCell: (params) => {
-      // console.log(params.row);
-      return <Actions userData={params.row} />;
+    renderCell: (params) => <Actions userData={params.row} />,
+  },
+];
+
+const tdsColumns: GridColDef[] = [
+  { field: "srNo", headerName: "Sr.", width: 80 },
+  { field: "name", headerName: "Name", width: 150 },
+  { field: "mobile", headerName: "Mobile", type: "number", width: 110 },
+  {
+    field: "pan",
+    headerName: "PAN",
+    width: 120,
+    cellClassName: "font-semibold",
+  },
+  { field: "entryMonth", headerName: "Entry Month", width: 100 },
+  { field: "itrType", headerName: "ITR Type", width: 100 },
+  { field: "area", headerName: "Area", width: 80 },
+  { field: "city", headerName: "City", width: 80 },
+  {
+    field: "managedBy",
+    headerName: "Managed By",
+    width: 150,
+    renderCell: (params) => (
+      <SelectCell
+        fieldName={`managedBy_${params.row.id}`}
+        options={assignOptions}
+        label="Status"
+        width="140px"
+        rowId={params.row.pan}
+        defaultValue={params.row?.tdsData?.managedBy || ""}
+      />
+    ),
+  },
+  {
+    field: "incomeDetails",
+    headerName: "Income Details",
+    width: 150,
+    renderCell: (params) => (
+      <SelectCell
+        fieldName={`incomeDetails_${params.row.id}`}
+        options={incomeDetailsOptions}
+        label="Status"
+        width="140px"
+        rowId={params.row.pan}
+        defaultValue={params.row?.tdsData?.incomeDetails || ""}
+      />
+    ),
+  },
+  {
+    field: "deductionDetails",
+    headerName: "Deduction Details",
+    width: 150,
+    renderCell: (params) => (
+      <SelectCell
+        fieldName={`deductionDetails_${params.row.id}`}
+        options={deductionDetailsOptions}
+        label="Status"
+        width="140px"
+        rowId={params.row.pan}
+        defaultValue={params.row?.tdsData?.deductionDetails || ""}
+      />
+    ),
+  },
+  {
+    field: "taxDetails",
+    headerName: "Tax Details",
+    width: 150,
+    renderCell: (params) => (
+      <SelectCell
+      fieldName={`deductionDetails_${params.row.id}`}
+        options={deductionDetailsOptions}
+        label="Status"
+        width="140px"
+        rowId={params.row.pan}
+        defaultValue={params.row?.tdsData?.taxDetails || ""}
+      />
+    ),
+  },
+  {
+    field: "computationITA",
+    headerName: "Computation ITA",
+    width: 230,
+    renderCell: (params) => (
+      <div className="flex justify-center items-center">
+        <SelectCell
+          fieldName={`computationITA_${params.row.id}`}
+          options={computationITAOptions}
+          label="Status"
+          width="140px"
+          rowId={params.row.pan}
+          defaultValue={params.row?.tdsData?.computationITA || ""}
+        />
+        <Download size={24} className="cursor-pointer" />
+      </div>
+    ),
+  },
+  {
+    field: "packageCall",
+    headerName: "Package Call",
+    width: 150,
+    renderCell: (params) => (
+      <SelectCell
+      fieldName={`packageCall_${params.row.id}`}
+      options={packageCallOptions}
+        label="Status"
+        width="140px"
+        rowId={params.row.pan}
+        defaultValue={params.row?.tdsData?.packageCall || ""}
+      />
+    ),
+  },
+  {
+    field: "consultedBy",
+    headerName: "Consulted By",
+    width: 150,
+    renderCell: (params) => (
+      <SelectCell
+      fieldName={`managedBy_${params.row.id}`}
+        options={assignOptions}
+        label="Status"
+        width="130px"
+        rowId={params.row.pan}
+        defaultValue={params.row?.tdsData?.managedBy || ""}
+        />
+      ),
     },
+    { field: "Fees", headerName: "Fees", type: "number", width: 80 },
+    {
+      field: "discount",
+      headerName: "Discount",
+      type: "number",
+      width: 80,
+      renderCell: (params) => (
+        <span>{params.value !== undefined ? params.value : 0}</span>
+      ),
+    },
+    { field: "FinalFees", headerName: "Payable", type: "number", width: 80 },
+    { field: "PaidFees", headerName: "Paid", type: "number", width: 80 },
+    { field: "PendingFees", headerName: "Pending", type: "number", width: 80 },
+    { field: "Remark", headerName: "Remarks", width: 150 },
+    {
+      field: "packageClosure",
+      headerName: "Package Closure",
+      width: 180,
+      renderCell: (params) => (
+        <SelectCell
+        fieldName={`packageClosure_${params.row.id}`}
+        options={packageClosureOptions}
+        label="Status"
+        width="140px"
+        rowId={params.row.pan}
+        defaultValue={params.row?.tdsData?.packageClosure || ""}
+      />
+    ),
+  },
+  {
+    field: "lastStatus",
+    headerName: "Status",
+    width: 230,
+    renderCell: (params) => (
+      <SelectCell
+        fieldName={`Status_${params.row.id}`}
+        options={statusOptions.map((opt) => ({ label: opt, value: opt }))}
+        label="Status"
+        width="220px"
+        rowId={params.row.pan}
+        defaultValue={params.row?.enquiryData?.Status || ""}
+      />
+    ),
+  },
+  {
+    sortable: false,
+    field: "actions",
+    headerName: "Actions",
+    type: "actions",
+    width: 200,
+    renderCell: (params) => <Actions userData={params.row} />,
   },
 ];
 
 const Table: React.FC<Props> = ({ rows, loading }) => {
+  console.log("rows", rows);
+  // Initialize react-hook-form
+  const methods = useForm({
+    defaultValues: {}, // No need to set default values here as they're handled in SelectCell
+  });
+
+  const { control } = methods;
+
   return (
-    <div>
-      <DataGrid
-        autoHeight
-        loading={loading}
-        slotProps={{
-          loadingOverlay: {
-            variant: "skeleton",
-            noRowsVariant: "skeleton",
-          },
-        }}
-        rows={rows}
-        columns={columns}
-        processRowUpdate={(newRow) => newRow}
-        experimentalFeatures={{}}
-        initialState={{
-          pagination: {
-            paginationModel: { pageSize: 10, page: 0 },
-          },
-        }}
-        disableColumnMenu
-        pageSizeOptions={[10, 25, 50, 100]}
-        getRowId={(row) => row.id}
-      />
-    </div>
+    <FormProvider {...methods}>
+      <div style={{ height: 700, width: "100%" }}>
+        <DataGrid
+          autoHeight
+          loading={loading}
+          rows={rows}
+          columns={rows[0]?.tdsData ? tdsColumns : columns}
+          paginationModel={{ pageSize: 10, page: 0 }}
+          pageSizeOptions={[10, 25, 50, 100]}
+          getRowId={(row) => row.id}
+          disableColumnMenu
+          initialState={{
+            pagination: {
+              paginationModel: { pageSize: 10, page: 0 },
+            },
+          }}
+        />
+      </div>
+    </FormProvider>
   );
 };
 

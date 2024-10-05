@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FaUsers, FaUserCheck } from "react-icons/fa";
 import { RiFileUserLine } from "react-icons/ri";
 import Card from "./Card";
-import { listenToITRCount, listenToITRTDSCount, listenToUserCount } from "@/app/api/user-data/route";
+import { listenToITRCount, listenToTDSCount, listenToUserCount } from "@/app/api/user-data/route";
 
 interface UsersCardsProps {
   onCardClick: (type: string) => void;
@@ -10,19 +10,19 @@ interface UsersCardsProps {
 
 const UsersCards: React.FC<UsersCardsProps> = ({ onCardClick }) => {
   const [userCount, setUserCount] = useState(0);
-  const [assignedCount, setAssignedCount] = useState(0);
-  const [punchedCount, setPunchedCount] = useState(0);
+  const [tdsCount, setTdsCount] = useState(0);
+  const [itrCount, setItrCount] = useState(0);
   const [activeCard, setActiveCard] = useState<string>("all");
 
   useEffect(() => {
     const unsubscribeUser = listenToUserCount(setUserCount);
-    const unsubscribeAssigned = listenToITRTDSCount(setAssignedCount);
-    const unsubscribePunch = listenToITRCount(setPunchedCount);
+    const unsubscribeTds = listenToTDSCount(setTdsCount);
+    const unsubscribeItr = listenToITRCount(setItrCount);
 
     return () => {
       unsubscribeUser();
-      unsubscribeAssigned();
-      unsubscribePunch();
+      unsubscribeTds
+      unsubscribeItr();
     };
   }, []);
 
@@ -42,20 +42,20 @@ const UsersCards: React.FC<UsersCardsProps> = ({ onCardClick }) => {
             isActive={activeCard === "all"} 
           />
         </button>
-        <button onClick={() => handleCardClick("assigned")}>
+        <button onClick={() => handleCardClick("itr+tds")}>
           <Card
             icon={<FaUserCheck />}
-            count={assignedCount.toString()}  
+            count={tdsCount.toString()}  
             title="Active : TDS"
-            isActive={activeCard === "assigned"} 
+            isActive={activeCard === "itr+tds"} 
           />
         </button>
-        <button onClick={() => handleCardClick("punched")}>
+        <button onClick={() => handleCardClick("itr")}>
           <Card
             icon={<RiFileUserLine />}
-            count={punchedCount.toString()}  
+            count={itrCount.toString()}  
             title="Active : ITR"
-            isActive={activeCard === "punched"}
+            isActive={activeCard === "itr"}
           />
         </button>
       </div>

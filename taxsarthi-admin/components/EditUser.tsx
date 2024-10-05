@@ -173,7 +173,7 @@ const EditUser = ({ userData }: Props) => {
                   variant="outlined"
                   size="small"
                 />
-                <h1 className="text-black text-md">Services</h1>
+                {/* <h1 className="text-black text-md">Services</h1>
                 <div className="flex flex-col gap-2 mb-2">
                   {servicesList.map((service) => (
                     <div className="flex gap-2 items-center" key={service.name}>
@@ -190,7 +190,7 @@ const EditUser = ({ userData }: Props) => {
                       </label>
                     </div>
                   ))}
-                </div>
+                </div> */}
                 <TextField
                   label="Fees"
                   name="Fees"
