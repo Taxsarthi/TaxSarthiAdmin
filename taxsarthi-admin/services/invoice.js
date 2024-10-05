@@ -21,7 +21,7 @@ function getFormattedDate() {
 
 export const modifyAndDownloadPDF = async (pan) => {
   try {
-    console.log("Fetching data for PAN:", pan);
+    // console.log("Fetching data for PAN:", pan);
 
     const userRef = doc(db, "usersTable", pan);
     const userSnap = await getDoc(userRef);

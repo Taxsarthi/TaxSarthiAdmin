@@ -23,12 +23,11 @@ export async function POST(req: NextRequest) {
     const userRef = doc(collection(db, "usersTable"), userData.pan);
     await setDoc(userRef, userData);
     const user = await createUserWithEmailAndPassword(auth, userData.email, userData.password);
-    console.log(user);
 
     // Create corresponding EnquirySheet document
     const enquirySheetData = {
       pan: userData.pan,
-      clientStatus: null,  // Set initial values as null
+      clientStatus: null, 
       closedBy: null,
       assignedTo: null,
       closedFor: null,

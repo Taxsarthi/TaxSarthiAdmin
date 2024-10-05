@@ -16,7 +16,6 @@ export const listenToUserCount = (setUserCount: (count: number) => void) => {
   const userRef = collection(db, "usersTable");
   const unsubscribe = onSnapshot(userRef, (snapshot) => {
     setUserCount(snapshot.size);
-    console.log("User count:", snapshot.size);
   });
   return unsubscribe;
 };
@@ -29,7 +28,6 @@ export const listenToITRCount = (setITRCount: (count: number) => void) => {
   );
   const unsubscribe = onSnapshot(itrQuery, (snapshot) => {
     setITRCount(snapshot.size);
-    console.log("ITR count:", snapshot.size);
   });
   return unsubscribe;
 };
@@ -44,18 +42,13 @@ export const listenToTDSCount = (
   );
   const unsubscribe = onSnapshot(tdsQuery, (snapshot) => {
     setTDSCount(snapshot.size);
-    console.log("TDS count:", snapshot.size);
   });
   return unsubscribe;
 };
 
-
-
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const status = searchParams.get("closedFor");
-
-  console.log("Status:", status);
 
   let q;
 

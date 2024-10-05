@@ -156,7 +156,7 @@ const columns: GridColDef[] = [
     ),
   },
   {
-    field: "lastStatus",
+    field: "Status",
     headerName: "Status",
     width: 230,
     renderCell: (params) => (
@@ -195,17 +195,17 @@ const tdsColumns: GridColDef[] = [
   { field: "area", headerName: "Area", width: 80 },
   { field: "city", headerName: "City", width: 80 },
   {
-    field: "managedBy",
+    field: "assign",
     headerName: "Managed By",
     width: 150,
     renderCell: (params) => (
       <SelectCell
-        fieldName={`managedBy_${params.row.id}`}
+        fieldName={`assignedTo_${params.row.id}`}
         options={assignOptions}
-        label="Status"
+        label="Assigned To"
         width="140px"
         rowId={params.row.pan}
-        defaultValue={params.row?.tdsData?.managedBy || ""}
+        defaultValue={params.row?.enquiryData?.assignedTo || ""}
       />
     ),
   },
@@ -332,7 +332,7 @@ const tdsColumns: GridColDef[] = [
     ),
   },
   {
-    field: "lastStatus",
+    field: "Status",
     headerName: "Status",
     width: 230,
     renderCell: (params) => (
@@ -357,10 +357,9 @@ const tdsColumns: GridColDef[] = [
 ];
 
 const Table: React.FC<Props> = ({ rows, loading }) => {
-  console.log("rows", rows);
-  // Initialize react-hook-form
+  // console.log("rows", rows);
   const methods = useForm({
-    defaultValues: {}, // No need to set default values here as they're handled in SelectCell
+    defaultValues: {}, 
   });
 
   const { control } = methods;
