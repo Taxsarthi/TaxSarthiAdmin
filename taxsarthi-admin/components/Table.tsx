@@ -16,6 +16,7 @@ import {
   packageClosureOptions,
   statusClosedOptions,
   statusOptions,
+  taxDetailsOptions,
 } from "@/tableOptions/tableOptions";
 import { Download } from "lucide-react";
 
@@ -245,8 +246,8 @@ const tdsColumns: GridColDef[] = [
     width: 150,
     renderCell: (params) => (
       <SelectCell
-      fieldName={`deductionDetails_${params.row.id}`}
-        options={deductionDetailsOptions}
+      fieldName={`taxDetails_${params.row.id}`}
+        options={taxDetailsOptions}
         label="Status"
         width="140px"
         rowId={params.row.pan}
@@ -293,7 +294,7 @@ const tdsColumns: GridColDef[] = [
     width: 150,
     renderCell: (params) => (
       <SelectCell
-      fieldName={`managedBy_${params.row.id}`}
+      fieldName={`consultedBy_${params.row.id}`}
         options={assignOptions}
         label="Status"
         width="130px"
@@ -325,7 +326,7 @@ const tdsColumns: GridColDef[] = [
         fieldName={`packageClosure_${params.row.id}`}
         options={packageClosureOptions}
         label="Status"
-        width="140px"
+        width="180px"
         rowId={params.row.pan}
         defaultValue={params.row?.tdsData?.packageClosure || ""}
       />

@@ -1,13 +1,13 @@
 // components/SelectCell.tsx
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Select, MenuItem, SelectChangeEvent } from "@mui/material";
 import { useFormContext, Controller } from "react-hook-form";
 
 type SelectCellProps = {
   fieldName: string; // The field name in the form
   options: { label: string; value: string; color?: string }[];
-  label: string; // Label for the select
+  label?: string;
   width?: string;
   rowId: string; // Unique identifier for the row, e.g., PAN
   defaultValue?: string; // Initial value for the select
@@ -17,31 +17,27 @@ type SelectCellProps = {
 const SelectCell: React.FC<SelectCellProps> = ({
   fieldName,
   options,
+  label = "",
   width = "150px",
   rowId,
   defaultValue = "",
   additionalFields = {},
 }) => {
   const { control } = useFormContext();
-  const [selectedColor, setSelectedColor] = useState<string | undefined>(undefined);
-
-  useEffect(() => {
-    const selectedOption = options.find(option => option.value === defaultValue);
-    if (selectedOption) {
-      setSelectedColor(selectedOption.color);
-    }
-  }, [defaultValue, options]);
 
   const handleChange = async (value: string) => {
     try {
       const updateData: { [key: string]: any } = {
-        pan: rowId, // Include the PAN for identification
-        [fieldName.split("_")[0]]: value, // Extract the field name from the fieldName
+        pan: rowId,
+        [fieldName.split("_")[0]]: value,
         ...additionalFields,
       };
 
-      // Send the PUT request to update
-      const response = await fetch("/api/enquiry-sheet", {
+      const tdsInc = fieldName.split("_")[0];
+      const isTds = ["computationITA", "packageCall", "consultedBy", "packageClosure", "deductionDetails", "taxDetails", "incomeDetails", "managedBy", "remarks"].includes(tdsInc);
+
+      const endpoint = isTds ? "/api/tds-sheet" : "/api/enquiry-sheet";
+      const response = await fetch(endpoint, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -52,11 +48,8 @@ const SelectCell: React.FC<SelectCellProps> = ({
       if (!response.ok) {
         throw new Error("Failed to update");
       }
-
-      // Optionally, handle success feedback here
     } catch (error) {
       console.error(`Error updating ${fieldName}:`, error);
-      // Optionally, handle error feedback here
     }
   };
 
@@ -67,12 +60,7 @@ const SelectCell: React.FC<SelectCellProps> = ({
       defaultValue={defaultValue}
       render={({ field }) => {
         const selectedOption = options.find(option => option.value === field.value);
-        const currentColor = selectedOption ? selectedOption.color : undefined;
-
-        // Update the selected color whenever the field value changes
-        useEffect(() => {
-          setSelectedColor(currentColor);
-        }, [currentColor]);
+        const textColor = selectedOption?.color || "inherit"; // Default to "inherit" if no color
 
         return (
           <Select
@@ -86,7 +74,7 @@ const SelectCell: React.FC<SelectCellProps> = ({
               "&.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
                 border: 0,
               },
-              color: currentColor || 'inherit', // Set color of the selected value
+              color: textColor, // Set the color here
             }}
             value={field.value || ""}
             onChange={(e: SelectChangeEvent<string>) => {

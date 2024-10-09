@@ -58,6 +58,12 @@ export const deductionDetailsOptions = [
     { label: "Pending", value: "Pending", color: "#FFD700" }, // Gold
     { label: "Error", value: "Error", color: "#C70039" }, // Dark Red
 ];
+
+export const taxDetailsOptions = [
+    { label: "Imported", value: "Imported", color: "#3CB371" }, // Green
+    { label: "Pending", value: "Pending", color: "#FFD700" }, // Gold
+    { label: "Error", value: "Error", color: "#C70039" }, // Dark Red
+];
 // computationITA(downloaded,sent,pending,error)(download button)
 // packageCall(consulted, pending, not responding, error & issue)
 export const computationITAOptions = [
